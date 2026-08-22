@@ -1,0 +1,10 @@
+{
+  "name": "Navex WMS",
+  "short_name": "Navex",
+  "description": "Gestion d'entreposage Navex",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0f172a",
+  "lang": "fr"
+}

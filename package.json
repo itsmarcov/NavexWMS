@@ -1,0 +1,20 @@
+{
+  "name": "navex-wms",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@11.22.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev:api": "pnpm --filter @navex/api dev",
+    "dev:web": "pnpm --filter @navex/web dev",
+    "build:api": "pnpm --filter @navex/api build",
+    "build:web": "pnpm --filter @navex/web build",
+    "db:up": "docker compose up -d",
+    "db:down": "docker compose down",
+    "db:migrate": "pnpm --filter @navex/api prisma:migrate",
+    "db:seed": "pnpm --filter @navex/api prisma:seed",
+    "gen:keys": "node scripts/generate-keys.mjs"
+  }
+}

@@ -1,0 +1,207 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ── Enums ─────────────────────────────────────────────
+
+enum RoleUtilisateur {
+  expediteur
+  agent_commercial
+  agent_entrepot
+  admin
+}
+
+enum StatutExpediteur {
+  en_attente
+  actif
+  suspendu
+}
+
+enum StatutDemande {
+  en_attente
+  approuvee
+  rejetee
+  annulee
+}
+
+enum TypeEmballage {
+  carton
+  palette
+  sac
+  autre
+}
+
+enum StatutValidationProduit {
+  en_attente
+  approuve
+  refuse
+}
+
+enum StatutDecharge {
+  emise
+  scannee
+  expiree
+}
+
+enum TypeEvenement {
+  arrivee_scannee
+  reception_confirmee
+  repositionnement
+}
+
+// ── Modèles ───────────────────────────────────────────
+
+model Expediteur {
+  id              String           @id @default(uuid())
+  nom_entreprise  String
+  email           String           @unique
+  telephone       String
+  adresse         String
+  statut          StatutExpediteur @default(en_attente)
+  langue_preferee String           @default("fr")
+  date_creation   DateTime         @default(now())
+
+  utilisateurs Utilisateur[]
+  demandes     DemandeStockage[]
+}
+
+model Utilisateur {
+  id            String   @id @default(uuid())
+  email         String   @unique
+  password_hash String
+  role          RoleUtilisateur
+  expediteur_id String?
+  expediteur    Expediteur? @relation(fields: [expediteur_id], references: [id])
+  actif         Boolean  @default(true)
+  date_creation DateTime @default(now())
+
+  refresh_tokens     RefreshToken[]
+  demandes_traitees  DemandeStockage[]    @relation("agentCommercial")
+  mouvements         MouvementEntrepot[]
+  audit_logs         AuditLog[]
+}
+
+model RefreshToken {
+  id             String      @id @default(uuid())
+  utilisateur_id String
+  utilisateur    Utilisateur @relation(fields: [utilisateur_id], references: [id], onDelete: Cascade)
+  token_hash     String      @unique
+  expires_at     DateTime
+  revoke_at      DateTime?
+  date_creation  DateTime    @default(now())
+
+  @@index([utilisateur_id])
+}
+
+model DemandeStockage {
+  id                    String        @id @default(uuid())
+  reference             String        @unique @default(cuid())
+  expediteur_id         String
+  expediteur            Expediteur    @relation(fields: [expediteur_id], references: [id])
+  statut                StatutDemande @default(en_attente)
+  date_creation         DateTime      @default(now())
+  date_traitement       DateTime?
+  agent_commercial_id   String?
+  agent_commercial      Utilisateur?  @relation("agentCommercial", fields: [agent_commercial_id], references: [id])
+  date_reception_prevue DateTime?
+  commentaire_agent     String?
+
+  produits Produit[]
+  decharge Decharge?
+
+  @@index([expediteur_id])
+  @@index([statut])
+}
+
+model Produit {
+  id                String                  @id @default(uuid())
+  demande_id        String
+  demande           DemandeStockage         @relation(fields: [demande_id], references: [id], onDelete: Cascade)
+  sku_code          String
+  designation       String
+  longueur_cm       Float
+  largeur_cm        Float
+  hauteur_cm        Float
+  poids_kg          Float
+  fragile           Boolean                 @default(false)
+  type_emballage    TypeEmballage
+  quantite          Int
+  photo_url         String?
+  statut_validation StatutValidationProduit @default(en_attente)
+
+  @@index([demande_id])
+}
+
+model Decharge {
+  id              String         @id @default(uuid())
+  demande_id      String         @unique
+  demande         DemandeStockage @relation(fields: [demande_id], references: [id])
+  numero_decharge String         @unique
+  qr_token        String         @unique
+  nonce           String         @unique
+  date_generation DateTime       @default(now())
+  pdf_url         String?
+  statut          StatutDecharge @default(emise)
+
+  mouvements MouvementEntrepot[]
+}
+
+model Entrepot {
+  id      String @id @default(uuid())
+  nom     String
+  adresse String
+
+  emplacements Emplacement[]
+}
+
+model Emplacement {
+  id           String   @id @default(uuid())
+  entrepot_id  String
+  entrepot     Entrepot @relation(fields: [entrepot_id], references: [id])
+  zone         String
+  allee        String
+  rack         String
+  niveau       String
+  capacite_max Int
+  occupee      Boolean  @default(false)
+
+  mouvements MouvementEntrepot[]
+
+  @@unique([entrepot_id, zone, allee, rack, niveau])
+}
+
+model MouvementEntrepot {
+  id                String        @id @default(uuid())
+  decharge_id       String
+  decharge          Decharge      @relation(fields: [decharge_id], references: [id])
+  agent_entrepot_id String
+  agent_entrepot    Utilisateur   @relation(fields: [agent_entrepot_id], references: [id])
+  type_evenement    TypeEvenement
+  emplacement_id    String?
+  emplacement       Emplacement?  @relation(fields: [emplacement_id], references: [id])
+  date_evenement    DateTime      @default(now())
+  notes             String?
+
+  @@index([decharge_id])
+}
+
+model AuditLog {
+  id             String       @id @default(uuid())
+  entite_type    String
+  entite_id      String
+  action         String
+  utilisateur_id String?
+  utilisateur    Utilisateur? @relation(fields: [utilisateur_id], references: [id])
+  donnees_avant  Json?
+  donnees_apres  Json?
+  timestamp      DateTime     @default(now())
+  ip_adresse     String?
+
+  @@index([entite_type, entite_id])
+  @@index([timestamp])
+}

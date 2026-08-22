@@ -1,0 +1,44 @@
+{
+  "commun": {
+    "nom_app": "Navex WMS",
+    "se_deconnecter": "Déconnexion",
+    "chargement": "Chargement…",
+    "langue": "Langue"
+  },
+  "login": {
+    "titre": "Connexion",
+    "soustitre": "Accédez à votre espace de gestion d'entreposage",
+    "email": "Adresse e-mail",
+    "mot_de_passe": "Mot de passe",
+    "valider": "Se connecter"
+  },
+  "accueil": {
+    "titre": "Espace {role}",
+    "session": "Connecté en tant que",
+    "phase_en_cours": "Phase 1 : infrastructure, authentification et internationalisation opérationnelles."
+  },
+  "roles": {
+    "expediteur": "Expéditeur",
+    "agent_commercial": "Agent commercial",
+    "agent_entrepot": "Agent entrepôt",
+    "admin": "Administrateur"
+  },
+  "statuts": {
+    "en_attente": "En attente",
+    "approuvee": "Approuvée",
+    "approuve": "Approuvé",
+    "rejetee": "Rejetée",
+    "refuse": "Refusé",
+    "annulee": "Annulée",
+    "emise": "Émise",
+    "scannee": "Scannée",
+    "expiree": "Expirée"
+  },
+  "erreurs": {
+    "identifiants_invalides": "E-mail ou mot de passe incorrect.",
+    "session_expiree": "Votre session a expiré, veuillez vous reconnecter.",
+    "acces_refuse": "Accès refusé.",
+    "generique": "Une erreur est survenue. Veuillez réessayer.",
+    "reseau": "Impossible de joindre le serveur."
+  }
+}

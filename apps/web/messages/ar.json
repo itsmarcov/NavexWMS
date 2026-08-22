@@ -1,0 +1,44 @@
+{
+  "commun": {
+    "nom_app": "نافكس WMS",
+    "se_deconnecter": "تسجيل الخروج",
+    "chargement": "جارٍ التحميل…",
+    "langue": "اللغة"
+  },
+  "login": {
+    "titre": "تسجيل الدخول",
+    "soustitre": "ادخل إلى مساحة إدارة المستودعات الخاصة بك",
+    "email": "البريد الإلكتروني",
+    "mot_de_passe": "كلمة المرور",
+    "valider": "تسجيل الدخول"
+  },
+  "accueil": {
+    "titre": "مساحة {role}",
+    "session": "متصل بصفة",
+    "phase_en_cours": "المرحلة 1: البنية التحتية والمصادقة والتعريب الدولي جاهزة."
+  },
+  "roles": {
+    "expediteur": "مُرسِل",
+    "agent_commercial": "عون تجاري",
+    "agent_entrepot": "عون مستودع",
+    "admin": "مدير"
+  },
+  "statuts": {
+    "en_attente": "قيد الانتظار",
+    "approuvee": "تمت الموافقة",
+    "approuve": "موافق عليه",
+    "rejetee": "مرفوضة",
+    "refuse": "مرفوض",
+    "annulee": "ملغاة",
+    "emise": "صادرة",
+    "scannee": "مسوحة ضوئياً",
+    "expiree": "منتهية"
+  },
+  "erreurs": {
+    "identifiants_invalides": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+    "session_expiree": "انتهت صلاحية جلستك، يُرجى تسجيل الدخول من جديد.",
+    "acces_refuse": "تم رفض الوصول.",
+    "generique": "حدث خطأ. يُرجى المحاولة مرة أخرى.",
+    "reseau": "تعذّر الاتصال بالخادم."
+  }
+}

@@ -1,0 +1,50 @@
+# Blueprint Render : https://render.com/docs/blueprint-spec
+# Déploie : PostgreSQL + API NestJS + Web Next.js en une seule opération
+# (Dashboard → New → Blueprint → sélectionner ce repo)
+
+databases:
+  - name: navex-postgres
+    databaseName: navexwms
+    user: navex
+    plan: free
+
+services:
+  - type: web
+    name: navex-wms-api
+    runtime: node
+    plan: free
+    healthCheckPath: /api/health
+    buildCommand: corepack enable && pnpm install && pnpm --filter @navex/api prisma:generate && pnpm --filter @navex/api build
+    startCommand: pnpm --filter @navex/api start:prod
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: navex-postgres
+          property: connectionString
+      # Clés RS256 : coller les contenus des fichiers apps/api/keys/*.pem dans le Dashboard
+      # (les retours à la ligne peuvent rester tels quels ou être échappés en \n)
+      - key: JWT_PRIVATE_KEY
+        sync: false
+      - key: JWT_PUBLIC_KEY
+        sync: false
+      - key: JWT_ACCESS_TTL_SECONDS
+        value: 900
+      - key: JWT_REFRESH_TTL_DAYS
+        value: 7
+      # À renseigner avec l'URL du service web ci-dessous après création :
+      - key: WEB_ORIGIN
+        sync: false
+      # Front et API sur deux domaines différents → SameSite=None obligatoire
+      - key: COOKIE_SAMESITE
+        value: none
+
+  - type: web
+    name: navex-wms-web
+    runtime: node
+    plan: free
+    buildCommand: corepack enable && pnpm install && pnpm --filter @navex/web build
+    startCommand: pnpm --filter @navex/web start
+    envVars:
+      # Cohérent si le service API s'appelle bien « navex-wms-api » ; sinon adapter
+      - key: NEXT_PUBLIC_API_URL
+        value: https://navex-wms-api.onrender.com/api
