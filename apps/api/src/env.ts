@@ -19,7 +19,11 @@ const lireCle = (varInline: string, varChemin: string, cheminDefaut: string): st
 
 export const env = {
   port: parseInt(process.env.PORT ?? "3001", 10),
-  webOrigin: process.env.WEB_ORIGIN ?? "http://localhost:3000",
+  // Origines autorisées (CORS), séparées par des virgules
+  webOrigins: (process.env.WEB_ORIGIN ?? "http://localhost:3000")
+    .split(",")
+    .map((o) => o.trim())
+    .filter(Boolean),
   privateKey: () => lireCle("JWT_PRIVATE_KEY", "JWT_PRIVATE_KEY_PATH", "./keys/private.pem"),
   publicKey: () => lireCle("JWT_PUBLIC_KEY", "JWT_PUBLIC_KEY_PATH", "./keys/public.pem"),
   accessTtlSeconds: parseInt(process.env.JWT_ACCESS_TTL_SECONDS ?? "900", 10),
