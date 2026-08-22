@@ -14,7 +14,7 @@ services:
     runtime: node
     plan: free
     healthCheckPath: /api/health
-    buildCommand: corepack enable && pnpm install && pnpm --filter @navex/api prisma:generate && pnpm --filter @navex/api build
+    buildCommand: npm i -g pnpm@11.22.0 && pnpm install && pnpm --filter @navex/api prisma:generate && pnpm --filter @navex/api build
     startCommand: pnpm --filter @navex/api start:prod
     envVars:
       - key: DATABASE_URL
@@ -42,7 +42,7 @@ services:
     name: navex-wms-web
     runtime: node
     plan: free
-    buildCommand: corepack enable && pnpm install && pnpm --filter @navex/web build
+    buildCommand: npm i -g pnpm@11.22.0 && pnpm install && pnpm --filter @navex/web build
     startCommand: pnpm --filter @navex/web start
     envVars:
       # Cohérent si le service API s'appelle bien « navex-wms-api » ; sinon adapter
