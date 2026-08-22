@@ -1,0 +1,23 @@
+{
+  "titre": "Décharge de stockage",
+  "numero": "N° de décharge",
+  "reference_demande": "Réf. demande",
+  "date_generation": "Date d'émission",
+  "date_reception_prevue": "Réception prévue le",
+  "expediteur": "Expéditeur",
+  "entreprise": "Entreprise",
+  "contact": "Contact",
+  "telephone": "Téléphone",
+  "adresse": "Adresse",
+  "produits": "Détail des produits",
+  "col_sku": "Réf.",
+  "col_designation": "Désignation",
+  "col_dimensions": "Dimensions (cm)",
+  "col_poids": "Poids (kg)",
+  "col_emballage": "Emballage",
+  "col_quantite": "Qté",
+  "fragile": "Fragile",
+  "consigne_qr": "Présentez ce QR code à l'arrivée à l'entrepôt Navex. Il est personnel, valable une seule fois et expire à la date indiquée.",
+  "valide_jusqua": "QR valide jusqu'au",
+  "pied": "Document généré électroniquement par Navex WMS — aucune signature manuscrite requise."
+}

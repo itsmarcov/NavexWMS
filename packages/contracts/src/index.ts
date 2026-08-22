@@ -37,3 +37,62 @@ export interface LoginResponse {
   access_token: string;
   utilisateur: UtilisateurDTO;
 }
+
+// ── Demandes / Produits / Décharges ──────────────────────────
+
+export type TypeEmballageDTO = (typeof TYPES_EMBALLAGE)[number];
+
+export interface ProduitDTO {
+  id: string;
+  sku_code: string;
+  designation: string;
+  longueur_cm: number;
+  largeur_cm: number;
+  hauteur_cm: number;
+  poids_kg: number;
+  fragile: boolean;
+  type_emballage: TypeEmballageDTO;
+  quantite: number;
+  photo_url?: string | null;
+  statut_validation: StatutValidationProduit;
+}
+
+export interface DechargeResumeDTO {
+  id: string;
+  numero_decharge: string;
+  statut: StatutDecharge;
+}
+
+export interface DemandeListeDTO {
+  id: string;
+  reference: string;
+  statut: StatutDemande;
+  date_creation: string;
+  expediteur: { id: string; nom_entreprise: string };
+  _count?: { produits: number };
+  decharge?: DechargeResumeDTO | null;
+}
+
+export interface DemandeDetailDTO extends Omit<DemandeListeDTO, "_count"> {
+  commentaire_agent?: string | null;
+  date_reception_prevue?: string | null;
+  date_traitement?: string | null;
+  produits: ProduitDTO[];
+  decharge?:
+    | (DechargeResumeDTO & { date_generation: string; pdf_url?: string | null })
+    | null;
+}
+
+/** Charge utile de création : le backend génère référence et statuts. */
+export interface NouveauProduit {
+  sku_code: string;
+  designation: string;
+  longueur_cm: number;
+  largeur_cm: number;
+  hauteur_cm: number;
+  poids_kg: number;
+  fragile: boolean;
+  type_emballage: TypeEmballageDTO;
+  quantite: number;
+  photo_url?: string | null;
+}

@@ -3,7 +3,10 @@ import { Module } from "@nestjs/common";
 import { Public } from "./auth/decorators/public.decorator";
 import { AuthModule } from "./auth/auth.module";
 import { AuditModule } from "./audit/audit.module";
+import { DechargesModule } from "./decharges/decharges.module";
+import { DemandesModule } from "./demandes/demandes.module";
 import { PrismaModule } from "./prisma/prisma.module";
+import { UploadsModule } from "./uploads/uploads.module";
 
 @Controller()
 export class AppController {
@@ -15,7 +18,7 @@ export class AppController {
 }
 
 @Module({
-  imports: [PrismaModule, AuditModule, AuthModule],
+  imports: [PrismaModule, AuditModule, AuthModule, DemandesModule, UploadsModule, DechargesModule],
   controllers: [AppController],
 })
 export class AppModule {}

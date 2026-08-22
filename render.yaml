@@ -37,6 +37,25 @@ services:
       # Front et API sur deux domaines différents → SameSite=None obligatoire
       - key: COOKIE_SAMESITE
         value: none
+      # URL publique encodée dans les QR des décharges
+      - key: APP_PUBLIC_URL
+        value: https://navex-wms-web.onrender.com
+      - key: DECHARGE_TTL_HEURES
+        value: 72
+      # Stockage S3-compatible optionnel (photos produits). Sans config,
+      # l'upload est désactivé mais tout le reste fonctionne.
+      - key: S3_ENDPOINT
+        sync: false
+      - key: S3_BUCKET
+        sync: false
+      - key: S3_ACCESS_KEY
+        sync: false
+      - key: S3_SECRET_KEY
+        sync: false
+      - key: S3_REGION
+        value: auto
+      - key: S3_FORCE_PATH_STYLE
+        value: "true"
 
   - type: web
     name: navex-wms-web

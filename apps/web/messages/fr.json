@@ -3,7 +3,12 @@
     "nom_app": "Navex WMS",
     "se_deconnecter": "Déconnexion",
     "chargement": "Chargement…",
-    "langue": "Langue"
+    "langue": "Langue",
+    "retour": "Retour"
+  },
+  "nav": {
+    "accueil": "Accueil",
+    "mes_demandes": "Mes demandes"
   },
   "login": {
     "titre": "Connexion",
@@ -34,11 +39,76 @@
     "scannee": "Scannée",
     "expiree": "Expirée"
   },
+  "demandes": {
+    "titre": "Mes demandes de stockage",
+    "nouvelle": "Nouvelle demande",
+    "reference": "Référence",
+    "date_creation": "Créée le",
+    "expediteur_col": "Expéditeur",
+    "produits_col": "Produits",
+    "decharge_col": "Décharge",
+    "decharge_aucune": "—",
+    "voir": "Consulter",
+    "vide": "Aucune demande pour le moment. Créez votre première demande de stockage.",
+    "detail_titre": "Demande {reference}",
+    "commentaire_agent": "Commentaire de l'agent",
+    "date_reception_prevue": "Réception prévue le",
+    "produits_titre": "Produits",
+    "decharge_titre": "Décharge de stockage",
+    "decharge_numero": "Décharge {numero}",
+    "generer_decharge": "Générer la décharge",
+    "telecharger_pdf": "Télécharger le PDF",
+    "generation_cours": "Génération du PDF…"
+  },
+  "wizard": {
+    "titre": "Nouvelle demande de stockage",
+    "etape_produits": "Produits",
+    "etape_recapitulatif": "Récapitulatif",
+    "etape_envoi": "Envoi",
+    "ajouter_produit": "+ Ajouter un produit",
+    "supprimer_produit": "Supprimer",
+    "precedent": "Précédent",
+    "suivant": "Continuer",
+    "envoyer": "Envoyer la demande",
+    "envoi_cours": "Envoi en cours…",
+    "succes": "Demande {reference} créée. Elle est maintenant en attente de validation par un agent commercial.",
+    "recap_total_colis": "{total} colis au total",
+    "recap_total_poids": "{total} kg au total",
+    "recap_vide": "Ajoutez au moins un produit."
+  },
+  "produit": {
+    "carte": "Produit {n}",
+    "sku": "Référence (SKU)",
+    "designation": "Désignation",
+    "longueur": "Longueur (cm)",
+    "largeur": "Largeur (cm)",
+    "hauteur": "Hauteur (cm)",
+    "poids": "Poids unitaire (kg)",
+    "fragile": "Fragile",
+    "type_emballage": "Type d'emballage",
+    "emballage_carton": "Carton",
+    "emballage_palette": "Palette",
+    "emballage_sac": "Sac",
+    "emballage_autre": "Autre",
+    "quantite": "Quantité",
+    "dimensions_court": "L×l×H (cm)",
+    "photo": "Photo (facultatif)",
+    "photo_choisir": "Choisir une image",
+    "photo_envoi": "Téléversement…",
+    "photo_ok": "Photo ajoutée"
+  },
   "erreurs": {
     "identifiants_invalides": "E-mail ou mot de passe incorrect.",
     "session_expiree": "Votre session a expiré, veuillez vous reconnecter.",
     "acces_refuse": "Accès refusé.",
+    "introuvable": "Élément introuvable.",
     "generique": "Une erreur est survenue. Veuillez réessayer.",
-    "reseau": "Impossible de joindre le serveur."
+    "reseau": "Impossible de joindre le serveur.",
+    "champs_manquants": "Veuillez compléter tous les champs obligatoires de chaque produit.",
+    "aucun_produit_approuve": "La décharge nécessite au moins un produit approuvé par l'agent commercial.",
+    "decharge_deja_scannee": "Cette décharge a déjà été scannée à l'entrepôt.",
+    "stockage_indisponible": "Le stockage de fichiers est momentanément indisponible.",
+    "fichier_manquant": "Aucun fichier reçu.",
+    "type_fichier_refuse": "Format d'image non pris en charge (JPG, PNG ou WebP)."
   }
 }

@@ -3,7 +3,12 @@
     "nom_app": "نافكس WMS",
     "se_deconnecter": "تسجيل الخروج",
     "chargement": "جارٍ التحميل…",
-    "langue": "اللغة"
+    "langue": "اللغة",
+    "retour": "رجوع"
+  },
+  "nav": {
+    "accueil": "الرئيسية",
+    "mes_demandes": "طلباتي"
   },
   "login": {
     "titre": "تسجيل الدخول",
@@ -34,11 +39,76 @@
     "scannee": "مسوحة ضوئياً",
     "expiree": "منتهية"
   },
+  "demandes": {
+    "titre": "طلبات التخزين الخاصة بي",
+    "nouvelle": "طلب جديد",
+    "reference": "المرجع",
+    "date_creation": "أُنشئت في",
+    "expediteur_col": "المُرسِل",
+    "produits_col": "المنتجات",
+    "decharge_col": "إيصال التخزين",
+    "decharge_aucune": "—",
+    "voir": "استعراض",
+    "vide": "لا توجد طلبات حالياً. أنشئ أول طلب تخزين لك.",
+    "detail_titre": "الطلب {reference}",
+    "commentaire_agent": "ملاحظة العون",
+    "date_reception_prevue": "الاستلام المتوقع في",
+    "produits_titre": "المنتجات",
+    "decharge_titre": "إيصال التخزين",
+    "decharge_numero": "إيصال {numero}",
+    "generer_decharge": "إنشاء الإيصال",
+    "telecharger_pdf": "تحميل ملف PDF",
+    "generation_cours": "جارٍ إنشاء PDF…"
+  },
+  "wizard": {
+    "titre": "طلب تخزين جديد",
+    "etape_produits": "المنتجات",
+    "etape_recapitulatif": "ملخص",
+    "etape_envoi": "الإرسال",
+    "ajouter_produit": "+ إضافة منتج",
+    "supprimer_produit": "حذف",
+    "precedent": "السابق",
+    "suivant": "متابعة",
+    "envoyer": "إرسال الطلب",
+    "envoi_cours": "جارٍ الإرسال…",
+    "succes": "تم إنشاء الطلب {reference}. وهو الآن في انتظار المصادقة من عون تجاري.",
+    "recap_total_colis": "{total} طرداً في المجموع",
+    "recap_total_poids": "{total} كغ في المجموع",
+    "recap_vide": "أضف منتجاً واحداً على الأقل."
+  },
+  "produit": {
+    "carte": "المنتج {n}",
+    "sku": "المرجع (SKU)",
+    "designation": "التسمية",
+    "longueur": "الطول (سم)",
+    "largeur": "العرض (سم)",
+    "hauteur": "الارتفاع (سم)",
+    "poids": "وزن الوحدة (كغ)",
+    "fragile": "قابل للكسر",
+    "type_emballage": "نوع التغليف",
+    "emballage_carton": "كرتون",
+    "emballage_palette": "منصة نقالة",
+    "emballage_sac": "كيس",
+    "emballage_autre": "آخر",
+    "quantite": "الكمية",
+    "dimensions_court": "ط×ع×ار (سم)",
+    "photo": "صورة (اختياري)",
+    "photo_choisir": "اختيار صورة",
+    "photo_envoi": "جارٍ الرفع…",
+    "photo_ok": "تمت إضافة الصورة"
+  },
   "erreurs": {
     "identifiants_invalides": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
     "session_expiree": "انتهت صلاحية جلستك، يُرجى تسجيل الدخول من جديد.",
     "acces_refuse": "تم رفض الوصول.",
+    "introuvable": "العنصر غير موجود.",
     "generique": "حدث خطأ. يُرجى المحاولة مرة أخرى.",
-    "reseau": "تعذّر الاتصال بالخادم."
+    "reseau": "تعذّر الاتصال بالخادم.",
+    "champs_manquants": "يرجى إكمال جميع الحقول الإلزامية لكل منتج.",
+    "aucun_produit_approuve": "يتطلب الإيصال موافقة العون التجاري على منتج واحد على الأقل.",
+    "decharge_deja_scannee": "تم مسح هذا الإيصال ضوئياً في المستودع مسبقاً.",
+    "stockage_indisponible": "خدمة تخزين الملفات غير متاحة حالياً.",
+    "fichier_manquant": "لم يتم استلام أي ملف.",
+    "type_fichier_refuse": "صيغة الصورة غير مدعومة (JPG أو PNG أو WebP)."
   }
 }

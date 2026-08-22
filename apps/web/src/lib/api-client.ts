@@ -1,4 +1,11 @@
-import type { LoginResponse, UtilisateurDTO } from "@navex/contracts";
+import type {
+  DemandeDetailDTO,
+  DemandeListeDTO,
+  DechargeResumeDTO,
+  LoginResponse,
+  NouveauProduit,
+  UtilisateurDTO,
+} from "@navex/contracts";
 
 const BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001/api";
 const CLE_TOKEN = "navex_access_token";
@@ -96,4 +103,72 @@ export async function seDeconnecter() {
     localStorage.removeItem(CLE_TOKEN);
     supprimerCookiePresence();
   }
+}
+
+// ── Demandes de stockage (Phase 2) ───────────────────────────
+
+export function creerDemande(produits: NouveauProduit[]) {
+  return requete<DemandeDetailDTO>("/demandes", {
+    method: "POST",
+    body: JSON.stringify({ produits }),
+  });
+}
+
+export function listerDemandes() {
+  return requete<DemandeListeDTO[]>("/demandes");
+}
+
+export function detailDemande(id: string) {
+  return requete<DemandeDetailDTO>(`/demandes/${id}`);
+}
+
+export function genererDecharge(demandeId: string) {
+  return requete<DechargeResumeDTO>("/decharges/generate", {
+    method: "POST",
+    body: JSON.stringify({ demande_id: demandeId }),
+  });
+}
+
+/** Télécharge le PDF via fetch authentifié puis déclenche l'enregistrement côté navigateur. */
+export async function telechargerDechargePdf(dechargeId: string, nomFichier: string) {
+  const token = localStorage.getItem(CLE_TOKEN);
+  const reponse = await fetch(`${BASE}/decharges/${dechargeId}/pdf`, {
+    credentials: "include",
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  });
+  if (!reponse.ok) throw new ApiError(`HTTP ${reponse.status}`);
+
+  const blob = await reponse.blob();
+  const url = URL.createObjectURL(blob);
+  const lien = document.createElement("a");
+  lien.href = url;
+  lien.download = nomFichier;
+  document.body.append(lien);
+  lien.click();
+  lien.remove();
+  URL.revokeObjectURL(url);
+}
+
+/** Envoie une photo produit vers le stockage S3/MinIO, renvoie son URL publique. */
+export async function uploaderPhoto(fichier: File) {
+  const token = localStorage.getItem(CLE_TOKEN);
+  const donnees = new FormData();
+  donnees.append("photo", fichier);
+
+  const reponse = await fetch(`${BASE}/uploads/photos`, {
+    method: "POST",
+    credentials: "include",
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+    body: donnees,
+  });
+  if (!reponse.ok) {
+    let code: string | undefined;
+    try {
+      code = ((await reponse.json()) as { message?: { code?: string } })?.message?.code;
+    } catch {
+      // corps non JSON
+    }
+    throw new ApiError(`HTTP ${reponse.status}`, code);
+  }
+  return (await reponse.json()) as { url: string };
 }
