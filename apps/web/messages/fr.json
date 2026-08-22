@@ -20,7 +20,13 @@
   "accueil": {
     "titre": "Espace {role}",
     "session": "Connecté en tant que",
-    "phase_en_cours": "Phase 1 : infrastructure, authentification et internationalisation opérationnelles."
+    "phase_en_cours": "Phase 1 : infrastructure, authentification et internationalisation opérationnelles.",
+    "stats_demandes": "Demandes totales",
+    "stats_en_attente": "En attente",
+    "stats_approuvees": "Approuvées",
+    "stats_decharges": "Décharges",
+    "dernieres": "Dernières demandes",
+    "voir_toutes": "Voir toutes les demandes →"
   },
   "roles": {
     "expediteur": "Expéditeur",

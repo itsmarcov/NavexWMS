@@ -20,7 +20,13 @@
   "accueil": {
     "titre": "مساحة {role}",
     "session": "متصل بصفة",
-    "phase_en_cours": "المرحلة 1: البنية التحتية والمصادقة والتعريب الدولي جاهزة."
+    "phase_en_cours": "المرحلة 1: البنية التحتية والمصادقة والتعريب الدولي جاهزة.",
+    "stats_demandes": "إجمالي الطلبات",
+    "stats_en_attente": "قيد الانتظار",
+    "stats_approuvees": "تمت الموافقة",
+    "stats_decharges": "الإيصالات",
+    "dernieres": "أحدث الطلبات",
+    "voir_toutes": "عرض جميع الطلبات ←"
   },
   "roles": {
     "expediteur": "مُرسِل",
