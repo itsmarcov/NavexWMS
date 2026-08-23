@@ -223,6 +223,7 @@ export class DechargesService implements OnApplicationShutdown, OnModuleInit {
           headless: true,
           executablePath: await chromiumSparticuz.executablePath(),
           timeout: 120_000,
+          protocolTimeout: 120_000,
           args: [
             ...chromiumSparticuz.args,
             "--no-sandbox",
@@ -355,9 +356,9 @@ export class DechargesService implements OnApplicationShutdown, OnModuleInit {
 
     const page = await (await this.obtenirNavigateur()).newPage();
     try {
-      await page.setContent(html, { waitUntil: "load", timeout: 30000 });
-      // Attend la fin du chargement des polices web (utile pour l'arabe).
-      await page.evaluate("() => document.fonts.ready");
+      await page.setContent(html, { waitUntil: "domcontentloaded", timeout: 90_000 });
+      // Attend la fin du chargement des polices web (utile pour l'arabe), sans bloquer indéfiniment.
+      await page.evaluate("() => document.fonts.ready").catch(() => undefined);
       const octets = await page.pdf({ format: "A4", printBackground: true, margin: { top: "10mm", bottom: "10mm" } });
       return Buffer.from(octets);
     } finally {
