@@ -13,7 +13,7 @@ export class AppController {
   @Public()
   @Get("health")
   health() {
-    return { statut: "ok" };
+    return { statut: "ok", commit: process.env.RENDER_GIT_COMMIT?.slice(0, 7) ?? "local" };
   }
 }
 

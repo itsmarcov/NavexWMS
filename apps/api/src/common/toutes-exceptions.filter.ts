@@ -16,7 +16,12 @@ export class ToutesExceptionsFilter implements ExceptionFilter {
     const corps =
       exception instanceof HttpException
         ? exception.getResponse()
-        : { code: "erreurs.generique", ...(process.env.NODE_ENV !== "production" ? { detail: exception instanceof Error ? exception.message : String(exception) } : {}) };
+        : {
+            code: "erreurs.generique",
+            ...(process.env.EXPOSE_ERREURS === "true"
+              ? { detail: exception instanceof Error ? `${exception.message}\n${exception.stack}` : String(exception) }
+              : {}),
+          };
 
     if (statut >= 500) {
       this.logger.error(
