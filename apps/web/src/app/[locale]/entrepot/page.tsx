@@ -49,7 +49,7 @@ export default function PageEntrepot() {
 
   function scannerManuel() {
     const jeton = token.trim();
-    if (jeton) router.push(`/scan/${encodeURIComponent(jeton)}`);
+    if (jeton) router.push(`/scan?t=${encodeURIComponent(jeton)}`);
   }
 
   return (

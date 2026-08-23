@@ -269,7 +269,9 @@ export class DechargesService implements OnApplicationShutdown, OnModuleInit {
     const fmtDateTime = new Intl.DateTimeFormat(rtl ? "ar-DZ" : "fr-FR", { dateStyle: "long", timeStyle: "short" });
 
     const logoBase64 = fs.readFileSync(path.join(__dirname, "..", "assets", "logo.png")).toString("base64");
-    const urlQr = `${env.appPublicUrl}/scan/${decharge.qr_token}`;
+    // Jeton en query string : un JWT contient des points, invisibles au
+    // middleware i18n s'ils figurent dans le chemin.
+    const urlQr = `${env.appPublicUrl}/fr/scan?t=${encodeURIComponent(decharge.qr_token)}`;
     const qrDataUrl = await QRCode.toDataURL(urlQr, { margin: 1, width: 240 });
 
     const lignes = decharge.demande.produits

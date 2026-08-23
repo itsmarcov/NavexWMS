@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import type { ScanResultDTO } from "@navex/contracts";
 import { scannerQr } from "@/lib/api-client";
@@ -16,18 +15,25 @@ type Etat =
 
 export default function PageScan() {
   const t = useTranslations();
-  const paramsRoute = useParams<{ token: string }>();
   const [etat, setEtat] = useState<Etat>({ kind: "chargement" });
   const lance = useRef(false);
 
   useEffect(() => {
-    if (lance.current || !paramsRoute?.token) return;
+    // Jeton transmis en query string (?t=…) : un JWT contient des points,
+    // ce qui le rendrait invisible au middleware s'il était dans le chemin.
+    const token = new URLSearchParams(window.location.search).get("t") ?? "";
+    if (lance.current) return;
     lance.current = true;
 
-    scannerQr(paramsRoute.token)
+    if (!token) {
+      setEtat({ kind: "erreur", code: "erreurs.qr_invalide" });
+      return;
+    }
+
+    scannerQr(token)
       .then((resultat) => setEtat({ kind: "ok", resultat }))
       .catch((e) => setEtat({ kind: "erreur", code: e.code }));
-  }, [paramsRoute]);
+  }, []);
 
   return (
     <div className="min-h-dvh">
