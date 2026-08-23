@@ -16,11 +16,7 @@ export class ToutesExceptionsFilter implements ExceptionFilter {
     const corps =
       exception instanceof HttpException
         ? exception.getResponse()
-        : {
-            code: "erreurs.generique",
-            // TEMPORAIRE diagnostic : détail systématique, à retirer ensuite.
-            detail: exception instanceof Error ? `${exception.message}\n${exception.stack}` : String(exception),
-          };
+        : { code: "erreurs.generique" };
 
     if (statut >= 500) {
       this.logger.error(
