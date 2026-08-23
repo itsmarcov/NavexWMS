@@ -24,6 +24,9 @@ export function AppHeader() {
   if (utilisateur && (utilisateur.role === "agent_commercial" || utilisateur.role === "admin")) {
     liens.push({ href: "/file-attente", label: t("nav.file_attente") });
   }
+  if (utilisateur && (utilisateur.role === "agent_entrepot" || utilisateur.role === "admin")) {
+    liens.push({ href: "/entrepot", label: t("nav.entrepot") });
+  }
 
   async function deconnexion() {
     await seDeconnecter();

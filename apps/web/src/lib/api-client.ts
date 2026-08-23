@@ -1,10 +1,14 @@
 import type {
+  DechargeEntrepotDetailDTO,
+  DechargeEntrepotListeDTO,
   DemandeDetailDTO,
   DemandeListeDTO,
   DechargeResumeDTO,
+  EmplacementDTO,
   LoginResponse,
   NouveauProduit,
   PlanificationPayload,
+  ScanResultDTO,
   UtilisateurDTO,
   ValidationProduitPayload,
 } from "@navex/contracts";
@@ -133,6 +137,47 @@ export function planifierReception(demandeId: string, charge: PlanificationPaylo
   return requete<{ ok: boolean; date_reception_prevue: string }>(`/demandes/${demandeId}/planification`, {
     method: "PATCH",
     body: JSON.stringify(charge),
+  });
+}
+
+// ── Module entrepôt (Phase 4) ────────────────────────────────
+
+/** Scan du QR d'une décharge à l'arrivée du camion. */
+export function scannerQr(qrToken: string) {
+  return requete<ScanResultDTO>("/entrepot/scan", {
+    method: "POST",
+    body: JSON.stringify({ qr_token: qrToken }),
+  });
+}
+
+/** Décharges scannées en attente de réception ou de positionnement. */
+export function listerDechargesEntrepot() {
+  return requete<DechargeEntrepotListeDTO[]>("/entrepot/decharges");
+}
+
+/** Détail d'une décharge côté entrepôt : produits, timeline, mouvements. */
+export function detailDechargeEntrepot(id: string) {
+  return requete<DechargeEntrepotDetailDTO>(`/entrepot/decharges/${id}`);
+}
+
+/** Confirme la réception physique de la marchandise. */
+export function confirmerReceptionEntrepot(dechargeId: string, notes?: string) {
+  return requete<{ ok: boolean }>(`/entrepot/decharges/${dechargeId}/reception`, {
+    method: "POST",
+    body: JSON.stringify({ notes }),
+  });
+}
+
+/** Emplacements libres (par défaut) ou tous. */
+export function listerEmplacements(libres = true) {
+  return requete<EmplacementDTO[]>(`/entrepot/emplacements?libres=${libres ? "1" : "0"}`);
+}
+
+/** Positionne la marchandise reçue dans un emplacement libre. */
+export function positionnerDecharge(dechargeId: string, emplacementId: string, notes?: string) {
+  return requete<{ ok: boolean }>(`/entrepot/decharges/${dechargeId}/positionnement`, {
+    method: "POST",
+    body: JSON.stringify({ emplacement_id: emplacementId, notes }),
   });
 }
 

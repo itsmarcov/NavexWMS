@@ -5,6 +5,7 @@ import { AuthModule } from "./auth/auth.module";
 import { AuditModule } from "./audit/audit.module";
 import { DechargesModule } from "./decharges/decharges.module";
 import { DemandesModule } from "./demandes/demandes.module";
+import { EntrepotModule } from "./entrepot/entrepot.module";
 import { PrismaModule } from "./prisma/prisma.module";
 import { UploadsModule } from "./uploads/uploads.module";
 
@@ -18,7 +19,7 @@ export class AppController {
 }
 
 @Module({
-  imports: [PrismaModule, AuditModule, AuthModule, DemandesModule, UploadsModule, DechargesModule],
+  imports: [PrismaModule, AuditModule, AuthModule, DemandesModule, UploadsModule, DechargesModule, EntrepotModule],
   controllers: [AppController],
 })
 export class AppModule {}

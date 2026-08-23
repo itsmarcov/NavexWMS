@@ -9,7 +9,8 @@
   "nav": {
     "accueil": "الرئيسية",
     "mes_demandes": "طلباتي",
-    "file_attente": "قائمة الانتظار"
+    "file_attente": "قائمة الانتظار",
+    "entrepot": "المستودع"
   },
   "login": {
     "titre": "تسجيل الدخول",
@@ -39,7 +40,44 @@
     "a_traiter": "في الانتظار",
     "approuves": "موافق عليها",
     "refuses": "مرفوضة",
-    "tout_voir": "فتح قائمة الانتظار ←"
+    "tout_voir": "فتح قائمة الانتظار ←",
+    "produits_approuves": "المنتجات الموافق عليها"
+  },
+  "scan": {
+    "titre": "مسح إيصال التخزين",
+    "bouton": "مسح",
+    "arrivee_confirmee": "تم تأكيد الوصول — تم مسح الإيصال ضوئياً."
+  },
+  "entrepot": {
+    "titre": "فضاء المستودع",
+    "token_placeholder": "الصق هنا محتوى رمز QR (الرمز)…",
+    "scan_aide": "امسح رمز QR لملف PDF الخاص بالإيصال باستخدام هاتف، أو الصق الرمز يدوياً.",
+    "attente_reception": "في انتظار الاستلام",
+    "attente_positionnement": "في انتظار التموضع",
+    "file_titre": "الإيصالات الممسوحة ضوئياً",
+    "file_vide": "لا يوجد أي إيصال قيد المعالجة.",
+    "a_recevoir": "تأكيد الاستلام",
+    "a_positionner": "التموضع مطلوب",
+    "tout_voir": "فتح فضاء المستودع ←",
+    "retour_tableau": "العودة إلى لوحة القيادة",
+    "traiter_decharge": "معالجة هذا الإيصال →",
+    "marchandise_recue": "البضائع المتوقعة",
+    "actions_titre": "الإجراءات",
+    "notes_placeholder": "ملاحظات داخلية (اختياري)",
+    "confirmer_reception": "تأكيد الاستلام",
+    "reception_confirmee": "تم تأكيد الاستلام.",
+    "choisir_emplacement": "اختيار موقع حر…",
+    "capacite": "سعة",
+    "positionner": "تموضع",
+    "positionnement_confirme": "تم تموضع البضائع.",
+    "terminee": "تمت معالجة الإيصال بالكامل: تم استلام البضائع وتموضعها.",
+    "timeline_titre": "سجل الحركات",
+    "aucun_mouvement": "لا توجد حركات مسجلة."
+  },
+  "evenements": {
+    "arrivee_scannee": "تم مسح الوصول في الرصيف",
+    "reception_confirmee": "تم تأكيد الاستلام",
+    "repositionnement": "التموضع في الموقع"
   },
   "validation": {
     "produits_a_traiter": "{nombre} منتج (منتجات) تنتظر قرارك.",
@@ -144,6 +182,15 @@
     "fichier_manquant": "لم يتم استلام أي ملف.",
     "type_fichier_refuse": "صيغة الصورة غير مدعومة (JPG أو PNG أو WebP).",
     "decision_invalide": "قرار المصادقة غير صالح.",
-    "date_invalide": "تاريخ غير صالح."
+    "date_invalide": "تاريخ غير صالح.",
+    "qr_invalide": "رمز QR غير صالح أو مزيّف. يُرجى المحاولة مرة أخرى.",
+    "qr_expire": "انتهت صلاحية رمز QR. يجب إنشاء إيصال جديد.",
+    "decharge_non_scannee": "لم يتم مسح هذا الإيصال ضوئياً في المستودع بعد.",
+    "deja_recue": "تم تأكيد استلام هذا الإيصال مسبقاً.",
+    "reception_requise": "يجب تأكيد الاستلام قبل التموضع.",
+    "deja_positionnee": "تم تموضع هذه البضائع مسبقاً.",
+    "emplacement_occupe": "هذا الموقع مشغول بالفعل.",
+    "emplacement_invalide": "موقع غير صالح.",
+    "aucun_emplacement_libre": "لا يوجد أي موقع حر متاح."
   }
 }

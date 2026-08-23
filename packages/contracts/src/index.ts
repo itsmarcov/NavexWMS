@@ -89,6 +89,71 @@ export interface PlanificationPayload {
   date_reception_prevue: string; // ISO 8601
 }
 
+// ── Module entrepôt (Phase 4) ────────────────────────────────
+
+export const TYPES_EVENEMENT = ["arrivee_scannee", "reception_confirmee", "repositionnement"] as const;
+export type TypeEvenement = (typeof TYPES_EVENEMENT)[number];
+
+export interface ScanQrPayload {
+  qr_token: string;
+}
+
+export interface ReceptionPayload {
+  notes?: string;
+}
+
+export interface PositionnementPayload {
+  emplacement_id: string;
+  notes?: string;
+}
+
+export interface ScanResultDTO {
+  decharge_id: string;
+  numero_decharge: string;
+  demande_reference: string;
+  expediteur_nom: string;
+  nb_produits: number;
+}
+
+export interface DechargeEntrepotListeDTO {
+  id: string;
+  numero_decharge: string;
+  statut: StatutDecharge;
+  date_generation: string;
+  demande: { reference: string };
+  expediteur_nom: string;
+  nb_produits: number;
+  /** Types d'événements déjà enregistrés — permet de déduire l'étape suivante. */
+  evenements: TypeEvenement[];
+}
+
+export interface MouvementDTO {
+  id: string;
+  type_evenement: TypeEvenement;
+  date_evenement: string;
+  notes?: string | null;
+  agent_email: string;
+  emplacement?: { zone: string; allee: string; rack: string; niveau: string } | null;
+}
+
+export interface DechargeEntrepotDetailDTO extends Omit<DechargeEntrepotListeDTO, "evenements"> {
+  produits: Array<Pick<
+    ProduitDTO,
+    "id" | "sku_code" | "designation" | "quantite" | "longueur_cm" | "largeur_cm" | "hauteur_cm" | "poids_kg" | "fragile" | "type_emballage"
+  >>;
+  mouvements: MouvementDTO[];
+}
+
+export interface EmplacementDTO {
+  id: string;
+  zone: string;
+  allee: string;
+  rack: string;
+  niveau: string;
+  capacite_max: number;
+  occupee: boolean;
+}
+
 export interface DemandeDetailDTO extends Omit<DemandeListeDTO, "_count"> {
   commentaire_agent?: string | null;
   date_reception_prevue?: string | null;

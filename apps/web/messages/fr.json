@@ -9,7 +9,8 @@
   "nav": {
     "accueil": "Accueil",
     "mes_demandes": "Mes demandes",
-    "file_attente": "File d'attente"
+    "file_attente": "File d'attente",
+    "entrepot": "Entrepôt"
   },
   "login": {
     "titre": "Connexion",
@@ -39,7 +40,44 @@
     "a_traiter": "à traiter",
     "approuves": "approuvés",
     "refuses": "refusés",
-    "tout_voir": "Ouvrir la file d'attente →"
+    "tout_voir": "Ouvrir la file d'attente →",
+    "produits_approuves": "Produits approuvés"
+  },
+  "scan": {
+    "titre": "Scan d'une décharge",
+    "bouton": "Scanner",
+    "arrivee_confirmee": "Arrivée confirmée — décharge scannée."
+  },
+  "entrepot": {
+    "titre": "Espace entrepôt",
+    "token_placeholder": "Collez ici le contenu du QR (jeton)…",
+    "scan_aide": "Scannez le QR du PDF de décharge avec un téléphone, ou collez le jeton manuellement.",
+    "attente_reception": "À recevoir",
+    "attente_positionnement": "À positionner",
+    "file_titre": "Décharges scannées",
+    "file_vide": "Aucune décharge en cours de traitement.",
+    "a_recevoir": "Réception à confirmer",
+    "a_positionner": "Positionnement à faire",
+    "tout_voir": "Ouvrir l'espace entrepôt →",
+    "retour_tableau": "Retour au tableau de bord",
+    "traiter_decharge": "Traiter cette décharge →",
+    "marchandise_recue": "Marchandise attendue",
+    "actions_titre": "Actions",
+    "notes_placeholder": "Notes internes (facultatif)",
+    "confirmer_reception": "Confirmer la réception",
+    "reception_confirmee": "Réception confirmée.",
+    "choisir_emplacement": "Choisir un emplacement libre…",
+    "capacite": "cap.",
+    "positionner": "Positionner",
+    "positionnement_confirme": "Marchandise positionnée.",
+    "terminee": "Décharge entièrement traitée : marchandise reçue et positionnée.",
+    "timeline_titre": "Historique des mouvements",
+    "aucun_mouvement": "Aucun mouvement enregistré."
+  },
+  "evenements": {
+    "arrivee_scannee": "Arrivée scannée au quai",
+    "reception_confirmee": "Réception confirmée",
+    "repositionnement": "Positionnement en emplacement"
   },
   "validation": {
     "produits_a_traiter": "{nombre} produit(s) attendent votre décision.",
@@ -144,6 +182,15 @@
     "fichier_manquant": "Aucun fichier reçu.",
     "type_fichier_refuse": "Format d'image non pris en charge (JPG, PNG ou WebP).",
     "decision_invalide": "Décision de validation invalide.",
-    "date_invalide": "Date invalide."
+    "date_invalide": "Date invalide.",
+    "qr_invalide": "QR code invalide ou falsifié. Veuillez réessayer.",
+    "qr_expire": "Ce QR code a expiré. Une nouvelle décharge doit être générée.",
+    "decharge_non_scannee": "Cette décharge n'a pas encore été scannée à l'entrepôt.",
+    "deja_recue": "La réception de cette décharge a déjà été confirmée.",
+    "reception_requise": "La réception doit être confirmée avant le positionnement.",
+    "deja_positionnee": "Cette marchandise a déjà été positionnée en emplacement.",
+    "emplacement_occupe": "Cet emplacement est déjà occupé.",
+    "emplacement_invalide": "Emplacement invalide.",
+    "aucun_emplacement_libre": "Aucun emplacement libre disponible."
   }
 }

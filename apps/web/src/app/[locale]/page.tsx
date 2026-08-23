@@ -2,8 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import type { DemandeListeDTO, UtilisateurDTO } from "@navex/contracts";
-import { listerDemandes, seDeconnecter, utilisateurCourant } from "@/lib/api-client";
+import type { DechargeEntrepotListeDTO, DemandeListeDTO, UtilisateurDTO } from "@navex/contracts";
+import {
+  listerDechargesEntrepot,
+  listerDemandes,
+  seDeconnecter,
+  utilisateurCourant,
+} from "@/lib/api-client";
 import { formaterDate } from "@/lib/ui";
 import { AppHeader } from "@/components/app-header";
 import { StatusBadge } from "@/components/status-badge";
@@ -27,6 +32,7 @@ export default function PageAccueil() {
   const [utilisateur, setUtilisateur] = useState<UtilisateurDTO | null>(null);
   const [demandes, setDemandes] = useState<DemandeListeDTO[] | null>(null);
   const [fileAttente, setFileAttente] = useState<DemandeListeDTO[] | null>(null);
+  const [fileEntrepot, setFileEntrepot] = useState<DechargeEntrepotListeDTO[] | null>(null);
   const [charge, setCharge] = useState(true);
 
   useEffect(() => {
@@ -36,6 +42,9 @@ export default function PageAccueil() {
         if (d) setDemandes(d);
         if (u.role === "agent_commercial" || u.role === "admin") {
           listerDemandes(true).then(setFileAttente).catch(() => undefined);
+        }
+        if (u.role === "agent_entrepot") {
+          listerDechargesEntrepot().then(setFileEntrepot).catch(() => undefined);
         }
       })
       .catch(() => window.location.assign(`/${locale}/login`))
@@ -112,6 +121,61 @@ export default function PageAccueil() {
                       )}
                       <StatusBadge statut={d.statut} />
                     </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        </main>
+      </div>
+    );
+  }
+
+  // ── Tableau de bord agent entrepôt ──────────────────────────
+  if (utilisateur.role === "agent_entrepot") {
+    const aRecevoir = fileEntrepot?.filter((d) => !d.evenements.includes("reception_confirmee")).length ?? 0;
+    const aPositionner =
+      fileEntrepot?.filter(
+        (d) => d.evenements.includes("reception_confirmee") && !d.evenements.includes("repositionnement"),
+      ).length ?? 0;
+
+    return (
+      <div className="min-h-dvh">
+        <AppHeader />
+        <main className="mx-auto max-w-4xl px-4 py-8 space-y-6">
+          <h1 className="text-xl font-bold">
+            {t("accueil.titre", { role: t("roles.agent_entrepot") })}
+          </h1>
+
+          <section className="grid grid-cols-2 gap-3">
+            <CarteStat label={t("entrepot.attente_reception")} valeur={aRecevoir} />
+            <CarteStat label={t("entrepot.attente_positionnement")} valeur={aPositionner} />
+          </section>
+
+          <section className="rounded-xl bg-white shadow-sm ring-1 ring-neutral-200">
+            <div className="flex items-center justify-between border-b border-neutral-100 px-5 py-3">
+              <h2 className="text-sm font-semibold">{t("entrepot.file_titre")}</h2>
+              <Link href="/entrepot" className="text-xs font-medium text-sky-700 hover:text-sky-900">
+                {t("entrepot.tout_voir")}
+              </Link>
+            </div>
+
+            {(fileEntrepot?.length ?? 0) === 0 ? (
+              <p className="px-5 py-8 text-center text-sm text-neutral-500">{t("entrepot.file_vide")}</p>
+            ) : (
+              <ul className="divide-y divide-neutral-100">
+                {fileEntrepot?.slice(0, 5).map((d) => (
+                  <li key={d.id} className="flex flex-wrap items-center justify-between gap-2 px-5 py-3">
+                    <Link
+                      href={`/entrepot/decharges/${d.id}`}
+                      className="text-sm font-semibold hover:underline"
+                      dir="ltr"
+                    >
+                      {d.numero_decharge}
+                    </Link>
+                    <span className="text-xs text-neutral-500" dir="ltr">
+                      {d.demande.reference}
+                    </span>
                   </li>
                 ))}
               </ul>
