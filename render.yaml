@@ -14,7 +14,7 @@ services:
     runtime: node
     plan: free
     healthCheckPath: /api/health
-    buildCommand: npm i -g pnpm@11.22.0 && pnpm install && pnpm --filter @navex/api prisma:generate && pnpm --filter @navex/api build
+    buildCommand: npm i -g pnpm@11.22.0 && export PUPPETEER_SKIP_DOWNLOAD=true && pnpm install && pnpm --filter @navex/api prisma:generate && pnpm --filter @navex/api build
     startCommand: pnpm --filter @navex/api start:prod
     envVars:
       - key: DATABASE_URL

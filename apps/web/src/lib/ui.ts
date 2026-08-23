@@ -35,8 +35,8 @@ export function messageErreur(t: (cle: string) => string, erreur: unknown): stri
 
 export function formaterDate(valeur: string | Date, locale: string, avecHeure = false): string {
   const d = typeof valeur === "string" ? new Date(valeur) : valeur;
-  return d.toLocaleDateString(locale === "ar" ? "ar-DZ" : "fr-FR", {
+  return new Intl.DateTimeFormat(locale === "ar" ? "ar-DZ" : "fr-FR", {
     dateStyle: "long",
     ...(avecHeure ? { timeStyle: "short" as const } : {}),
-  });
+  }).format(d);
 }

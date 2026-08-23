@@ -7,6 +7,7 @@ import { randomUUID } from "crypto";
 import * as jwt from "jsonwebtoken";
 import * as QRCode from "qrcode";
 import puppeteer, { Browser } from "puppeteer";
+import chromiumSparticuz from "@sparticuz/chromium";
 import { AuditService } from "../audit/audit.service";
 import { env, s3Configure } from "../env";
 import { PrismaService } from "../prisma/prisma.service";
@@ -195,10 +196,21 @@ export class DechargesService implements OnApplicationShutdown {
 
   private async obtenirNavigateur(): Promise<Browser> {
     if (!this.navigateur || !this.navigateur.connected) {
-      this.navigateur = await puppeteer.launch({
-        headless: true,
-        args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"],
-      });
+      if (process.platform === "win32") {
+        // Développement local : puppeteer utilise le Chromium de son cache.
+        this.navigateur = await puppeteer.launch({
+          headless: true,
+          args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"],
+        });
+      } else {
+        // Production (Render/Linux) : Chromium embarqué avec ses bibliothèques système.
+        chromiumSparticuz.setGraphicsMode = false;
+        this.navigateur = await puppeteer.launch({
+          headless: true,
+          executablePath: await chromiumSparticuz.executablePath(),
+          args: [...chromiumSparticuz.args, "--no-sandbox"],
+        });
+      }
     }
     return this.navigateur;
   }
