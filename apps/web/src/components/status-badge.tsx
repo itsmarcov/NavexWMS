@@ -3,12 +3,18 @@
 import { BADGE_STATUT } from "@navex/contracts";
 import { useTranslations } from "next-intl";
 
+/**
+ * Palette de badges — charte Navex :
+ * rouge_plein : états bloquants (refusé, suspendu) — blanc sur #C81E1E (contraste 5,9:1, AA)
+ * rouge_soft  : états en attente — texte #7F1414 sur #FBE4E4 (contraste > 8:1)
+ * noir        : états confirmés (approuvé, scanné, actif)
+ * gris        : états neutres / terminés sans décision (annulé, expiré, inactif)
+ */
 const COULEURS: Record<string, string> = {
-  orange: "bg-orange-100 text-orange-800 ring-orange-600/20",
-  vert: "bg-emerald-100 text-emerald-800 ring-emerald-600/20",
-  rouge: "bg-red-100 text-red-800 ring-red-600/20",
-  bleu: "bg-sky-100 text-sky-800 ring-sky-600/20",
-  gris: "bg-neutral-100 text-neutral-700 ring-neutral-500/20",
+  rouge_plein: "bg-navex-red text-white ring-navex-red",
+  rouge_soft: "bg-navex-red-soft text-navex-red-dark ring-navex-red/30",
+  noir: "bg-navex-ink text-white ring-navex-ink",
+  gris: "bg-navex-stone text-navex-ink ring-neutral-300",
 };
 
 export function StatusBadge({ statut }: { statut: string }) {

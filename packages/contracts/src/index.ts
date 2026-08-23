@@ -15,19 +15,18 @@ export type TypeEmballage = (typeof TYPES_EMBALLAGE)[number];
 
 /** Badges statut cohérents : en_attente=orange, approuvé=vert, refusé=rouge */
 export const BADGE_STATUT: Record<string, { couleur: string }> = {
-  en_attente: { couleur: "orange" },
-  approuvee: { couleur: "vert" },
-  approuve: { couleur: "vert" },
-  refuse: { couleur: "rouge" },
-  rejetee: { couleur: "rouge" },
+  // Charte Navex : une seule teinte rouge par intensité (soft / plein),
+  // le reste en neutres (encre noire / gris pierre).
+  en_attente: { couleur: "rouge_soft" },
+  emise: { couleur: "rouge_soft" },
+  approuvee: { couleur: "noir" },
+  approuve: { couleur: "noir" },
+  scannee: { couleur: "noir" },
+  refuse: { couleur: "rouge_plein" },
+  rejetee: { couleur: "rouge_plein" },
+  suspendu: { couleur: "rouge_plein" },
   annulee: { couleur: "gris" },
-  emise: { couleur: "bleu" },
-  scannee: { couleur: "vert" },
   expiree: { couleur: "gris" },
-  // Statuts expéditeur et comptes (module admin)
-  actif: { couleur: "vert" },
-  suspendu: { couleur: "rouge" },
-  actif_compte: { couleur: "vert" },
   inactif: { couleur: "gris" },
 };
 
