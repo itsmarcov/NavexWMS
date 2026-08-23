@@ -18,9 +18,8 @@ export class ToutesExceptionsFilter implements ExceptionFilter {
         ? exception.getResponse()
         : {
             code: "erreurs.generique",
-            ...(process.env.EXPOSE_ERREURS === "true"
-              ? { detail: exception instanceof Error ? `${exception.message}\n${exception.stack}` : String(exception) }
-              : {}),
+            // TEMPORAIRE diagnostic : détail systématique, à retirer ensuite.
+            detail: exception instanceof Error ? `${exception.message}\n${exception.stack}` : String(exception),
           };
 
     if (statut >= 500) {
