@@ -1,14 +1,18 @@
 import type {
+  AdminStatsDTO,
   DechargeEntrepotDetailDTO,
   DechargeEntrepotListeDTO,
   DemandeDetailDTO,
   DemandeListeDTO,
   DechargeResumeDTO,
   EmplacementDTO,
+  ExpediteurAdminDTO,
   LoginResponse,
   NouveauProduit,
   PlanificationPayload,
   ScanResultDTO,
+  StatutExpediteurPayload,
+  UtilisateurAdminDTO,
   UtilisateurDTO,
   ValidationProduitPayload,
 } from "@navex/contracts";
@@ -184,6 +188,31 @@ export function positionnerDecharge(dechargeId: string, emplacementId: string, n
     method: "POST",
     body: JSON.stringify({ emplacement_id: emplacementId, notes }),
   });
+}
+
+// ── Module admin (Phase 5) ───────────────────────────────────
+
+/** KPIs globaux de la plateforme. */
+export function statsAdmin() {
+  return requete<AdminStatsDTO>("/admin/stats");
+}
+
+/** Liste des expéditeurs avec compteurs d'usage. */
+export function listerExpediteursAdmin() {
+  return requete<ExpediteurAdminDTO[]>("/admin/expediteurs");
+}
+
+/** Active / suspend / remet en attente un expéditeur. */
+export function changerStatutExpediteur(id: string, charge: StatutExpediteurPayload) {
+  return requete<{ ok: boolean; statut: string }>(`/admin/expediteurs/${id}/statut`, {
+    method: "PATCH",
+    body: JSON.stringify(charge),
+  });
+}
+
+/** Comptes utilisateurs (lecture seule). */
+export function listerUtilisateursAdmin() {
+  return requete<UtilisateurAdminDTO[]>("/admin/utilisateurs");
 }
 
 export function detailDemande(id: string) {

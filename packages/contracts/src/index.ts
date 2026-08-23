@@ -24,6 +24,11 @@ export const BADGE_STATUT: Record<string, { couleur: string }> = {
   emise: { couleur: "bleu" },
   scannee: { couleur: "vert" },
   expiree: { couleur: "gris" },
+  // Statuts expéditeur et comptes (module admin)
+  actif: { couleur: "vert" },
+  suspendu: { couleur: "rouge" },
+  actif_compte: { couleur: "vert" },
+  inactif: { couleur: "gris" },
 };
 
 export interface UtilisateurDTO {
@@ -152,6 +157,43 @@ export interface EmplacementDTO {
   niveau: string;
   capacite_max: number;
   occupee: boolean;
+}
+
+// ── Module admin (Phase 5) ───────────────────────────────────
+
+export const STATUTS_EXPEDITEUR = ["en_attente", "actif", "suspendu"] as const;
+export type StatutExpediteur = (typeof STATUTS_EXPEDITEUR)[number];
+
+export interface AdminStatsDTO {
+  demandes_par_statut: Record<StatutDemande, number>;
+  produits_en_attente: number;
+  decharges_par_statut: Record<StatutDecharge, number>;
+  emplacements: { total: number; occupes: number; libres: number };
+  expediteurs_par_statut: Record<StatutExpediteur, number>;
+}
+
+export interface ExpediteurAdminDTO {
+  id: string;
+  nom_entreprise: string;
+  email: string;
+  telephone: string;
+  statut: StatutExpediteur;
+  date_creation: string;
+  nb_utilisateurs: number;
+  nb_demandes: number;
+}
+
+export interface UtilisateurAdminDTO {
+  id: string;
+  email: string;
+  role: Role;
+  actif: boolean;
+  date_creation: string;
+  expediteur_nom?: string | null;
+}
+
+export interface StatutExpediteurPayload {
+  statut: Exclude<StatutExpediteur, never>;
 }
 
 export interface DemandeDetailDTO extends Omit<DemandeListeDTO, "_count"> {

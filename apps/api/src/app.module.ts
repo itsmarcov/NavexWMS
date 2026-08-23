@@ -1,6 +1,7 @@
 import { Controller, Get } from "@nestjs/common";
 import { Module } from "@nestjs/common";
 import { Public } from "./auth/decorators/public.decorator";
+import { AdminModule } from "./admin/admin.module";
 import { AuthModule } from "./auth/auth.module";
 import { AuditModule } from "./audit/audit.module";
 import { DechargesModule } from "./decharges/decharges.module";
@@ -19,7 +20,7 @@ export class AppController {
 }
 
 @Module({
-  imports: [PrismaModule, AuditModule, AuthModule, DemandesModule, UploadsModule, DechargesModule, EntrepotModule],
+  imports: [PrismaModule, AuditModule, AuthModule, DemandesModule, UploadsModule, DechargesModule, EntrepotModule, AdminModule],
   controllers: [AppController],
 })
 export class AppModule {}

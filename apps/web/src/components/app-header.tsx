@@ -27,6 +27,9 @@ export function AppHeader() {
   if (utilisateur && (utilisateur.role === "agent_entrepot" || utilisateur.role === "admin")) {
     liens.push({ href: "/entrepot", label: t("nav.entrepot") });
   }
+  if (utilisateur && utilisateur.role === "admin") {
+    liens.push({ href: "/admin", label: t("nav.admin") });
+  }
 
   async function deconnexion() {
     await seDeconnecter();

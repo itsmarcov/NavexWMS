@@ -10,7 +10,27 @@
     "accueil": "Accueil",
     "mes_demandes": "Mes demandes",
     "file_attente": "File d'attente",
-    "entrepot": "Entrepôt"
+    "entrepot": "Entrepôt",
+    "admin": "Administration"
+  },
+  "admin": {
+    "titre": "Administration",
+    "sous_titre": "Statistiques globales, gestion des expéditeurs et des comptes",
+    "kpis_demandes": "Demandes de stockage",
+    "produits_a_decider": "Produits à décider",
+    "occupation_entrepot": "Occupation entrepôt",
+    "expediteurs_actifs": "Expéditeurs actifs",
+    "decharges_en_cours": "Décharges en traitement",
+    "expediteurs_titre": "Expéditeurs",
+    "utilisateurs_titre": "Comptes utilisateurs",
+    "role": "Rôle",
+    "compte": "Compte",
+    "nb_utilisateurs": "{nombre} utilisateur(s)",
+    "nb_demandes": "{nombre} demande(s)",
+    "activer": "Activer",
+    "suspendre": "Suspendre",
+    "remettre_attente": "Remettre en attente",
+    "statut_modifie": "Statut de l'expéditeur modifié."
   },
   "login": {
     "titre": "Connexion",
@@ -108,7 +128,11 @@
     "annulee": "Annulée",
     "emise": "Émise",
     "scannee": "Scannée",
-    "expiree": "Expirée"
+    "expiree": "Expirée",
+    "actif": "Actif",
+    "suspendu": "Suspendu",
+    "actif_compte": "Actif",
+    "inactif": "Désactivé"
   },
   "demandes": {
     "titre": "Mes demandes de stockage",
@@ -192,6 +216,10 @@
     "deja_positionnee": "Cette marchandise a déjà été positionnée en emplacement.",
     "emplacement_occupe": "Cet emplacement est déjà occupé.",
     "emplacement_invalide": "Emplacement invalide.",
-    "aucun_emplacement_libre": "Aucun emplacement libre disponible."
+    "aucun_emplacement_libre": "Aucun emplacement libre disponible.",
+    "expediteur_suspendu": "Votre compte entreprise est suspendu. Contactez l'administrateur.",
+    "expediteur_en_attente": "Votre compte entreprise est en attente de validation par l'administrateur.",
+    "statut_invalide": "Statut invalide.",
+    "statut_deja_actuel": "L'élément possède déjà ce statut."
   }
 }

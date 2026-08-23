@@ -187,7 +187,7 @@ export default function PageAccueil() {
   }
 
   // ── Tableau de bord agent commercial ────────────────────────
-  if (utilisateur.role === "agent_commercial" || utilisateur.role === "admin") {
+  if (utilisateur.role === "agent_commercial") {
     const enFile = fileAttente?.length ?? 0;
     const produitsADecider =
       fileAttente?.reduce(
@@ -245,6 +245,33 @@ export default function PageAccueil() {
               </ul>
             )}
           </section>
+        </main>
+      </div>
+    );
+  }
+
+  // ── Tableau de bord administrateur ──────────────────────────
+  if (utilisateur.role === "admin") {
+    return (
+      <div className="min-h-dvh">
+        <AppHeader />
+        <main className="mx-auto max-w-4xl px-4 py-8 space-y-6">
+          <h1 className="text-xl font-bold">{t("accueil.titre", { role: t("roles.admin") })}</h1>
+
+          <section className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-neutral-200 space-y-2">
+            <p className="text-sm text-neutral-500">{t("accueil.session")}</p>
+            <p className="font-medium" dir="ltr">
+              {utilisateur.email}
+            </p>
+          </section>
+
+          <Link
+            href="/admin"
+            className="block rounded-xl bg-neutral-900 px-5 py-6 text-center shadow-sm transition-colors hover:bg-neutral-700"
+          >
+            <p className="text-lg font-semibold text-white">{t("admin.titre")}</p>
+            <p className="mt-1 text-xs text-neutral-300">{t("admin.sous_titre")}</p>
+          </Link>
         </main>
       </div>
     );

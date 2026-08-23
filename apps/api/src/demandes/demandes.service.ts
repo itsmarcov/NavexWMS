@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { Prisma, RoleUtilisateur, StatutDemande } from "@prisma/client";
 import { AuditService } from "../audit/audit.service";
 import { PrismaService } from "../prisma/prisma.service";
@@ -29,6 +29,20 @@ export class DemandesService {
   }
 
   async creer(expediteurId: string, utilisateurId: string, dto: CreeDemandeDto, ip?: string) {
+    // Un expéditeur suspendu (ou pas encore validé) ne peut pas créer de demandes.
+    const expediteur = await this.prisma.expediteur.findUnique({
+      where: { id: expediteurId },
+      select: { statut: true },
+    });
+    if (expediteur && expediteur.statut !== "actif") {
+      throw new ForbiddenException({
+        code:
+          expediteur.statut === "suspendu"
+            ? "erreurs.expediteur_suspendu"
+            : "erreurs.expediteur_en_attente",
+      });
+    }
+
     const demande = await this.prisma.$transaction(async (tx) => {
       const reference = await this.genererReference(tx);
       return tx.demandeStockage.create({

@@ -10,7 +10,27 @@
     "accueil": "الرئيسية",
     "mes_demandes": "طلباتي",
     "file_attente": "قائمة الانتظار",
-    "entrepot": "المستودع"
+    "entrepot": "المستودع",
+    "admin": "الإدارة"
+  },
+  "admin": {
+    "titre": "الإدارة",
+    "sous_titre": "إحصائيات شاملة، وإدارة المُرسِلين والحسابات",
+    "kpis_demandes": "طلبات التخزين",
+    "produits_a_decider": "منتجات تنتظر القرار",
+    "occupation_entrepot": "إشغال المستودع",
+    "expediteurs_actifs": "مُرسِلون نشطون",
+    "decharges_en_cours": "إيصالات قيد المعالجة",
+    "expediteurs_titre": "المُرسِلون",
+    "utilisateurs_titre": "حسابات المستخدمين",
+    "role": "الدور",
+    "compte": "الحساب",
+    "nb_utilisateurs": "{nombre} مستخدم (مستخدمين)",
+    "nb_demandes": "{nombre} طلب (طلبات)",
+    "activer": "تفعيل",
+    "suspendre": "تعليق",
+    "remettre_attente": "إعادة إلى الانتظار",
+    "statut_modifie": "تم تعديل حالة المُرسِل."
   },
   "login": {
     "titre": "تسجيل الدخول",
@@ -108,7 +128,11 @@
     "annulee": "ملغاة",
     "emise": "صادرة",
     "scannee": "مسوحة ضوئياً",
-    "expiree": "منتهية"
+    "expiree": "منتهية",
+    "actif": "نشط",
+    "suspendu": "معلّق",
+    "actif_compte": "نشط",
+    "inactif": "معطّل"
   },
   "demandes": {
     "titre": "طلبات التخزين الخاصة بي",
@@ -192,6 +216,10 @@
     "deja_positionnee": "تم تموضع هذه البضائع مسبقاً.",
     "emplacement_occupe": "هذا الموقع مشغول بالفعل.",
     "emplacement_invalide": "موقع غير صالح.",
-    "aucun_emplacement_libre": "لا يوجد أي موقع حر متاح."
+    "aucun_emplacement_libre": "لا يوجد أي موقع حر متاح.",
+    "expediteur_suspendu": "حساب شركتك معلّق. تواصل مع المدير.",
+    "expediteur_en_attente": "حساب شركتك في انتظار المصادقة من المدير.",
+    "statut_invalide": "حالة غير صالحة.",
+    "statut_deja_actuel": "العنصر يحمل هذه الحالة بالفعل."
   }
 }
