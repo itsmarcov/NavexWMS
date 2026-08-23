@@ -3,6 +3,7 @@ import {
   ArrayNotEmpty,
   IsArray,
   IsBoolean,
+  IsDateString,
   IsIn,
   IsInt,
   IsNotEmpty,
@@ -65,4 +66,21 @@ export class CreeDemandeDto {
   @ValidateNested({ each: true })
   @Type(() => CreeProduitDto)
   produits!: CreeProduitDto[];
+}
+
+const DECISIONS = ["approuve", "refuse"] as const;
+
+export class ValiderProduitDto {
+  @IsIn(DECISIONS, { message: "erreurs.decision_invalide" })
+  statut_validation!: (typeof DECISIONS)[number];
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(500)
+  commentaire?: string;
+}
+
+export class PlanifierReceptionDto {
+  @IsDateString({}, { message: "erreurs.date_invalide" })
+  date_reception_prevue!: string;
 }

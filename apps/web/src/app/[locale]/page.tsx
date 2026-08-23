@@ -26,6 +26,7 @@ export default function PageAccueil() {
 
   const [utilisateur, setUtilisateur] = useState<UtilisateurDTO | null>(null);
   const [demandes, setDemandes] = useState<DemandeListeDTO[] | null>(null);
+  const [fileAttente, setFileAttente] = useState<DemandeListeDTO[] | null>(null);
   const [charge, setCharge] = useState(true);
 
   useEffect(() => {
@@ -33,6 +34,9 @@ export default function PageAccueil() {
       .then(([u, d]) => {
         setUtilisateur(u);
         if (d) setDemandes(d);
+        if (u.role === "agent_commercial" || u.role === "admin") {
+          listerDemandes(true).then(setFileAttente).catch(() => undefined);
+        }
       })
       .catch(() => window.location.assign(`/${locale}/login`))
       .finally(() => setCharge(false));
@@ -118,7 +122,71 @@ export default function PageAccueil() {
     );
   }
 
-  // ── Autres rôles : vue simple (Phases 3 et 4 apporteront leurs espaces) ──
+  // ── Tableau de bord agent commercial ────────────────────────
+  if (utilisateur.role === "agent_commercial" || utilisateur.role === "admin") {
+    const enFile = fileAttente?.length ?? 0;
+    const produitsADecider =
+      fileAttente?.reduce(
+        (n, d) => n + (d.produits?.filter((p) => p.statut_validation === "en_attente").length ?? 0),
+        0,
+      ) ?? 0;
+
+    return (
+      <div className="min-h-dvh">
+        <AppHeader />
+        <main className="mx-auto max-w-4xl px-4 py-8 space-y-6">
+          <h1 className="text-xl font-bold">
+            {t("accueil.titre", { role: t(`roles.${utilisateur.role}`) })}
+          </h1>
+
+          <section className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+            <CarteStat label={t("accueil.stats_file")} valeur={enFile} />
+            <CarteStat label={t("accueil.stats_produits_a_decider")} valeur={produitsADecider} />
+            <CarteStat label={t("accueil.stats_total_demandes")} valeur={demandes?.length ?? 0} />
+          </section>
+
+          <section className="rounded-xl bg-white shadow-sm ring-1 ring-neutral-200">
+            <div className="flex items-center justify-between border-b border-neutral-100 px-5 py-3">
+              <h2 className="text-sm font-semibold">{t("file_attente.titre")}</h2>
+              <Link href="/file-attente" className="text-xs font-medium text-sky-700 hover:text-sky-900">
+                {t("file_attente.tout_voir")}
+              </Link>
+            </div>
+
+            {enFile === 0 ? (
+              <p className="px-5 py-8 text-center text-sm text-neutral-500">{t("file_attente.vide")}</p>
+            ) : (
+              <ul className="divide-y divide-neutral-100">
+                {fileAttente?.slice(0, 5).map((d) => {
+                  const total = d._count?.produits ?? d.produits?.length ?? 0;
+                  const traites =
+                    d.produits?.filter((p) => p.statut_validation !== "en_attente").length ?? 0;
+                  return (
+                    <li key={d.id} className="flex flex-wrap items-center justify-between gap-2 px-5 py-3">
+                      <div>
+                        <Link href={`/mes-demandes/${d.id}`} className="text-sm font-semibold hover:underline" dir="ltr">
+                          {d.reference}
+                        </Link>
+                        <span className="ms-2 text-xs text-neutral-500">{d.expediteur.nom_entreprise}</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span className="text-xs text-neutral-500" dir="ltr">
+                          {traites}/{total}
+                        </span>
+                        <StatusBadge statut={d.statut} />
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </section>
+        </main>
+      </div>
+    );
+  }
+
+  // ── Autres rôles : vue simple (la Phase 4 apportera l'espace entrepôt) ──
   return (
     <div className="min-h-dvh">
       <AppHeader />

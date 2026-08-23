@@ -8,7 +8,8 @@
   },
   "nav": {
     "accueil": "Accueil",
-    "mes_demandes": "Mes demandes"
+    "mes_demandes": "Mes demandes",
+    "file_attente": "File d'attente"
   },
   "login": {
     "titre": "Connexion",
@@ -26,7 +27,32 @@
     "stats_approuvees": "Approuvées",
     "stats_decharges": "Décharges",
     "dernieres": "Dernières demandes",
-    "voir_toutes": "Voir toutes les demandes →"
+    "voir_toutes": "Voir toutes les demandes →",
+    "stats_file": "Demandes en file",
+    "stats_produits_a_decider": "Produits à décider",
+    "stats_total_demandes": "Demandes totales"
+  },
+  "file_attente": {
+    "titre": "File d'attente des demandes",
+    "vide": "Aucune demande en attente de traitement. Tout est à jour.",
+    "progression": "{traites}/{total} traités",
+    "a_traiter": "à traiter",
+    "approuves": "approuvés",
+    "refuses": "refusés",
+    "tout_voir": "Ouvrir la file d'attente →"
+  },
+  "validation": {
+    "produits_a_traiter": "{nombre} produit(s) attendent votre décision.",
+    "commentaire_placeholder": "Commentaire visible par l'expéditeur (facultatif)",
+    "approuver": "Approuver",
+    "rejeter": "Rejeter",
+    "decision_enregistree": "Décision enregistrée."
+  },
+  "planification": {
+    "titre": "Réception prévue",
+    "sauvegarder": "Enregistrer la date",
+    "actuelle": "Date actuelle",
+    "enregistree": "Date de réception enregistrée."
   },
   "roles": {
     "expediteur": "Expéditeur",
@@ -58,6 +84,7 @@
     "vide": "Aucune demande pour le moment. Créez votre première demande de stockage.",
     "detail_titre": "Demande {reference}",
     "commentaire_agent": "Commentaire de l'agent",
+    "date_traitement": "Traitée le",
     "date_reception_prevue": "Réception prévue le",
     "produits_titre": "Produits",
     "decharge_titre": "Décharge de stockage",
@@ -115,6 +142,8 @@
     "decharge_deja_scannee": "Cette décharge a déjà été scannée à l'entrepôt.",
     "stockage_indisponible": "Le stockage de fichiers est momentanément indisponible.",
     "fichier_manquant": "Aucun fichier reçu.",
-    "type_fichier_refuse": "Format d'image non pris en charge (JPG, PNG ou WebP)."
+    "type_fichier_refuse": "Format d'image non pris en charge (JPG, PNG ou WebP).",
+    "decision_invalide": "Décision de validation invalide.",
+    "date_invalide": "Date invalide."
   }
 }

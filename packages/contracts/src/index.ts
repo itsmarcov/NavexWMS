@@ -55,6 +55,8 @@ export interface ProduitDTO {
   quantite: number;
   photo_url?: string | null;
   statut_validation: StatutValidationProduit;
+  commentaire?: string | null;
+  date_validation?: string | null;
 }
 
 export interface DechargeResumeDTO {
@@ -71,6 +73,20 @@ export interface DemandeListeDTO {
   expediteur: { id: string; nom_entreprise: string };
   _count?: { produits: number };
   decharge?: DechargeResumeDTO | null;
+  compteurs?: { en_attente: number; approuve: number; refuse: number };
+  /** Statuts produits — présent quand la liste est filtrée sur la file d'attente. */
+  produits?: Array<{ statut_validation: StatutValidationProduit }>;
+}
+
+/** Décision de l'agent commercial sur un produit. */
+export interface ValidationProduitPayload {
+  statut_validation: Exclude<StatutValidationProduit, "en_attente">;
+  commentaire?: string;
+}
+
+/** Planification de la réception physique par l'agent commercial. */
+export interface PlanificationPayload {
+  date_reception_prevue: string; // ISO 8601
 }
 
 export interface DemandeDetailDTO extends Omit<DemandeListeDTO, "_count"> {

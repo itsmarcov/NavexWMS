@@ -21,6 +21,9 @@ export function AppHeader() {
   if (utilisateur && utilisateur.role !== "agent_entrepot") {
     liens.push({ href: "/mes-demandes", label: t("nav.mes_demandes") });
   }
+  if (utilisateur && (utilisateur.role === "agent_commercial" || utilisateur.role === "admin")) {
+    liens.push({ href: "/file-attente", label: t("nav.file_attente") });
+  }
 
   async function deconnexion() {
     await seDeconnecter();

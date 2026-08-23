@@ -4,7 +4,9 @@ import type {
   DechargeResumeDTO,
   LoginResponse,
   NouveauProduit,
+  PlanificationPayload,
   UtilisateurDTO,
+  ValidationProduitPayload,
 } from "@navex/contracts";
 
 const BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001/api";
@@ -114,8 +116,24 @@ export function creerDemande(produits: NouveauProduit[]) {
   });
 }
 
-export function listerDemandes() {
-  return requete<DemandeListeDTO[]>("/demandes");
+export function listerDemandes(attente = false) {
+  return requete<DemandeListeDTO[]>(`/demandes${attente ? "?attente=1" : ""}`);
+}
+
+/** Décision de l'agent commercial sur un produit (approuvé/rejeté + commentaire). */
+export function validerProduit(demandeId: string, produitId: string, charge: ValidationProduitPayload) {
+  return requete<DemandeDetailDTO["produits"][number]>(
+    `/demandes/${demandeId}/produits/${produitId}/validation`,
+    { method: "PATCH", body: JSON.stringify(charge) },
+  );
+}
+
+/** Planifie la date de réception physique de la marchandise. */
+export function planifierReception(demandeId: string, charge: PlanificationPayload) {
+  return requete<{ ok: boolean; date_reception_prevue: string }>(`/demandes/${demandeId}/planification`, {
+    method: "PATCH",
+    body: JSON.stringify(charge),
+  });
 }
 
 export function detailDemande(id: string) {

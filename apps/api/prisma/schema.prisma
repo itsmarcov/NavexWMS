@@ -133,6 +133,8 @@ model Produit {
   quantite          Int
   photo_url         String?
   statut_validation StatutValidationProduit @default(en_attente)
+  commentaire       String?
+  date_validation   DateTime?
 
   @@index([demande_id])
 }

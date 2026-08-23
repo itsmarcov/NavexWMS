@@ -74,10 +74,16 @@ export class DemandesService {
   /**
    * Liste des demandes : l'expéditeur ne voit que les siennes,
    * agent commercial et admin voient tout.
+   * `attente` : uniquement les demandes ayant au moins un produit à traiter,
+   * avec compteurs par statut de validation pour la file d'attente.
    */
-  async lister(role: RoleUtilisateur, expediteurId?: string | null) {
+  async lister(role: RoleUtilisateur, expediteurId?: string | null, attente = false) {
     const where: Prisma.DemandeStockageWhereInput =
       role === "expediteur" ? { expediteur_id: expediteurId ?? "__aucun__" } : {};
+
+    if (attente) {
+      where.produits = { some: { statut_validation: "en_attente" } };
+    }
 
     return this.prisma.demandeStockage.findMany({
       where,
@@ -86,8 +92,122 @@ export class DemandesService {
         expediteur: { select: { id: true, nom_entreprise: true } },
         _count: { select: { produits: true } },
         decharge: { select: { id: true, numero_decharge: true, statut: true } },
+        ...(attente ? { produits: { select: { statut_validation: true } } } : {}),
       },
     });
+  }
+
+  /**
+   * Décision de l'agent commercial sur un produit. Quand tous les produits
+   * sont tranchés, le statut de la demande est dérivé : approuvée si tout
+   * est approuvé, rejetée sinon. Chaque décision est journalisée.
+   */
+  async validerProduit(
+    demandeId: string,
+    produitId: string,
+    utilisateurId: string,
+    dto: { statut_validation: "approuve" | "refuse"; commentaire?: string },
+    ip?: string,
+  ) {
+    const produit = await this.prisma.produit.findFirst({
+      where: { id: produitId, demande_id: demandeId },
+      include: { demande: { select: { id: true, reference: true, statut: true } } },
+    });
+    if (!produit) throw new NotFoundException({ code: "erreurs.introuvable" });
+
+    const avant = { statut_validation: produit.statut_validation, commentaire: produit.commentaire };
+    const decision = dto.statut_validation === "approuve" ? "approuve" : "refuse";
+
+    const [produitMisAJour] = await this.prisma.$transaction([
+      this.prisma.produit.update({
+        where: { id: produitId },
+        data: {
+          statut_validation: decision,
+          commentaire: dto.commentaire?.trim() || null,
+          date_validation: new Date(),
+        },
+      }),
+      // Recalcul du statut global quand tous les produits sont tranchés :
+      // au moins un refusé → rejetée ; tous approuvés → approuvée.
+      // Les deux conditions sont mutuellement exclusives et partent du
+      // statut « en_attente », donc l'ordre d'exécution est sans importance.
+      this.prisma.demandeStockage.updateMany({
+        where: {
+          id: demandeId,
+          statut: "en_attente",
+          produits: {
+            none: { statut_validation: "en_attente" },
+            some: { statut_validation: "refuse" },
+          },
+        },
+        data: {
+          statut: "rejetee",
+          date_traitement: new Date(),
+          agent_commercial_id: utilisateurId,
+        },
+      }),
+      this.prisma.demandeStockage.updateMany({
+        where: {
+          id: demandeId,
+          statut: "en_attente",
+          produits: { none: { statut_validation: { not: "approuve" } } },
+        },
+        data: {
+          statut: "approuvee",
+          date_traitement: new Date(),
+          agent_commercial_id: utilisateurId,
+        },
+      }),
+    ]);
+
+    const demandeFinale = await this.prisma.demandeStockage.findUnique({
+      where: { id: demandeId },
+      select: { reference: true, statut: true },
+    });
+
+    await this.audit.log({
+      entite_type: "Produit",
+      entite_id: produitId,
+      action: `VALIDATION_${decision.toUpperCase()}`,
+      utilisateur_id: utilisateurId,
+      donnees_avant: avant,
+      donnees_apres: { statut_validation: decision, commentaire: produitMisAJour.commentaire, demande_statut: demandeFinale?.statut },
+      ip_adresse: ip,
+    });
+
+    return produitMisAJour;
+  }
+
+  /** Planification de la date de réception physique (agent commercial). */
+  async planifierReception(
+    demandeId: string,
+    utilisateurId: string,
+    dto: { date_reception_prevue: string },
+    ip?: string,
+  ) {
+    const demande = await this.prisma.demandeStockage.findUnique({
+      where: { id: demandeId },
+      select: { id: true, reference: true, date_reception_prevue: true },
+    });
+    if (!demande) throw new NotFoundException({ code: "erreurs.introuvable" });
+
+    const datePrevue = new Date(dto.date_reception_prevue);
+    await this.prisma.demandeStockage.update({
+      where: { id: demandeId },
+      data: { date_reception_prevue: datePrevue },
+    });
+
+    await this.audit.log({
+      entite_type: "DemandeStockage",
+      entite_id: demandeId,
+      action: "PLANIFICATION_RECEPTION",
+      utilisateur_id: utilisateurId,
+      donnees_avant: { date_reception_prevue: demande.date_reception_prevue },
+      donnees_apres: { date_reception_prevue: datePrevue },
+      ip_adresse: ip,
+    });
+
+    return { ok: true, date_reception_prevue: datePrevue };
   }
 
   async detail(id: string, role: RoleUtilisateur, expediteurId?: string | null) {

@@ -8,7 +8,8 @@
   },
   "nav": {
     "accueil": "الرئيسية",
-    "mes_demandes": "طلباتي"
+    "mes_demandes": "طلباتي",
+    "file_attente": "قائمة الانتظار"
   },
   "login": {
     "titre": "تسجيل الدخول",
@@ -26,7 +27,32 @@
     "stats_approuvees": "تمت الموافقة",
     "stats_decharges": "الإيصالات",
     "dernieres": "أحدث الطلبات",
-    "voir_toutes": "عرض جميع الطلبات ←"
+    "voir_toutes": "عرض جميع الطلبات ←",
+    "stats_file": "طلبات في الانتظار",
+    "stats_produits_a_decider": "منتجات تنتظر القرار",
+    "stats_total_demandes": "إجمالي الطلبات"
+  },
+  "file_attente": {
+    "titre": "قائمة انتظار الطلبات",
+    "vide": "لا توجد طلبات في انتظار المعالجة. كل شيء محدَّث.",
+    "progression": "تمت معالجة {traites}/{total}",
+    "a_traiter": "في الانتظار",
+    "approuves": "موافق عليها",
+    "refuses": "مرفوضة",
+    "tout_voir": "فتح قائمة الانتظار ←"
+  },
+  "validation": {
+    "produits_a_traiter": "{nombre} منتج (منتجات) تنتظر قرارك.",
+    "commentaire_placeholder": "ملاحظة تظهر للمُرسِل (اختياري)",
+    "approuver": "موافقة",
+    "rejeter": "رفض",
+    "decision_enregistree": "تم تسجيل القرار."
+  },
+  "planification": {
+    "titre": "الاستلام المتوقع",
+    "sauvegarder": "حفظ التاريخ",
+    "actuelle": "التاريخ الحالي",
+    "enregistree": "تم حفظ تاريخ الاستلام."
   },
   "roles": {
     "expediteur": "مُرسِل",
@@ -58,6 +84,7 @@
     "vide": "لا توجد طلبات حالياً. أنشئ أول طلب تخزين لك.",
     "detail_titre": "الطلب {reference}",
     "commentaire_agent": "ملاحظة العون",
+    "date_traitement": "عولجت في",
     "date_reception_prevue": "الاستلام المتوقع في",
     "produits_titre": "المنتجات",
     "decharge_titre": "إيصال التخزين",
@@ -115,6 +142,8 @@
     "decharge_deja_scannee": "تم مسح هذا الإيصال ضوئياً في المستودع مسبقاً.",
     "stockage_indisponible": "خدمة تخزين الملفات غير متاحة حالياً.",
     "fichier_manquant": "لم يتم استلام أي ملف.",
-    "type_fichier_refuse": "صيغة الصورة غير مدعومة (JPG أو PNG أو WebP)."
+    "type_fichier_refuse": "صيغة الصورة غير مدعومة (JPG أو PNG أو WebP).",
+    "decision_invalide": "قرار المصادقة غير صالح.",
+    "date_invalide": "تاريخ غير صالح."
   }
 }
