@@ -1,4 +1,4 @@
-import { Injectable, Logger, OnApplicationShutdown } from "@nestjs/common";
+import { Injectable, Logger, OnApplicationShutdown, OnModuleInit } from "@nestjs/common";
 import { ConflictException, ForbiddenException, NotFoundException } from "@nestjs/common";
 import { Decharge, Prisma } from "@prisma/client";
 import * as fs from "fs";
@@ -22,7 +22,7 @@ interface ContexteUtilisateur {
 type LanguePdf = "fr" | "ar";
 
 @Injectable()
-export class DechargesService implements OnApplicationShutdown {
+export class DechargesService implements OnApplicationShutdown, OnModuleInit {
   private readonly logger = new Logger(DechargesService.name);
   private navigateur?: Browser;
 
@@ -31,6 +31,20 @@ export class DechargesService implements OnApplicationShutdown {
     private readonly audit: AuditService,
     private readonly uploads: UploadsService,
   ) {}
+
+  /**
+   * Préchauffage : sur les petits instancias (plan gratuit), l'extraction et le
+   * démarrage de Chromium prennent plus de 100 s — au-delà du délai du proxy.
+   * On les fait en tâche de fond dès le boot pour qu'ils soient terminés
+   * avant la première demande de PDF.
+   */
+  onModuleInit() {
+    if (process.platform !== "win32") {
+      this.obtenirNavigateur().catch((erreur) => {
+        this.logger.warn(`Préchauffage Chromium échoué (nouvel essai à la demande) : ${erreur}`);
+      });
+    }
+  }
 
   async onApplicationShutdown() {
     await this.navigateur?.close();
