@@ -208,7 +208,16 @@ export class DechargesService implements OnApplicationShutdown {
         this.navigateur = await puppeteer.launch({
           headless: true,
           executablePath: await chromiumSparticuz.executablePath(),
-          args: [...chromiumSparticuz.args, "--no-sandbox"],
+          timeout: 120_000,
+          args: [
+            ...chromiumSparticuz.args,
+            "--no-sandbox",
+            // Réduction mémoire pour les environnements restreints (plan gratuit).
+            "--single-process",
+            "--no-zygote",
+            "--disable-software-rasterizer",
+            "--js-flags=--max-old-space-size=96",
+          ],
         });
       }
     }
