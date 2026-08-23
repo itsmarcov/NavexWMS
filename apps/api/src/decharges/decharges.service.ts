@@ -359,7 +359,7 @@ export class DechargesService implements OnApplicationShutdown, OnModuleInit {
       await page.setContent(html, { waitUntil: "domcontentloaded", timeout: 90_000 });
       // Attend la fin du chargement des polices web (utile pour l'arabe), sans bloquer indéfiniment.
       await page.evaluate("() => document.fonts.ready").catch(() => undefined);
-      const octets = await page.pdf({ format: "A4", printBackground: true, margin: { top: "10mm", bottom: "10mm" } });
+      const octets = await page.pdf({ format: "A4", printBackground: true, timeout: 90_000, margin: { top: "10mm", bottom: "10mm" } });
       return Buffer.from(octets);
     } finally {
       await page.close().catch(() => undefined);
