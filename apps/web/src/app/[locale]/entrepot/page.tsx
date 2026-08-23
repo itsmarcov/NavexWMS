@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import type { DechargeEntrepotListeDTO, ScanResultDTO } from "@navex/contracts";
-import { listerDechargesEntrepot, scannerQr } from "@/lib/api-client";
+import { ApiError, listerDechargesEntrepot, scannerQr } from "@/lib/api-client";
 import { formaterDate, messageErreur } from "@/lib/ui";
 import { AppHeader } from "@/components/app-header";
 
@@ -26,7 +26,6 @@ function EtapeBadge({ evenements, libelle }: { evenements: string[]; libelle: st
 export default function PageEntrepot() {
   const t = useTranslations();
   const locale = useLocale();
-  const router = useRouter();
   const [decharges, setDecharges] = useState<DechargeEntrepotListeDTO[] | null>(null);
   const [erreur, setErreur] = useState<string | null>(null);
   const [token, setToken] = useState("");
@@ -61,7 +60,7 @@ export default function PageEntrepot() {
   function extraireJeton(saisie: string) {
     const texte = saisie.trim();
     const correspondance = texte.match(/[?&]t=([^&\s]+)/);
-    if (correspondance) return decodeURIComponent(correspondance[1]);
+    if (correspondance?.[1]) return decodeURIComponent(correspondance[1]);
     return texte;
   }
 
@@ -80,12 +79,14 @@ export default function PageEntrepot() {
       setDernierScan({ kind: "ok", resultat });
       charger();
     } catch (e) {
+      const erreurApi = e as ApiError;
       setDernierScan({
         kind: "erreur",
         message:
-          e.code && e.code.startsWith("erreurs.") ? t(e.code) : messageErreur(t, e),
-        dechargeId:
-          (e.donnees?.decharge_id as string | undefined) ?? (e.decharge_id as string | undefined),
+          erreurApi.code && erreurApi.code.startsWith("erreurs.")
+            ? t(erreurApi.code)
+            : messageErreur(t, e),
+        dechargeId: erreurApi.donnees?.decharge_id as string | undefined,
       });
     } finally {
       setScanEnCours(false);
