@@ -28,7 +28,7 @@ export class DemandesService {
     return `DEM-${annee}-${Date.now()}`;
   }
 
-  async creer(expediteurId: string, dto: CreeDemandeDto, ip?: string) {
+  async creer(expediteurId: string, utilisateurId: string, dto: CreeDemandeDto, ip?: string) {
     const demande = await this.prisma.$transaction(async (tx) => {
       const reference = await this.genererReference(tx);
       return tx.demandeStockage.create({
@@ -59,7 +59,7 @@ export class DemandesService {
       entite_type: "DemandeStockage",
       entite_id: demande.id,
       action: "CREATE",
-      utilisateur_id: demande.expediteur_id,
+      utilisateur_id: utilisateurId,
       donnees_apres: {
         reference: demande.reference,
         statut: demande.statut,

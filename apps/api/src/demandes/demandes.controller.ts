@@ -16,7 +16,7 @@ export class DemandesController {
     @CurrentUser() user: { sub: string; expediteur_id?: string | null },
     @Req() req: Request,
   ) {
-    return this.demandesService.creer(user.expediteur_id ?? user.sub, dto, req.ip);
+    return this.demandesService.creer(user.expediteur_id ?? user.sub, user.sub, dto, req.ip);
   }
 
   @Roles("expediteur", "agent_commercial", "admin")

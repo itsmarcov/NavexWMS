@@ -1,5 +1,7 @@
 import { Type } from "class-transformer";
 import {
+  ArrayNotEmpty,
+  IsArray,
   IsBoolean,
   IsIn,
   IsInt,
@@ -9,6 +11,7 @@ import {
   IsString,
   MaxLength,
   Min,
+  ValidateNested,
 } from "class-validator";
 
 const TYPES_EMBALLAGE = ["carton", "palette", "sac", "autre"] as const;
@@ -57,6 +60,9 @@ export class CreeProduitDto {
 }
 
 export class CreeDemandeDto {
+  @IsArray()
+  @ArrayNotEmpty({ message: "erreurs.produits_requis" })
+  @ValidateNested({ each: true })
   @Type(() => CreeProduitDto)
   produits!: CreeProduitDto[];
 }
