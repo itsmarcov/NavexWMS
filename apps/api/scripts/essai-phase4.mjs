@@ -85,9 +85,10 @@ const principal = async () => {
   verifier(scan.corps?.numero_decharge === dechargeRes.corps.numero_decharge, `numÃ©ro retournÃ© ${scan.corps?.numero_decharge}`);
   verifier(scan.corps?.nb_produits === 2, "compteur produits approuvÃ©s = 2");
 
-  // Double scan refusÃ©
+  // Double scan refusé (réponse enrichie avec decharge_id pour l'interface douchette)
   const doubleScan = await api("/entrepot/scan", { method: "POST", body: JSON.stringify({ qr_token: qrToken }) }, jetonEntrepot);
-  verifier(doubleScan.statut === 409 && doubleScan.corps?.code === "erreurs.decharge_deja_scannee", `double scan refusÃ© (${doubleScan.statut})`);
+  verifier(doubleScan.statut === 409 && doubleScan.corps?.code === "erreurs.decharge_deja_scannee", `double scan refusé (${doubleScan.statut})`);
+  verifier(doubleScan.corps?.decharge_id === dechargeRes.corps.id, "decharge_id fourni dans le conflit");
 
   // File des dÃ©charges scannÃ©es
   const file = await api("/entrepot/decharges", {}, jetonEntrepot);

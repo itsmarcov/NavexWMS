@@ -50,8 +50,9 @@
   },
   "entrepot": {
     "titre": "Espace entrepôt",
-    "token_placeholder": "Collez ici le contenu du QR (jeton)…",
+    "token_placeholder": "Scannez avec la douchette ou collez le contenu du QR…",
     "scan_aide": "Scannez le QR du PDF de décharge avec un téléphone, ou collez le jeton manuellement.",
+    "scan_aide_douchette": "La douchette saisit le contenu du QR puis valide avec Entrée automatiquement. Le champ reste focalisé : enchaînez les scans sans toucher la souris.",
     "attente_reception": "À recevoir",
     "attente_positionnement": "À positionner",
     "file_titre": "Décharges scannées",

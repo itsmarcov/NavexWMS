@@ -19,10 +19,13 @@ export const COOKIE_ACCES = "navex_access";
 
 export class ApiError extends Error {
   code?: string;
+  /** Corps complet de l'erreur — champs additionnels comme decharge_id. */
+  donnees?: Record<string, unknown>;
 
-  constructor(message: string, code?: string) {
+  constructor(message: string, code?: string, donnees?: Record<string, unknown>) {
     super(message);
     this.code = code;
+    this.donnees = donnees;
   }
 }
 
@@ -71,13 +74,15 @@ async function requete<T>(chemin: string, options: RequestInit = {}, reessayer =
 
   if (!reponse.ok) {
     let code: string | undefined;
+    let donnees: Record<string, unknown> | undefined;
     try {
       const corps = await reponse.json();
-      code = typeof corps?.message === "object" ? corps.message?.code : undefined;
+      code = (typeof corps?.message === "object" ? corps.message?.code : undefined) ?? corps?.code;
+      donnees = typeof corps === "object" && corps !== null ? corps : undefined;
     } catch {
       // corps non JSON
     }
-    throw new ApiError(`HTTP ${reponse.status}`, code);
+    throw new ApiError(`HTTP ${reponse.status}`, code, donnees);
   }
 
   return (await reponse.json()) as T;

@@ -54,7 +54,12 @@ export class EntrepotService {
       throw new UnauthorizedException({ code: "erreurs.qr_invalide" });
     }
     if (decharge.statut === "scannee") {
-      throw new ConflictException({ code: "erreurs.decharge_deja_scannee" });
+      // decharge_id inclus pour que l'interface puisse proposer le lien
+      // « traiter cette décharge » directement après un double scan douchette.
+      throw new ConflictException({
+        code: "erreurs.decharge_deja_scannee",
+        decharge_id: decharge.id,
+      });
     }
 
     await this.prisma.$transaction([
