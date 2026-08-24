@@ -5,15 +5,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: [
-          "Inter",
-          "system-ui",
-          "-apple-system",
-          "Segoe UI",
-          "Tahoma",
-          "Arial",
-          "sans-serif",
-        ],
+        sans: ["var(--font-inter)", "system-ui", "-apple-system", "Segoe UI", "Tahoma", "Arial", "sans-serif"],
       },
       colors: {
         navex: {
