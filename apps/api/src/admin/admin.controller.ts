@@ -1,8 +1,8 @@
-import { Body, Controller, Get, Param, Patch, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Patch, Post } from "@nestjs/common";
 import { CurrentUser } from "../auth/decorators/current-user.decorator";
 import { Roles } from "../auth/decorators/roles.decorator";
 import { AdminService } from "./admin.service";
-import { CreerExpediteurDto, CreerUtilisateurDto, StatutExpediteurDto } from "./dto/admin.dto";
+import { CreerExpediteurDto, CreerUtilisateurDto, ModifierExpediteurDto, ModifierUtilisateurDto, StatutExpediteurDto } from "./dto/admin.dto";
 
 @Controller("admin")
 export class AdminController {
@@ -33,6 +33,25 @@ export class AdminController {
   }
 
   @Roles("admin")
+  @Patch("expediteurs/:id")
+  modifierExpediteur(
+    @Param("id") id: string,
+    @Body() dto: ModifierExpediteurDto,
+    @CurrentUser() user: { sub: string; role: string },
+  ) {
+    return this.adminService.modifierExpediteur(id, dto, user.sub);
+  }
+
+  @Roles("admin")
+  @Delete("expediteurs/:id")
+  supprimerExpediteur(
+    @Param("id") id: string,
+    @CurrentUser() user: { sub: string; role: string },
+  ) {
+    return this.adminService.supprimerExpediteur(id, user.sub);
+  }
+
+  @Roles("admin")
   @Get("utilisateurs")
   listerUtilisateurs() {
     return this.adminService.listerUtilisateurs();
@@ -45,6 +64,25 @@ export class AdminController {
     @CurrentUser() user: { sub: string; role: string },
   ) {
     return this.adminService.creerUtilisateur(dto, user.role, user.sub);
+  }
+
+  @Roles("admin")
+  @Patch("utilisateurs/:id")
+  modifierUtilisateur(
+    @Param("id") id: string,
+    @Body() dto: ModifierUtilisateurDto,
+    @CurrentUser() user: { sub: string; role: string },
+  ) {
+    return this.adminService.modifierUtilisateur(id, dto, user.sub);
+  }
+
+  @Roles("admin")
+  @Delete("utilisateurs/:id")
+  supprimerUtilisateur(
+    @Param("id") id: string,
+    @CurrentUser() user: { sub: string; role: string },
+  ) {
+    return this.adminService.supprimerUtilisateur(id, user.sub);
   }
 
   // ── Admin OU agent commercial ─────────────────────────────

@@ -2,7 +2,7 @@ import { ConflictException, ForbiddenException, Injectable, NotFoundException } 
 import { hash } from "bcryptjs";
 import { AuditService } from "../audit/audit.service";
 import { PrismaService } from "../prisma/prisma.service";
-import { CreerExpediteurDto, CreerUtilisateurDto, StatutExpediteurDto } from "./dto/admin.dto";
+import { CreerExpediteurDto, CreerUtilisateurDto, ModifierExpediteurDto, ModifierUtilisateurDto, StatutExpediteurDto } from "./dto/admin.dto";
 
 @Injectable()
 export class AdminService {
@@ -53,6 +53,7 @@ export class AdminService {
       nom_entreprise: e.nom_entreprise,
       email: e.email,
       telephone: e.telephone,
+      adresse: e.adresse,
       statut: e.statut,
       date_creation: e.date_creation,
       nb_utilisateurs: e._count.utilisateurs,
@@ -188,5 +189,149 @@ export class AdminService {
       statut: expediteur.statut,
       mot_de_passe_defaut: "Navex@2026",
     };
+  }
+
+  /** Modifie un compte utilisateur (email, role, expediteur_id, actif, mot_de_passe). */
+  async modifierUtilisateur(id: string, dto: ModifierUtilisateurDto, utilisateurId: string, ip?: string) {
+    const utilisateur = await this.prisma.utilisateur.findUnique({ where: { id } });
+    if (!utilisateur) throw new NotFoundException({ code: "erreurs.introuvable" });
+
+    if (dto.email && dto.email !== utilisateur.email) {
+      const existant = await this.prisma.utilisateur.findUnique({ where: { email: dto.email } });
+      if (existant) throw new ConflictException({ code: "erreurs.email_deja_utilise" });
+    }
+
+    const donnees: Record<string, unknown> = {};
+    if (dto.email !== undefined) donnees.email = dto.email;
+    if (dto.role !== undefined) donnees.role = dto.role;
+    if (dto.expediteur_id !== undefined) donnees.expediteur_id = dto.expediteur_id;
+    if (dto.actif !== undefined) donnees.actif = dto.actif;
+    if (dto.mot_de_passe) donnees.password_hash = await hash(dto.mot_de_passe, 12);
+
+    if (Object.keys(donnees).length === 0) {
+      throw new ConflictException({ code: "erreurs.aucune_modification" });
+    }
+
+    const modifie = await this.prisma.utilisateur.update({ where: { id }, data: donnees });
+
+    await this.audit.log({
+      entite_type: "Utilisateur",
+      entite_id: id,
+      action: "ADMIN_UTILISATEUR_MODIFIE",
+      utilisateur_id: utilisateurId,
+      donnees_avant: { email: utilisateur.email, role: utilisateur.role, actif: utilisateur.actif },
+      donnees_apres: { email: modifie.email, role: modifie.role, actif: modifie.actif },
+      ip_adresse: ip,
+    });
+
+    return { id: modifie.id, email: modifie.email, role: modifie.role, actif: modifie.actif };
+  }
+
+  /** Supprime un compte utilisateur. Empêche la suppression de son propre compte. */
+  async supprimerUtilisateur(id: string, utilisateurId: string, ip?: string) {
+    if (id === utilisateurId) {
+      throw new ForbiddenException({ code: "erreurs.autosuppression_interdite" });
+    }
+
+    const utilisateur = await this.prisma.utilisateur.findUnique({
+      where: { id },
+      include: { _count: { select: { demandes_traitees: true, mouvements: true, audit_logs: true } } },
+    });
+    if (!utilisateur) throw new NotFoundException({ code: "erreurs.introuvable" });
+
+    const totalLiens = utilisateur._count.demandes_traitees + utilisateur._count.mouvements + utilisateur._count.audit_logs;
+    if (totalLiens > 0) {
+      // Soft delete : on désactive le compte plutôt que de supprimer les données liées.
+      await this.prisma.utilisateur.update({ where: { id }, data: { actif: false } });
+
+      await this.audit.log({
+        entite_type: "Utilisateur",
+        entite_id: id,
+        action: "ADMIN_UTILISATEUR_DESACTIVE",
+        utilisateur_id: utilisateurId,
+        donnees_avant: { email: utilisateur.email, actif: utilisateur.actif },
+        donnees_apres: { actif: false },
+        ip_adresse: ip,
+      });
+
+      return { ok: true, desactive: true, message: "Compte désactivé (données liées préservées)." };
+    }
+
+    await this.prisma.utilisateur.delete({ where: { id } });
+
+    await this.audit.log({
+      entite_type: "Utilisateur",
+      entite_id: id,
+      action: "ADMIN_UTILISATEUR_SUPPRIME",
+      utilisateur_id: utilisateurId,
+      donnees_avant: { email: utilisateur.email, role: utilisateur.role },
+      ip_adresse: ip,
+    });
+
+    return { ok: true, desactive: false };
+  }
+
+  /** Modifie un expéditeur (nom_entreprise, email, telephone, adresse, langue_preferee). */
+  async modifierExpediteur(id: string, dto: ModifierExpediteurDto, utilisateurId: string, ip?: string) {
+    const expediteur = await this.prisma.expediteur.findUnique({ where: { id } });
+    if (!expediteur) throw new NotFoundException({ code: "erreurs.introuvable" });
+
+    if (dto.email && dto.email !== expediteur.email) {
+      const existant = await this.prisma.expediteur.findUnique({ where: { email: dto.email } });
+      if (existant) throw new ConflictException({ code: "erreurs.email_deja_utilise" });
+    }
+
+    const donnees: Record<string, unknown> = {};
+    if (dto.nom_entreprise !== undefined) donnees.nom_entreprise = dto.nom_entreprise;
+    if (dto.email !== undefined) donnees.email = dto.email;
+    if (dto.telephone !== undefined) donnees.telephone = dto.telephone;
+    if (dto.adresse !== undefined) donnees.adresse = dto.adresse;
+    if (dto.langue_preferee !== undefined) donnees.langue_preferee = dto.langue_preferee;
+
+    if (Object.keys(donnees).length === 0) {
+      throw new ConflictException({ code: "erreurs.aucune_modification" });
+    }
+
+    const modifie = await this.prisma.expediteur.update({ where: { id }, data: donnees });
+
+    await this.audit.log({
+      entite_type: "Expediteur",
+      entite_id: id,
+      action: "ADMIN_EXPEDITEUR_MODIFIE",
+      utilisateur_id: utilisateurId,
+      donnees_avant: { nom_entreprise: expediteur.nom_entreprise, email: expediteur.email, telephone: expediteur.telephone },
+      donnees_apres: { nom_entreprise: modifie.nom_entreprise, email: modifie.email, telephone: modifie.telephone },
+      ip_adresse: ip,
+    });
+
+    return { id: modifie.id, nom_entreprise: modifie.nom_entreprise, email: modifie.email, telephone: modifie.telephone };
+  }
+
+  /** Supprime un expéditeur. Impossible s'il a des demandes liées. */
+  async supprimerExpediteur(id: string, utilisateurId: string, ip?: string) {
+    const expediteur = await this.prisma.expediteur.findUnique({
+      where: { id },
+      include: { _count: { select: { demandes: true, utilisateurs: true } } },
+    });
+    if (!expediteur) throw new NotFoundException({ code: "erreurs.introuvable" });
+
+    if (expediteur._count.demandes > 0) {
+      throw new ForbiddenException({ code: "erreurs.expediteur_avec_demandes" });
+    }
+
+    // Supprimer d'abord les comptes utilisateurs rattachés (sans demandes)
+    await this.prisma.utilisateur.deleteMany({ where: { expediteur_id: id } });
+    await this.prisma.expediteur.delete({ where: { id } });
+
+    await this.audit.log({
+      entite_type: "Expediteur",
+      entite_id: id,
+      action: "ADMIN_EXPEDITEUR_SUPPRIME",
+      utilisateur_id: utilisateurId,
+      donnees_avant: { nom_entreprise: expediteur.nom_entreprise, email: expediteur.email },
+      ip_adresse: ip,
+    });
+
+    return { ok: true };
   }
 }

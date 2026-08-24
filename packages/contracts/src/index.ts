@@ -176,6 +176,7 @@ export interface ExpediteurAdminDTO {
   nom_entreprise: string;
   email: string;
   telephone: string;
+  adresse: string;
   statut: StatutExpediteur;
   date_creation: string;
   nb_utilisateurs: number;
@@ -210,6 +211,24 @@ export interface CreerUtilisateurPayload {
   mot_de_passe: string;
   role: Role;
   expediteur_id?: string;
+}
+
+/** Modification d'un compte utilisateur (admin uniquement). */
+export interface ModifierUtilisateurPayload {
+  email?: string;
+  role?: Role;
+  expediteur_id?: string | null;
+  actif?: boolean;
+  mot_de_passe?: string;
+}
+
+/** Modification d'un expéditeur (admin uniquement). */
+export interface ModifierExpediteurPayload {
+  nom_entreprise?: string;
+  email?: string;
+  telephone?: string;
+  adresse?: string;
+  langue_preferee?: string;
 }
 
 export interface DemandeDetailDTO extends Omit<DemandeListeDTO, "_count"> {

@@ -44,7 +44,15 @@
     "expediteur_cree_simple": "Expéditeur créé avec succès.",
     "nom_entreprise": "Nom de l'entreprise",
     "telephone": "Téléphone",
-    "adresse": "Adresse"
+    "adresse": "Adresse",
+    "modifier": "Modifier",
+    "supprimer": "Supprimer",
+    "confirmer_suppression": "Confirmer la suppression",
+    "utilisateur_modifie": "Compte utilisateur modifié avec succès.",
+    "utilisateur_supprime": "Compte utilisateur supprimé.",
+    "expediteur_modifie": "Expéditeur modifié avec succès.",
+    "expediteur_supprime": "Expéditeur supprimé.",
+    "suppression_impossible": "Impossible de supprimer cet élément (données liées)."
   },
   "login": {
     "titre": "Connexion",
@@ -239,6 +247,9 @@
     "role_interdit": "Vous n'avez pas les droits pour créer ce type de compte.",
     "email_invalide": "Adresse e-mail invalide.",
     "mot_de_passe_court": "Le mot de passe doit contenir au moins 8 caractères.",
-    "role_invalide": "Rôle invalide."
+    "role_invalide": "Rôle invalide.",
+    "aucune_modification": "Aucune modification détectée.",
+    "autosuppression_interdite": "Vous ne pouvez pas supprimer votre propre compte.",
+    "expediteur_avec_demandes": "Impossible de supprimer cet expéditeur : des demandes lui sont rattachées."
   }
 }

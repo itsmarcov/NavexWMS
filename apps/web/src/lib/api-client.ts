@@ -10,6 +10,8 @@ import type {
   EmplacementDTO,
   ExpediteurAdminDTO,
   LoginResponse,
+  ModifierExpediteurPayload,
+  ModifierUtilisateurPayload,
   NouveauProduit,
   PlanificationPayload,
   ScanResultDTO,
@@ -231,6 +233,36 @@ export function creerExpediteur(charge: CreerExpediteurPayload) {
     "/admin/expediteurs",
     { method: "POST", body: JSON.stringify(charge) },
   );
+}
+
+/** Modifie un compte utilisateur (admin uniquement). */
+export function modifierUtilisateur(id: string, charge: ModifierUtilisateurPayload) {
+  return requete<{ id: string; email: string; role: string; actif: boolean }>(`/admin/utilisateurs/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(charge),
+  });
+}
+
+/** Supprime (ou désactive) un compte utilisateur (admin uniquement). */
+export function supprimerUtilisateur(id: string) {
+  return requete<{ ok: boolean; desactive?: boolean; message?: string }>(`/admin/utilisateurs/${id}`, {
+    method: "DELETE",
+  });
+}
+
+/** Modifie un expéditeur (admin uniquement). */
+export function modifierExpediteur(id: string, charge: ModifierExpediteurPayload) {
+  return requete<{ id: string; nom_entreprise: string; email: string; telephone: string }>(`/admin/expediteurs/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(charge),
+  });
+}
+
+/** Supprime un expéditeur (admin uniquement, impossible s'il a des demandes). */
+export function supprimerExpediteur(id: string) {
+  return requete<{ ok: boolean }>(`/admin/expediteurs/${id}`, {
+    method: "DELETE",
+  });
 }
 
 export function detailDemande(id: string) {

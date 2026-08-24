@@ -44,7 +44,15 @@
     "expediteur_cree_simple": "تم إنشاء المُرسِل بنجاح.",
     "nom_entreprise": "اسم الشركة",
     "telephone": "الهاتف",
-    "adresse": "العنوان"
+    "adresse": "العنوان",
+    "modifier": "تعديل",
+    "supprimer": "حذف",
+    "confirmer_suppression": "تأكيد الحذف",
+    "utilisateur_modifie": "تم تعديل حساب المستخدم بنجاح.",
+    "utilisateur_supprime": "تم حذف حساب المستخدم.",
+    "expediteur_modifie": "تم تعديل المُرسِل بنجاح.",
+    "expediteur_supprime": "تم حذف المُرسِل.",
+    "suppression_impossible": "لا يمكن حذف هذا العنصر (يوجد بيانات مرتبطة)."
   },
   "login": {
     "titre": "تسجيل الدخول",
@@ -239,6 +247,9 @@
     "role_interdit": "ليس لديك صلاحية لإنشاء هذا النوع من الحسابات.",
     "email_invalide": "البريد الإلكتروني غير صالح.",
     "mot_de_passe_court": "يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل.",
-    "role_invalide": "دور غير صالح."
+    "role_invalide": "دور غير صالح.",
+    "aucune_modification": "لم يتم اكتشاف أي تعديل.",
+    "autosuppression_interdite": "لا يمكنك حذف حسابك الخاص.",
+    "expediteur_avec_demandes": "لا يمكن حذف هذا المُرسِل: توجد طلبات مرتبطة به."
   }
 }

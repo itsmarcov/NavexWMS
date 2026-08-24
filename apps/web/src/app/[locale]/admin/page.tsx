@@ -9,7 +9,11 @@ import {
   creerUtilisateur,
   listerExpediteursAdmin,
   listerUtilisateursAdmin,
+  modifierExpediteur,
+  modifierUtilisateur,
   statsAdmin,
+  supprimerExpediteur,
+  supprimerUtilisateur,
 } from "@/lib/api-client";
 import { formaterDate, messageErreur } from "@/lib/ui";
 import { AppHeader } from "@/components/app-header";
@@ -62,6 +66,14 @@ export default function PageAdmin() {
   const [formExpediteur, setFormExpediteur] = useState({ nom_entreprise: "", email: "", telephone: "", adresse: "" });
   const [envoiEnCours, setEnvoiEnCours] = useState(false);
 
+  // ── États modification / suppression ──
+  const [expEditId, setExpEditId] = useState<string | null>(null);
+  const [expEditForm, setExpEditForm] = useState({ nom_entreprise: "", email: "", telephone: "", adresse: "" });
+  const [expSupprId, setExpSupprId] = useState<string | null>(null);
+  const [userEditId, setUserEditId] = useState<string | null>(null);
+  const [userEditForm, setUserEditForm] = useState({ email: "", role: "agent_commercial" as Role, actif: true });
+  const [userSupprId, setUserSupprId] = useState<string | null>(null);
+
   const charger = useCallback(() => {
     Promise.all([statsAdmin(), listerExpediteursAdmin(), listerUtilisateursAdmin()])
       .then(([s, e, u]) => { setStats(s); setExpediteurs(e); setUtilisateurs(u); })
@@ -99,6 +111,72 @@ export default function PageAdmin() {
       charger();
     } catch (err) { setErreur(messageErreur(t, err)); }
     finally { setEnvoiEnCours(false); }
+  }
+
+  // ── Expéditeur : modification ──
+  function ouvrirEditExp(e: ExpediteurAdminDTO) {
+    setExpEditId(e.id);
+    setExpEditForm({ nom_entreprise: e.nom_entreprise, email: e.email, telephone: e.telephone, adresse: e.adresse });
+    setExpSupprId(null);
+  }
+
+  async function submitEditExp(ev: React.FormEvent) {
+    ev.preventDefault();
+    if (!expEditId) return;
+    setErreur(null); setSucces(null); setActionEnCours(expEditId);
+    try {
+      await modifierExpediteur(expEditId, expEditForm);
+      setSucces(t("admin.expediteur_modifie"));
+      setExpEditId(null);
+      charger();
+    } catch (err) { setErreur(messageErreur(t, err)); }
+    finally { setActionEnCours(null); }
+  }
+
+  // ── Expéditeur : suppression ──
+  async function confirmerSupprExp() {
+    if (!expSupprId) return;
+    setErreur(null); setSucces(null); setActionEnCours(expSupprId);
+    try {
+      await supprimerExpediteur(expSupprId);
+      setSucces(t("admin.expediteur_supprime"));
+      setExpSupprId(null);
+      charger();
+    } catch (err) { setErreur(messageErreur(t, err)); }
+    finally { setActionEnCours(null); }
+  }
+
+  // ── Utilisateur : modification ──
+  function ouvrirEditUser(u: UtilisateurAdminDTO) {
+    setUserEditId(u.id);
+    setUserEditForm({ email: u.email, role: u.role, actif: u.actif });
+    setUserSupprId(null);
+  }
+
+  async function submitEditUser(ev: React.FormEvent) {
+    ev.preventDefault();
+    if (!userEditId) return;
+    setErreur(null); setSucces(null); setActionEnCours(userEditId);
+    try {
+      await modifierUtilisateur(userEditId, userEditForm);
+      setSucces(t("admin.utilisateur_modifie"));
+      setUserEditId(null);
+      charger();
+    } catch (err) { setErreur(messageErreur(t, err)); }
+    finally { setActionEnCours(null); }
+  }
+
+  // ── Utilisateur : suppression ──
+  async function confirmerSupprUser() {
+    if (!userSupprId) return;
+    setErreur(null); setSucces(null); setActionEnCours(userSupprId);
+    try {
+      const r = await supprimerUtilisateur(userSupprId);
+      setSucces(r.desactive ? t("admin.utilisateur_supprime") : t("admin.utilisateur_supprime"));
+      setUserSupprId(null);
+      charger();
+    } catch (err) { setErreur(messageErreur(t, err)); }
+    finally { setActionEnCours(null); }
   }
 
   return (
@@ -160,23 +238,81 @@ export default function PageAdmin() {
               </div>
               <ul className="divide-y divide-neutral-100/60">
                 {(expediteurs ?? []).map((e) => (
-                  <li key={e.id} className="flex flex-wrap items-center justify-between gap-3 px-6 py-4 transition-colors hover:bg-white/40">
-                    <div className="min-w-48 space-y-0.5">
-                      <p className="font-medium text-navex-ink">{e.nom_entreprise}</p>
-                      <p className="text-xs text-neutral-400" dir="ltr">{e.email} · {e.telephone}</p>
-                      <p className="text-xs text-neutral-400">
-                        {t("admin.nb_utilisateurs", { nombre: e.nb_utilisateurs })} · {t("admin.nb_demandes", { nombre: e.nb_demandes })} · {formaterDate(e.date_creation, locale)}
-                      </p>
-                    </div>
-                    <div className="flex flex-wrap items-center gap-2">
-                      <StatusBadge statut={e.statut} />
-                      {ACTIONS_STATUT.filter((a) => a.vers !== e.statut).map((a) => (
-                        <button key={a.vers} onClick={() => appliquerStatut(e.id, a.vers)} disabled={actionEnCours !== null}
-                          className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-all disabled:opacity-50 ${a.classe}`}>
-                          {t(a.cle)}
+                  <li key={e.id} className="transition-colors hover:bg-white/40">
+                    <div className="flex flex-wrap items-center justify-between gap-3 px-6 py-4">
+                      <div className="min-w-48 space-y-0.5">
+                        <p className="font-medium text-navex-ink">{e.nom_entreprise}</p>
+                        <p className="text-xs text-neutral-400" dir="ltr">{e.email} · {e.telephone}</p>
+                        <p className="text-xs text-neutral-400">
+                          {t("admin.nb_utilisateurs", { nombre: e.nb_utilisateurs })} · {t("admin.nb_demandes", { nombre: e.nb_demandes })} · {formaterDate(e.date_creation, locale)}
+                        </p>
+                      </div>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <StatusBadge statut={e.statut} />
+                        {ACTIONS_STATUT.filter((a) => a.vers !== e.statut).map((a) => (
+                          <button key={a.vers} onClick={() => appliquerStatut(e.id, a.vers)} disabled={actionEnCours !== null}
+                            className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-all disabled:opacity-50 ${a.classe}`}>
+                            {t(a.cle)}
+                          </button>
+                        ))}
+                        <button onClick={() => ouvrirEditExp(e)} disabled={actionEnCours !== null}
+                          className="rounded-full border border-navex-ink/15 px-3 py-1.5 text-xs font-semibold text-navex-ink/70 transition-all hover:bg-navex-stone disabled:opacity-50">
+                          {t("admin.modifier")}
                         </button>
-                      ))}
+                        {e.nb_demandes === 0 && (
+                          expSupprId === e.id ? (
+                            <div className="flex items-center gap-1">
+                              <button onClick={confirmerSupprExp} disabled={actionEnCours !== null}
+                                className="rounded-full bg-navex-red px-3 py-1.5 text-xs font-semibold text-white transition-all hover:bg-navex-red-dark disabled:opacity-50">
+                                {t("admin.confirmer_suppression")}
+                              </button>
+                              <button onClick={() => setExpSupprId(null)}
+                                className="rounded-full border border-neutral-200 px-3 py-1.5 text-xs font-semibold text-neutral-500 transition-all hover:bg-navex-stone">
+                                {t("commun.annuler")}
+                              </button>
+                            </div>
+                          ) : (
+                            <button onClick={() => { setExpSupprId(e.id); setExpEditId(null); }} disabled={actionEnCours !== null}
+                              className="rounded-full border border-navex-red/30 px-3 py-1.5 text-xs font-semibold text-navex-red transition-all hover:bg-navex-red-soft disabled:opacity-50">
+                              {t("admin.supprimer")}
+                            </button>
+                          )
+                        )}
+                      </div>
                     </div>
+                    {/* Formulaire modification expéditeur */}
+                    {expEditId === e.id && (
+                      <form onSubmit={submitEditExp} className="border-t border-neutral-100/60 bg-navex-stone/30 px-6 py-4 space-y-3">
+                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                          <label className="block text-xs font-medium text-navex-ink">
+                            {t("admin.nom_entreprise")}
+                            <input required value={expEditForm.nom_entreprise} onChange={(ev) => setExpEditForm((f) => ({ ...f, nom_entreprise: ev.target.value }))} className={CHAMP} />
+                          </label>
+                          <label className="block text-xs font-medium text-navex-ink">
+                            {t("login.email")}
+                            <input type="email" required dir="ltr" value={expEditForm.email} onChange={(ev) => setExpEditForm((f) => ({ ...f, email: ev.target.value }))} className={CHAMP} />
+                          </label>
+                          <label className="block text-xs font-medium text-navex-ink">
+                            {t("admin.telephone")}
+                            <input type="tel" required dir="ltr" value={expEditForm.telephone} onChange={(ev) => setExpEditForm((f) => ({ ...f, telephone: ev.target.value }))} className={CHAMP} />
+                          </label>
+                          <label className="block text-xs font-medium text-navex-ink">
+                            {t("admin.adresse")}
+                            <input required value={expEditForm.adresse} onChange={(ev) => setExpEditForm((f) => ({ ...f, adresse: ev.target.value }))} className={CHAMP} />
+                          </label>
+                        </div>
+                        <div className="flex gap-2">
+                          <button type="submit" disabled={actionEnCours !== null}
+                            className="rounded-full bg-navex-red px-5 py-2 text-xs font-semibold text-white shadow-glow-red transition-all hover:bg-navex-red-dark disabled:opacity-50">
+                            {actionEnCours === e.id ? t("commun.chargement") : t("admin.modifier")}
+                          </button>
+                          <button type="button" onClick={() => setExpEditId(null)}
+                            className="rounded-full border border-neutral-200 px-5 py-2 text-xs font-semibold text-neutral-500 transition-all hover:bg-navex-stone">
+                            {t("commun.annuler")}
+                          </button>
+                        </div>
+                      </form>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -251,6 +387,7 @@ export default function PageAdmin() {
                 <th className="py-2 text-start">{t("demandes.expediteur_col")}</th>
                 <th className="py-2 text-start">{t("admin.compte")}</th>
                 <th className="py-2 text-start">{t("demandes.date_creation")}</th>
+                <th className="py-2 text-end"></th>
               </tr>
             </thead>
             <tbody>
@@ -261,10 +398,71 @@ export default function PageAdmin() {
                   <td className="py-2 text-navex-ink">{u.expediteur_nom ?? "—"}</td>
                   <td className="py-2"><StatusBadge statut={u.actif ? "actif_compte" : "inactif"} /></td>
                   <td className="py-2 text-navex-ink">{formaterDate(u.date_creation, locale)}</td>
+                  <td className="py-2 text-end">
+                    <div className="flex items-center justify-end gap-1">
+                      <button onClick={() => ouvrirEditUser(u)} disabled={actionEnCours !== null}
+                        className="rounded-full border border-navex-ink/15 px-2.5 py-1 text-xs font-semibold text-navex-ink/70 transition-all hover:bg-navex-stone disabled:opacity-50">
+                        {t("admin.modifier")}
+                      </button>
+                      {userSupprId === u.id ? (
+                        <div className="flex items-center gap-1">
+                          <button onClick={confirmerSupprUser} disabled={actionEnCours !== null}
+                            className="rounded-full bg-navex-red px-2.5 py-1 text-xs font-semibold text-white transition-all hover:bg-navex-red-dark disabled:opacity-50">
+                            {t("admin.confirmer_suppression")}
+                          </button>
+                          <button onClick={() => setUserSupprId(null)}
+                            className="rounded-full border border-neutral-200 px-2.5 py-1 text-xs font-semibold text-neutral-500 transition-all hover:bg-navex-stone">
+                            {t("commun.annuler")}
+                          </button>
+                        </div>
+                      ) : (
+                        <button onClick={() => { setUserSupprId(u.id); setUserEditId(null); }} disabled={actionEnCours !== null}
+                          className="rounded-full border border-navex-red/30 px-2.5 py-1 text-xs font-semibold text-navex-red transition-all hover:bg-navex-red-soft disabled:opacity-50">
+                          {t("admin.supprimer")}
+                        </button>
+                      )}
+                    </div>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
+
+          {/* Formulaire modification utilisateur (en dessous du tableau) */}
+          {userEditId && (
+            <form onSubmit={submitEditUser} className="mt-4 border-t border-neutral-100/60 bg-navex-stone/30 rounded-2xl p-4 space-y-3">
+              <p className="text-xs font-semibold text-navex-ink">{t("admin.modifier")} — {userEditForm.email}</p>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                <label className="block text-xs font-medium text-navex-ink">
+                  {t("login.email")}
+                  <input type="email" required dir="ltr" value={userEditForm.email} onChange={(ev) => setUserEditForm((f) => ({ ...f, email: ev.target.value }))} className={CHAMP} />
+                </label>
+                <label className="block text-xs font-medium text-navex-ink">
+                  {t("admin.role")}
+                  <select value={userEditForm.role} onChange={(ev) => setUserEditForm((f) => ({ ...f, role: ev.target.value as Role }))} className={CHAMP}>
+                    {ROLES_CREABLES.map((r) => <option key={r.value} value={r.value}>{t(r.label)}</option>)}
+                  </select>
+                </label>
+                <label className="block text-xs font-medium text-navex-ink">
+                  {t("admin.compte")}
+                  <select value={userEditForm.actif ? "true" : "false"} onChange={(ev) => setUserEditForm((f) => ({ ...f, actif: ev.target.value === "true" }))} className={CHAMP}>
+                    <option value="true">Actif</option>
+                    <option value="false">Inactif</option>
+                  </select>
+                </label>
+              </div>
+              <div className="flex gap-2">
+                <button type="submit" disabled={actionEnCours !== null}
+                  className="rounded-full bg-navex-red px-5 py-2 text-xs font-semibold text-white shadow-glow-red transition-all hover:bg-navex-red-dark disabled:opacity-50">
+                  {actionEnCours === userEditId ? t("commun.chargement") : t("admin.modifier")}
+                </button>
+                <button type="button" onClick={() => setUserEditId(null)}
+                  className="rounded-full border border-neutral-200 px-5 py-2 text-xs font-semibold text-neutral-500 transition-all hover:bg-navex-stone">
+                  {t("commun.annuler")}
+                </button>
+              </div>
+            </form>
+          )}
         </section>
       </main>
     </div>
