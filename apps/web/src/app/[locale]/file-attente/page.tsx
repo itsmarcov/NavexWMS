@@ -27,10 +27,10 @@ export default function PageFileAttente() {
     <div className="min-h-dvh">
       <AppHeader />
       <main className="mx-auto max-w-4xl px-4 py-8 space-y-6">
-        <h1 className="text-xl font-bold">{t("file_attente.titre")}</h1>
+        <h1 className="text-xl font-bold text-navex-ink">{t("file_attente.titre")}</h1>
 
         {erreur && (
-          <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+          <p role="alert" className="rounded-lg bg-navex-red-soft px-3 py-2 text-sm text-navex-red-dark">
             {erreur}
           </p>
         )}
@@ -40,7 +40,7 @@ export default function PageFileAttente() {
         )}
 
         {demandes?.length === 0 && (
-          <div className="rounded-xl bg-white p-8 text-center shadow-sm ring-1 ring-neutral-200">
+          <div className="rounded-2xl bg-white p-8 text-center shadow-sm ring-1 ring-neutral-200">
             <p className="text-sm text-neutral-500">{t("file_attente.vide")}</p>
           </div>
         )}
@@ -50,13 +50,13 @@ export default function PageFileAttente() {
             const enAttente = d.produits?.filter((p) => p.statut_validation === "en_attente").length ?? 0;
             const approuves = d.produits?.filter((p) => p.statut_validation === "approuve").length ?? 0;
             const refuses = d.produits?.filter((p) => p.statut_validation === "refuse").length ?? 0;
-            const total = d._count?.produits ?? d.produits?.length ?? 0;
+            const totalP = d._count?.produits ?? d.produits?.length ?? 0;
 
             return (
-              <li key={d.id} className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-neutral-200">
+              <li key={d.id} className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-neutral-200">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div className="min-w-40 flex-1 space-y-1">
-                    <p className="font-semibold" dir="ltr">
+                    <p className="font-semibold text-navex-ink" dir="ltr">
                       <Link href={`/mes-demandes/${d.id}`} className="hover:underline">
                         {d.reference}
                       </Link>
@@ -71,7 +71,7 @@ export default function PageFileAttente() {
                     <p className="text-xs text-neutral-500" dir="ltr">
                       {t("file_attente.progression", {
                         traites: approuves + refuses,
-                        total,
+                        total: totalP,
                       })}
                     </p>
                   </div>
@@ -79,13 +79,13 @@ export default function PageFileAttente() {
 
                 {/* Compteurs par décision */}
                 <div className="mt-3 flex flex-wrap gap-2 text-xs" dir={locale === "ar" ? "rtl" : "ltr"}>
-                  <span className="rounded-full bg-orange-100 px-2.5 py-1 font-medium text-orange-800">
+                  <span className="rounded-full bg-navex-red-soft px-2.5 py-1 font-medium text-navex-red-dark">
                     {enAttente} {t("file_attente.a_traiter")}
                   </span>
-                  <span className="rounded-full bg-green-100 px-2.5 py-1 font-medium text-green-800">
+                  <span className="rounded-full bg-navex-stone px-2.5 py-1 font-medium text-navex-ink">
                     {approuves} {t("file_attente.approuves")}
                   </span>
-                  <span className="rounded-full bg-red-100 px-2.5 py-1 font-medium text-red-800">
+                  <span className="rounded-full bg-navex-red px-2.5 py-1 font-medium text-white">
                     {refuses} {t("file_attente.refuses")}
                   </span>
                 </div>

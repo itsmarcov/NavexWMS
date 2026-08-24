@@ -39,10 +39,8 @@ export default function PageDechargeEntrepot() {
   useEffect(charger, [charger]);
 
   const recue = decharge?.mouvements.some((m) => m.type_evenement === "reception_confirmee") ?? false;
-  const positionnee =
-    decharge?.mouvements.some((m) => m.type_evenement === "repositionnement") ?? false;
+  const positionnee = decharge?.mouvements.some((m) => m.type_evenement === "repositionnement") ?? false;
 
-  // Charge les emplacements libres uniquement quand le positionnement devient possible.
   useEffect(() => {
     if (recue && !positionnee) {
       listerEmplacements(true).then(setEmplacements).catch(() => undefined);
@@ -94,12 +92,12 @@ export default function PageDechargeEntrepot() {
         )}
 
         {erreur && (
-          <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+          <p role="alert" className="rounded-lg bg-navex-red-soft px-3 py-2 text-sm text-navex-red-dark">
             {erreur}
           </p>
         )}
         {succes && (
-          <p role="status" className="rounded-lg bg-green-50 px-3 py-2 text-sm text-green-800">
+          <p role="status" className="rounded-lg bg-navex-stone px-3 py-2 text-sm text-navex-ink ring-1 ring-neutral-200">
             {succes}
           </p>
         )}
@@ -107,35 +105,35 @@ export default function PageDechargeEntrepot() {
         {decharge && (
           <>
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <h1 className="text-xl font-bold" dir="ltr">
+              <h1 className="text-xl font-bold text-navex-ink" dir="ltr">
                 {t("demandes.decharge_numero", { numero: decharge.numero_decharge })}
               </h1>
               <StatusBadge statut={decharge.statut} />
             </div>
 
             {/* Informations */}
-            <section className="grid grid-cols-1 gap-4 rounded-xl bg-white p-5 shadow-sm ring-1 ring-neutral-200 sm:grid-cols-3">
+            <section className="grid grid-cols-1 gap-4 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-neutral-200 sm:grid-cols-3">
               <div>
                 <p className="text-xs uppercase text-neutral-400">{t("demandes.reference")}</p>
-                <p className="mt-1 font-medium" dir="ltr">
+                <p className="mt-1 font-medium text-navex-ink" dir="ltr">
                   {decharge.demande.reference}
                 </p>
               </div>
               <div>
                 <p className="text-xs uppercase text-neutral-400">{t("demandes.expediteur_col")}</p>
-                <p className="mt-1 font-medium">{decharge.expediteur_nom}</p>
+                <p className="mt-1 font-medium text-navex-ink">{decharge.expediteur_nom}</p>
               </div>
               <div>
                 <p className="text-xs uppercase text-neutral-400">{t("file_attente.produits_approuves")}</p>
-                <p className="mt-1 font-medium" dir="ltr">
+                <p className="mt-1 font-medium text-navex-ink" dir="ltr">
                   {decharge.produits.length}
                 </p>
               </div>
             </section>
 
-            {/* Produits approuvés reçus */}
-            <section className="overflow-x-auto rounded-xl bg-white p-5 shadow-sm ring-1 ring-neutral-200">
-              <h2 className="mb-3 text-sm font-semibold">{t("entrepot.marchandise_recue")}</h2>
+            {/* Produits */}
+            <section className="overflow-x-auto rounded-2xl bg-white p-5 shadow-sm ring-1 ring-neutral-200">
+              <h2 className="mb-3 text-sm font-semibold text-navex-ink">{t("entrepot.marchandise_recue")}</h2>
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-neutral-200 text-xs uppercase text-neutral-500">
@@ -148,16 +146,16 @@ export default function PageDechargeEntrepot() {
                 <tbody>
                   {decharge.produits.map((p) => (
                     <tr key={p.id} className="border-b border-neutral-100">
-                      <td className="py-2" dir="ltr">
+                      <td className="py-2 text-navex-ink" dir="ltr">
                         {p.sku_code}
                       </td>
-                      <td className="py-2">
+                      <td className="py-2 text-navex-ink">
                         {p.designation} {p.fragile && <span title={t("produit.fragile")}>⚠</span>}
                       </td>
-                      <td className="py-2 text-end" dir="ltr">
+                      <td className="py-2 text-end text-navex-ink" dir="ltr">
                         {p.longueur_cm}×{p.largeur_cm}×{p.hauteur_cm}
                       </td>
-                      <td className="py-2 text-end" dir="ltr">
+                      <td className="py-2 text-end text-navex-ink" dir="ltr">
                         {p.quantite}
                       </td>
                     </tr>
@@ -166,24 +164,24 @@ export default function PageDechargeEntrepot() {
               </table>
             </section>
 
-            {/* Actions : réception puis positionnement */}
-            <section className="space-y-4 rounded-xl bg-white p-5 shadow-sm ring-1 ring-neutral-200">
-              <h2 className="text-sm font-semibold">{t("entrepot.actions_titre")}</h2>
+            {/* Actions */}
+            <section className="space-y-4 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-neutral-200">
+              <h2 className="text-sm font-semibold text-navex-ink">{t("entrepot.actions_titre")}</h2>
 
               {!recue && (
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <textarea
                     value={notesReception}
                     onChange={(e) => setNotesReception(e.target.value)}
                     rows={2}
                     maxLength={500}
                     placeholder={t("entrepot.notes_placeholder")}
-                    className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-neutral-900 focus:outline-none"
+                    className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-navex-ink focus:outline-none focus:ring-1 focus:ring-navex-ink"
                   />
                   <button
                     onClick={confirmerReception}
                     disabled={enCours || decharge.statut !== "scannee"}
-                    className="rounded-lg bg-green-700 px-4 py-2 text-sm font-semibold text-white hover:bg-green-600 disabled:opacity-50"
+                    className="rounded-full bg-navex-red px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-navex-red-dark disabled:opacity-50"
                   >
                     ✓ {t("entrepot.confirmer_reception")}
                   </button>
@@ -195,7 +193,7 @@ export default function PageDechargeEntrepot() {
                   <select
                     value={emplacementChoisi}
                     onChange={(e) => setEmplacementChoisi(e.target.value)}
-                    className="rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-neutral-900 focus:outline-none"
+                    className="rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-navex-ink focus:outline-none focus:ring-1 focus:ring-navex-ink"
                     aria-label={t("entrepot.choisir_emplacement")}
                   >
                     <option value="">{t("entrepot.choisir_emplacement")}</option>
@@ -217,38 +215,38 @@ export default function PageDechargeEntrepot() {
                   <button
                     onClick={positionner}
                     disabled={!emplacementChoisi || enCours}
-                    className="rounded-lg bg-sky-700 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-600 disabled:opacity-50"
+                    className="rounded-full bg-navex-ink px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-navex-ink/80 disabled:opacity-50"
                   >
                     📍 {t("entrepot.positionner")}
                   </button>
                   {emplacements.length === 0 && (
-                    <span className="text-xs font-medium text-red-700">{t("erreurs.aucun_emplacement_libre")}</span>
+                    <span className="text-xs font-medium text-navex-red">{t("erreurs.aucun_emplacement_libre")}</span>
                   )}
                 </div>
               )}
 
               {recue && positionnee && (
-                <p className="rounded-lg bg-green-50 px-3 py-2 text-sm font-medium text-green-800">
+                <p className="rounded-lg bg-navex-stone px-3 py-2 text-sm font-medium text-navex-ink ring-1 ring-neutral-200">
                   {t("entrepot.terminee")}
                 </p>
               )}
             </section>
 
-            {/* Timeline des mouvements */}
-            <section className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-neutral-200">
-              <h2 className="mb-4 text-sm font-semibold">{t("entrepot.timeline_titre")}</h2>
+            {/* Timeline */}
+            <section className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-neutral-200">
+              <h2 className="mb-4 text-sm font-semibold text-navex-ink">{t("entrepot.timeline_titre")}</h2>
               <ol className="space-y-4">
                 {decharge.mouvements.map((m) => (
                   <li key={m.id} className="flex gap-3">
                     <span
-                      className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-neutral-900"
+                      className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-navex-red"
                       aria-hidden
                     />
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium">
+                      <p className="text-sm font-medium text-navex-ink">
                         {t(`evenements.${m.type_evenement}`)}
                         {m.emplacement && (
-                          <span className="ms-2 rounded bg-neutral-100 px-1.5 py-0.5 font-mono text-xs" dir="ltr">
+                          <span className="ms-2 rounded bg-navex-stone px-1.5 py-0.5 font-mono text-xs text-navex-ink" dir="ltr">
                             {m.emplacement.zone}-{m.emplacement.allee}-{m.emplacement.rack}-
                             {m.emplacement.niveau}
                           </span>
@@ -267,7 +265,7 @@ export default function PageDechargeEntrepot() {
               </ol>
             </section>
 
-            <Link href="/entrepot" className="inline-block text-xs text-neutral-500 underline hover:text-neutral-800">
+            <Link href="/entrepot" className="inline-block text-xs text-neutral-500 underline hover:text-navex-ink">
               ← {t("commun.retour")}
             </Link>
           </>

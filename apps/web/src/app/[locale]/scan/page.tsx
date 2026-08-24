@@ -19,8 +19,6 @@ export default function PageScan() {
   const lance = useRef(false);
 
   useEffect(() => {
-    // Jeton transmis en query string (?t=…) : un JWT contient des points,
-    // ce qui le rendrait invisible au middleware s'il était dans le chemin.
     const token = new URLSearchParams(window.location.search).get("t") ?? "";
     if (lance.current) return;
     lance.current = true;
@@ -36,26 +34,29 @@ export default function PageScan() {
   }, []);
 
   return (
-    <div className="min-h-dvh">
+    <div className="min-h-dvh bg-navex-stone">
       <AppHeader />
       <main className="mx-auto max-w-xl px-4 py-10 space-y-6">
-        <h1 className="text-xl font-bold">{t("scan.titre")}</h1>
+        <h1 className="text-xl font-bold text-navex-ink">{t("scan.titre")}</h1>
 
         {etat.kind === "chargement" && (
-          <p className="text-sm text-neutral-500">{t("commun.chargement")}</p>
+          <div className="rounded-2xl bg-white p-6 text-center shadow-sm ring-1 ring-neutral-200">
+            <div className="mx-auto mb-3 h-8 w-8 animate-spin rounded-full border-2 border-navex-red border-t-transparent" />
+            <p className="text-sm text-neutral-500">{t("commun.chargement")}</p>
+          </div>
         )}
 
         {etat.kind === "erreur" && (
-          <div className="space-y-4 rounded-xl bg-white p-6 text-center shadow-sm ring-1 ring-red-200">
-            <p className="text-4xl" aria-hidden>
+          <div className="space-y-4 rounded-2xl bg-white p-6 text-center shadow-sm ring-1 ring-navex-red/30">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-navex-red text-2xl text-white">
               ✗
-            </p>
-            <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm font-medium text-red-700">
+            </div>
+            <p role="alert" className="rounded-lg bg-navex-red-soft px-3 py-2 text-sm font-medium text-navex-red-dark">
               {etat.code && etat.code.startsWith("erreurs.") ? t(etat.code) : messageErreur(t, new Error("generique"))}
             </p>
             <Link
               href="/entrepot"
-              className="inline-block rounded-lg border border-neutral-900 px-4 py-2 text-sm font-semibold hover:bg-neutral-100"
+              className="inline-block rounded-full border border-navex-ink px-4 py-2 text-sm font-semibold text-navex-ink transition-colors hover:bg-navex-stone"
             >
               {t("entrepot.retour_tableau")}
             </Link>
@@ -63,34 +64,37 @@ export default function PageScan() {
         )}
 
         {etat.kind === "ok" && (
-          <div className="space-y-5 rounded-xl bg-white p-6 shadow-sm ring-1 ring-green-200">
+          <div className="space-y-5 rounded-2xl bg-white p-6 shadow-sm ring-1 ring-navex-red/30">
             <div className="flex items-center gap-3">
-              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100 text-xl text-green-700" aria-hidden>
+              <span
+                className="flex h-12 w-12 items-center justify-center rounded-full bg-navex-red text-xl text-white"
+                aria-hidden
+              >
                 ✓
               </span>
-              <p className="font-semibold text-green-800">{t("scan.arrivee_confirmee")}</p>
+              <p className="font-semibold text-navex-ink">{t("scan.arrivee_confirmee")}</p>
             </div>
 
             <dl className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div>
                 <dt className="text-xs uppercase text-neutral-400">{t("demandes.decharge_col")}</dt>
-                <dd className="mt-0.5 font-medium" dir="ltr">
+                <dd className="mt-0.5 font-medium text-navex-ink" dir="ltr">
                   {etat.resultat.numero_decharge}
                 </dd>
               </div>
               <div>
                 <dt className="text-xs uppercase text-neutral-400">{t("demandes.reference")}</dt>
-                <dd className="mt-0.5 font-medium" dir="ltr">
+                <dd className="mt-0.5 font-medium text-navex-ink" dir="ltr">
                   {etat.resultat.demande_reference}
                 </dd>
               </div>
               <div>
                 <dt className="text-xs uppercase text-neutral-400">{t("demandes.expediteur_col")}</dt>
-                <dd className="mt-0.5">{etat.resultat.expediteur_nom}</dd>
+                <dd className="mt-0.5 text-navex-ink">{etat.resultat.expediteur_nom}</dd>
               </div>
               <div>
                 <dt className="text-xs uppercase text-neutral-400">{t("file_attente.produits_approuves")}</dt>
-                <dd className="mt-0.5" dir="ltr">
+                <dd className="mt-0.5 text-navex-ink" dir="ltr">
                   {etat.resultat.nb_produits}
                 </dd>
               </div>
@@ -98,7 +102,7 @@ export default function PageScan() {
 
             <Link
               href={`/entrepot/decharges/${etat.resultat.decharge_id}`}
-              className="block rounded-lg bg-neutral-900 px-4 py-2.5 text-center text-sm font-semibold text-white hover:bg-neutral-700"
+              className="block rounded-full bg-navex-red px-4 py-2.5 text-center text-sm font-semibold text-white transition-colors hover:bg-navex-red-dark"
             >
               {t("entrepot.traiter_decharge")}
             </Link>

@@ -117,26 +117,26 @@ export default function PageNouvelleDemande() {
   const totalPoids = produits.reduce((somme, p) => somme + (Number(p.poids_kg) || 0) * (Number(p.quantite) || 0), 0);
 
   const champClasse =
-    "mt-1 block w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm shadow-sm focus:border-neutral-900 focus:outline-none focus:ring-1 focus:ring-neutral-900";
+    "mt-1 block w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-neutral-400 focus:border-navex-ink focus:outline-none focus:ring-1 focus:ring-navex-ink";
 
   return (
     <div className="min-h-dvh">
       <AppHeader />
-      <main className="mx-auto max-w-3xl px-4 py-8">
-        <h1 className="text-xl font-bold">{t("wizard.titre")}</h1>
+      <main className="mx-auto max-w-3xl px-4 py-8 space-y-6">
+        <h1 className="text-xl font-bold text-navex-ink">{t("wizard.titre")}</h1>
 
         {/* Indicateur d'étapes */}
-        <ol className="mt-6 flex items-center gap-2">
+        <ol className="flex items-center gap-2">
           {etapes.map((label, i) => (
             <li key={label} className="flex flex-1 items-center gap-2">
               <span
                 className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
-                  i <= etape ? "bg-neutral-900 text-white" : "bg-neutral-200 text-neutral-500"
+                  i <= etape ? "bg-navex-red text-white" : "bg-navex-stone text-neutral-500"
                 }`}
               >
                 {i + 1}
               </span>
-              <span className={`text-xs ${i <= etape ? "font-semibold text-neutral-900" : "text-neutral-400"}`}>
+              <span className={`text-xs ${i <= etape ? "font-semibold text-navex-ink" : "text-neutral-400"}`}>
                 {label}
               </span>
               {i < etapes.length - 1 && <span className="h-px flex-1 bg-neutral-200" />}
@@ -145,23 +145,23 @@ export default function PageNouvelleDemande() {
         </ol>
 
         {erreur && (
-          <p role="alert" className="mt-6 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+          <p role="alert" className="rounded-lg bg-navex-red-soft px-3 py-2 text-sm text-navex-red-dark">
             {erreur}
           </p>
         )}
 
         {/* Étape 1 : produits */}
         {etape === 0 && (
-          <section className="mt-6 space-y-4">
+          <section className="space-y-4">
             {produits.map((p, index) => (
-              <article key={index} className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-neutral-200">
+              <article key={index} className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-neutral-200">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-sm font-semibold">{tProduit("carte", { n: index + 1 })}</h2>
+                  <h2 className="text-sm font-semibold text-navex-ink">{tProduit("carte", { n: index + 1 })}</h2>
                   {produits.length > 1 && (
                     <button
                       type="button"
                       onClick={() => setProduits((anciens) => anciens.filter((_, i) => i !== index))}
-                      className="text-xs font-medium text-red-600 hover:text-red-800"
+                      className="text-xs font-medium text-navex-red hover:text-navex-red-dark"
                     >
                       {t("wizard.supprimer_produit")}
                     </button>
@@ -169,100 +169,47 @@ export default function PageNouvelleDemande() {
                 </div>
 
                 <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  <label className="block text-sm font-medium">
+                  <label className="block text-sm font-medium text-navex-ink">
                     {tProduit("sku")}
-                    <input
-                      dir="ltr"
-                      value={p.sku_code}
-                      onChange={(e) => majProduit(index, { sku_code: e.target.value })}
-                      className={champClasse}
-                    />
+                    <input dir="ltr" value={p.sku_code} onChange={(e) => majProduit(index, { sku_code: e.target.value })} className={champClasse} />
                   </label>
-                  <label className="block text-sm font-medium">
+                  <label className="block text-sm font-medium text-navex-ink">
                     {tProduit("designation")}
-                    <input
-                      value={p.designation}
-                      onChange={(e) => majProduit(index, { designation: e.target.value })}
-                      className={champClasse}
-                    />
+                    <input value={p.designation} onChange={(e) => majProduit(index, { designation: e.target.value })} className={champClasse} />
                   </label>
-                  <label className="block text-sm font-medium">
+                  <label className="block text-sm font-medium text-navex-ink">
                     {tProduit("longueur")}
-                    <input
-                      type="number"
-                      min="0.1"
-                      step="0.1"
-                      dir="ltr"
-                      value={p.longueur_cm}
-                      onChange={(e) => majProduit(index, { longueur_cm: e.target.value })}
-                      className={champClasse}
-                    />
+                    <input type="number" min="0.1" step="0.1" dir="ltr" value={p.longueur_cm} onChange={(e) => majProduit(index, { longueur_cm: e.target.value })} className={champClasse} />
                   </label>
-                  <label className="block text-sm font-medium">
+                  <label className="block text-sm font-medium text-navex-ink">
                     {tProduit("largeur")}
-                    <input
-                      type="number"
-                      min="0.1"
-                      step="0.1"
-                      dir="ltr"
-                      value={p.largeur_cm}
-                      onChange={(e) => majProduit(index, { largeur_cm: e.target.value })}
-                      className={champClasse}
-                    />
+                    <input type="number" min="0.1" step="0.1" dir="ltr" value={p.largeur_cm} onChange={(e) => majProduit(index, { largeur_cm: e.target.value })} className={champClasse} />
                   </label>
-                  <label className="block text-sm font-medium">
+                  <label className="block text-sm font-medium text-navex-ink">
                     {tProduit("hauteur")}
-                    <input
-                      type="number"
-                      min="0.1"
-                      step="0.1"
-                      dir="ltr"
-                      value={p.hauteur_cm}
-                      onChange={(e) => majProduit(index, { hauteur_cm: e.target.value })}
-                      className={champClasse}
-                    />
+                    <input type="number" min="0.1" step="0.1" dir="ltr" value={p.hauteur_cm} onChange={(e) => majProduit(index, { hauteur_cm: e.target.value })} className={champClasse} />
                   </label>
-                  <label className="block text-sm font-medium">
+                  <label className="block text-sm font-medium text-navex-ink">
                     {tProduit("poids")}
-                    <input
-                      type="number"
-                      min="0.01"
-                      step="0.01"
-                      dir="ltr"
-                      value={p.poids_kg}
-                      onChange={(e) => majProduit(index, { poids_kg: e.target.value })}
-                      className={champClasse}
-                    />
+                    <input type="number" min="0.01" step="0.01" dir="ltr" value={p.poids_kg} onChange={(e) => majProduit(index, { poids_kg: e.target.value })} className={champClasse} />
                   </label>
-                  <label className="block text-sm font-medium">
+                  <label className="block text-sm font-medium text-navex-ink">
                     {tProduit("type_emballage")}
-                    <select
-                      value={p.type_emballage}
-                      onChange={(e) => majProduit(index, { type_emballage: e.target.value as TypeEmballageDTO })}
-                      className={champClasse}
-                    >
+                    <select value={p.type_emballage} onChange={(e) => majProduit(index, { type_emballage: e.target.value as TypeEmballageDTO })} className={champClasse}>
                       <option value="carton">{tProduit("emballage_carton")}</option>
                       <option value="palette">{tProduit("emballage_palette")}</option>
                       <option value="sac">{tProduit("emballage_sac")}</option>
                       <option value="autre">{tProduit("emballage_autre")}</option>
                     </select>
                   </label>
-                  <label className="block text-sm font-medium">
+                  <label className="block text-sm font-medium text-navex-ink">
                     {tProduit("quantite")}
-                    <input
-                      type="number"
-                      min="1"
-                      step="1"
-                      dir="ltr"
-                      value={p.quantite}
-                      onChange={(e) => majProduit(index, { quantite: e.target.value })}
-                      className={champClasse}
-                    />
+                    <input type="number" min="1" step="1" dir="ltr" value={p.quantite} onChange={(e) => majProduit(index, { quantite: e.target.value })} className={champClasse} />
                   </label>
                 </div>
 
                 <div className="mt-4 flex flex-wrap items-center gap-4">
-                  <label className="flex items-center gap-2 text-sm font-medium">
+                  <label className="flex items-center gap-2 text-sm font-medium text-navex-ink">
                     <input
                       type="checkbox"
                       checked={p.fragile}
@@ -273,7 +220,7 @@ export default function PageNouvelleDemande() {
                   </label>
 
                   <label className="flex items-center gap-2 text-sm">
-                    <span className="font-medium">{tProduit("photo")}</span>
+                    <span className="font-medium text-navex-ink">{tProduit("photo")}</span>
                     <input
                       type="file"
                       accept="image/jpeg,image/png,image/webp"
@@ -281,10 +228,10 @@ export default function PageNouvelleDemande() {
                         const f = e.target.files?.[0];
                         if (f) void televerserPhoto(index, f);
                       }}
-                      className="text-xs text-neutral-500 file:me-2 file:rounded-lg file:border-0 file:bg-neutral-100 file:px-3 file:py-1.5 file:text-xs file:font-semibold hover:file:bg-neutral-200"
+                      className="text-xs text-neutral-500 file:me-2 file:rounded-full file:border-0 file:bg-navex-red-soft file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-navex-red-dark hover:file:bg-navex-red/20"
                     />
                     {p.photo_nom && (
-                      <span className="text-xs text-emerald-700">
+                      <span className="text-xs text-navex-ink">
                         {p.photo_url ? tProduit("photo_ok") : `${tProduit("photo_envoi")} (${p.photo_nom})`}
                       </span>
                     )}
@@ -297,14 +244,14 @@ export default function PageNouvelleDemande() {
               <button
                 type="button"
                 onClick={() => setProduits((anciens) => [...anciens, { ...PRODUIT_VIDE }])}
-                className="rounded-lg border border-dashed border-neutral-400 px-4 py-2 text-sm font-medium text-neutral-700 hover:border-neutral-600"
+                className="rounded-full border border-dashed border-neutral-400 px-4 py-2 text-sm font-medium text-navex-ink transition-colors hover:border-navex-ink"
               >
                 {t("wizard.ajouter_produit")}
               </button>
               <button
                 type="button"
                 onClick={etapeSuivante}
-                className="rounded-lg bg-neutral-900 px-4 py-2 text-sm font-semibold text-white hover:bg-neutral-700"
+                className="rounded-full bg-navex-red px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-navex-red-dark"
               >
                 {t("wizard.suivant")}
               </button>
@@ -314,8 +261,8 @@ export default function PageNouvelleDemande() {
 
         {/* Étape 2 : récapitulatif */}
         {etape === 1 && (
-          <section className="mt-6 space-y-4">
-            <div className="overflow-x-auto rounded-xl bg-white p-4 shadow-sm ring-1 ring-neutral-200">
+          <section className="space-y-4">
+            <div className="overflow-x-auto rounded-2xl bg-white p-4 shadow-sm ring-1 ring-neutral-200">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-neutral-200 text-start text-xs uppercase text-neutral-500">
@@ -329,19 +276,19 @@ export default function PageNouvelleDemande() {
                 <tbody>
                   {produits.map((p, i) => (
                     <tr key={i} className="border-b border-neutral-100">
-                      <td className="py-2" dir="ltr">
+                      <td className="py-2 text-navex-ink" dir="ltr">
                         {p.sku_code}
                       </td>
-                      <td className="py-2">
+                      <td className="py-2 text-navex-ink">
                         {p.designation} {p.fragile && <span title="">⚠</span>}
                       </td>
-                      <td className="py-2 text-end" dir="ltr">
+                      <td className="py-2 text-end text-navex-ink" dir="ltr">
                         {Number(p.longueur_cm)}×{Number(p.largeur_cm)}×{Number(p.hauteur_cm)}
                       </td>
-                      <td className="py-2 text-end" dir="ltr">
+                      <td className="py-2 text-end text-navex-ink" dir="ltr">
                         {Number(p.poids_kg)}
                       </td>
-                      <td className="py-2 text-end" dir="ltr">
+                      <td className="py-2 text-end text-navex-ink" dir="ltr">
                         {Number(p.quantite)}
                       </td>
                     </tr>
@@ -357,14 +304,14 @@ export default function PageNouvelleDemande() {
               <button
                 type="button"
                 onClick={() => setEtape(0)}
-                className="rounded-lg border border-neutral-300 px-4 py-2 text-sm font-medium hover:bg-neutral-100"
+                className="rounded-full border border-navex-ink px-4 py-2 text-sm font-medium text-navex-ink transition-colors hover:bg-navex-stone"
               >
                 {t("wizard.precedent")}
               </button>
               <button
                 type="button"
                 onClick={etapeSuivante}
-                className="rounded-lg bg-neutral-900 px-4 py-2 text-sm font-semibold text-white hover:bg-neutral-700"
+                className="rounded-full bg-navex-red px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-navex-red-dark"
               >
                 {t("wizard.suivant")}
               </button>
@@ -374,41 +321,43 @@ export default function PageNouvelleDemande() {
 
         {/* Étape 3 : envoi / confirmation */}
         {etape === 2 && (
-          <section className="mt-6 rounded-xl bg-white p-8 text-center shadow-sm ring-1 ring-neutral-200">
+          <section className="rounded-2xl bg-white p-8 text-center shadow-sm ring-1 ring-neutral-200">
             {referenceCreee ? (
-              <>
-                <p className="text-4xl">✅</p>
-                <p className="mt-3 text-sm text-neutral-700">
+              <div className="space-y-4">
+                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-navex-red text-2xl text-white">
+                  ✓
+                </div>
+                <p className="text-sm text-navex-ink">
                   {t("wizard.succes", { reference: referenceCreee })}
                 </p>
-                <Link
+                <a
                   href="/mes-demandes"
-                  className="mt-5 inline-block rounded-lg bg-neutral-900 px-4 py-2 text-sm font-semibold text-white hover:bg-neutral-700"
+                  className="inline-block rounded-full bg-navex-red px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-navex-red-dark"
                 >
                   {t("nav.mes_demandes")}
-                </Link>
-              </>
+                </a>
+              </div>
             ) : (
-              <>
-                <p className="text-sm text-neutral-700">
+              <div className="space-y-4">
+                <p className="text-sm text-navex-ink">
                   {enEnvoi ? t("wizard.envoi_cours") : t("wizard.recap_vide")}
                 </p>
                 {!enEnvoi && (
                   <button
                     type="button"
                     onClick={envoyer}
-                    className="mt-4 rounded-lg bg-neutral-900 px-4 py-2 text-sm font-semibold text-white hover:bg-neutral-700"
+                    className="rounded-full bg-navex-red px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-navex-red-dark"
                   >
                     {t("wizard.envoyer")}
                   </button>
                 )}
-              </>
+              </div>
             )}
           </section>
         )}
 
-        <p className="mt-6 text-start">
-          <Link href="/mes-demandes" className="text-xs text-neutral-500 underline hover:text-neutral-800">
+        <p className="text-start">
+          <Link href="/mes-demandes" className="text-xs text-neutral-500 underline hover:text-navex-ink">
             ← {t("commun.retour")}
           </Link>
         </p>

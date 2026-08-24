@@ -18,11 +18,19 @@ import { formaterDate, messageErreur } from "@/lib/ui";
 import { AppHeader } from "@/components/app-header";
 import { StatusBadge } from "@/components/status-badge";
 
-function CarteKpi({ label, valeur }: { label: string; valeur: number }) {
+function CarteKpi({ label, valeur, hero }: { label: string; valeur: number; hero?: boolean }) {
   return (
-    <div className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-neutral-200">
-      <p className="text-xs uppercase tracking-wide text-neutral-400">{label}</p>
-      <p className="mt-1 text-2xl font-bold text-neutral-900" dir="ltr">
+    <div
+      className={`rounded-2xl p-5 shadow-sm ${
+        hero
+          ? "bg-gradient-to-br from-navex-red to-navex-red-dark text-white"
+          : "bg-white ring-1 ring-neutral-200"
+      }`}
+    >
+      <p className={`text-xs uppercase tracking-wide ${hero ? "text-white/70" : "text-neutral-400"}`}>
+        {label}
+      </p>
+      <p className={`mt-1 text-3xl font-bold ${hero ? "text-white" : "text-navex-ink"}`} dir="ltr">
         {valeur}
       </p>
     </div>
@@ -30,9 +38,9 @@ function CarteKpi({ label, valeur }: { label: string; valeur: number }) {
 }
 
 const ACTIONS_STATUT: Array<{ vers: StatutExpediteur; cle: string; classe: string }> = [
-  { vers: "actif", cle: "admin.activer", classe: "bg-green-700 hover:bg-green-600" },
-  { vers: "suspendu", cle: "admin.suspendre", classe: "bg-red-700 hover:bg-red-600" },
-  { vers: "en_attente", cle: "admin.remettre_attente", classe: "border border-neutral-400 hover:bg-neutral-100 !text-neutral-700" },
+  { vers: "actif", cle: "admin.activer", classe: "bg-navex-ink text-white hover:bg-navex-ink/80" },
+  { vers: "suspendu", cle: "admin.suspendre", classe: "bg-navex-red text-white hover:bg-navex-red-dark" },
+  { vers: "en_attente", cle: "admin.remettre_attente", classe: "border border-navex-ink text-navex-ink hover:bg-navex-stone" },
 ];
 
 export default function PageAdmin() {
@@ -76,15 +84,15 @@ export default function PageAdmin() {
     <div className="min-h-dvh">
       <AppHeader />
       <main className="mx-auto max-w-5xl px-4 py-8 space-y-8">
-        <h1 className="text-xl font-bold">{t("admin.titre")}</h1>
+        <h1 className="text-xl font-bold text-navex-ink">{t("admin.titre")}</h1>
 
         {erreur && (
-          <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+          <p role="alert" className="rounded-lg bg-navex-red-soft px-3 py-2 text-sm text-navex-red-dark">
             {erreur}
           </p>
         )}
         {succes && (
-          <p role="status" className="rounded-lg bg-green-50 px-3 py-2 text-sm text-green-800">
+          <p role="status" className="rounded-lg bg-navex-stone px-3 py-2 text-sm text-navex-ink ring-1 ring-neutral-200">
             {succes}
           </p>
         )}
@@ -93,21 +101,21 @@ export default function PageAdmin() {
         {stats && (
           <>
             <section>
-              <h2 className="mb-3 text-sm font-semibold">{t("admin.kpis_demandes")}</h2>
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                <CarteKpi label={t("statuts.en_attente")} valeur={stats.demandes_par_statut.en_attente} />
+              <h2 className="mb-3 text-sm font-semibold text-navex-ink">{t("admin.kpis_demandes")}</h2>
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+                <CarteKpi label={t("statuts.en_attente")} valeur={stats.demandes_par_statut.en_attente} hero />
                 <CarteKpi label={t("statuts.approuvee")} valeur={stats.demandes_par_statut.approuvee} />
                 <CarteKpi label={t("statuts.rejetee")} valeur={stats.demandes_par_statut.rejetee} />
                 <CarteKpi label={t("admin.produits_a_decider")} valeur={stats.produits_en_attente} />
               </div>
             </section>
 
-            <section className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-              <div className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-neutral-200">
+            <section className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+              <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-neutral-200">
                 <p className="text-xs uppercase tracking-wide text-neutral-400">
                   {t("admin.occupation_entrepot")}
                 </p>
-                <p className="mt-1 text-2xl font-bold" dir="ltr">
+                <p className="mt-1 text-3xl font-bold text-navex-ink" dir="ltr">
                   {stats.emplacements.total > 0
                     ? Math.round((stats.emplacements.occupes / stats.emplacements.total) * 100)
                     : 0}
@@ -124,9 +132,9 @@ export default function PageAdmin() {
         )}
 
         {/* Expéditeurs */}
-        <section className="rounded-xl bg-white shadow-sm ring-1 ring-neutral-200">
+        <section className="rounded-2xl bg-white shadow-sm ring-1 ring-neutral-200">
           <div className="border-b border-neutral-100 px-5 py-3">
-            <h2 className="text-sm font-semibold">{t("admin.expediteurs_titre")}</h2>
+            <h2 className="text-sm font-semibold text-navex-ink">{t("admin.expediteurs_titre")}</h2>
           </div>
 
           {!expediteurs && !erreur && (
@@ -137,7 +145,7 @@ export default function PageAdmin() {
             {(expediteurs ?? []).map((e) => (
               <li key={e.id} className="flex flex-wrap items-center justify-between gap-3 px-5 py-4">
                 <div className="min-w-48 space-y-0.5">
-                  <p className="font-medium">{e.nom_entreprise}</p>
+                  <p className="font-medium text-navex-ink">{e.nom_entreprise}</p>
                   <p className="text-xs text-neutral-500" dir="ltr">
                     {e.email} · {e.telephone}
                   </p>
@@ -154,7 +162,7 @@ export default function PageAdmin() {
                       key={a.vers}
                       onClick={() => appliquerStatut(e.id, a.vers)}
                       disabled={actionEnCours !== null}
-                      className={`rounded-lg px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-50 ${a.classe}`}
+                      className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors disabled:opacity-50 ${a.classe}`}
                     >
                       {t(a.cle)}
                     </button>
@@ -166,8 +174,8 @@ export default function PageAdmin() {
         </section>
 
         {/* Comptes utilisateurs */}
-        <section className="overflow-x-auto rounded-xl bg-white p-5 shadow-sm ring-1 ring-neutral-200">
-          <h2 className="mb-3 text-sm font-semibold">{t("admin.utilisateurs_titre")}</h2>
+        <section className="overflow-x-auto rounded-2xl bg-white p-5 shadow-sm ring-1 ring-neutral-200">
+          <h2 className="mb-3 text-sm font-semibold text-navex-ink">{t("admin.utilisateurs_titre")}</h2>
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-neutral-200 text-xs uppercase text-neutral-500">
@@ -181,15 +189,15 @@ export default function PageAdmin() {
             <tbody>
               {(utilisateurs ?? []).map((u) => (
                 <tr key={u.id} className="border-b border-neutral-100">
-                  <td className="py-2" dir="ltr">
+                  <td className="py-2 text-navex-ink" dir="ltr">
                     {u.email}
                   </td>
-                  <td className="py-2">{t(`roles.${u.role}`)}</td>
-                  <td className="py-2">{u.expediteur_nom ?? "—"}</td>
+                  <td className="py-2 text-navex-ink">{t(`roles.${u.role}`)}</td>
+                  <td className="py-2 text-navex-ink">{u.expediteur_nom ?? "—"}</td>
                   <td className="py-2">
                     <StatusBadge statut={u.actif ? "actif_compte" : "inactif"} />
                   </td>
-                  <td className="py-2">{formaterDate(u.date_creation, locale)}</td>
+                  <td className="py-2 text-navex-ink">{formaterDate(u.date_creation, locale)}</td>
                 </tr>
               ))}
             </tbody>

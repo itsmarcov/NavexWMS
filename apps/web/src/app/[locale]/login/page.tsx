@@ -49,20 +49,18 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="flex min-h-dvh flex-col items-center justify-center px-4">
-      <div className="w-full max-w-md">
-        <div className="mb-8 flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-neutral-900">{t("commun.nom_app")}</h1>
-          <LanguageSwitcher />
-        </div>
+    <main className="flex min-h-dvh flex-col items-center justify-center bg-navex-stone px-4">
+      <div className="w-full max-w-md space-y-8">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/navex-logo.png" alt="Navex" className="mx-auto h-10 w-auto" />
 
         <div className="rounded-2xl bg-white p-8 shadow-sm ring-1 ring-neutral-200">
-          <h2 className="text-lg font-semibold">{t("login.titre")}</h2>
+          <h1 className="text-lg font-semibold text-navex-ink">{t("login.titre")}</h1>
           <p className="mt-1 text-sm text-neutral-500">{t("login.soustitre")}</p>
 
           <form onSubmit={soumettre} className="mt-6 space-y-4">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium">
+              <label htmlFor="email" className="block text-sm font-medium text-navex-ink">
                 {t("login.email")}
               </label>
               <input
@@ -73,12 +71,12 @@ export default function LoginPage() {
                 autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="mt-1.5 block w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm shadow-sm focus:border-neutral-900 focus:outline-none focus:ring-1 focus:ring-neutral-900"
+                className="mt-1.5 block w-full rounded-lg border border-neutral-300 px-3 py-2.5 text-sm shadow-sm transition-colors placeholder:text-neutral-400 focus:border-navex-ink focus:outline-none focus:ring-1 focus:ring-navex-ink"
               />
             </div>
 
             <div>
-              <label htmlFor="mot_de_passe" className="block text-sm font-medium">
+              <label htmlFor="mot_de_passe" className="block text-sm font-medium text-navex-ink">
                 {t("login.mot_de_passe")}
               </label>
               <input
@@ -89,12 +87,12 @@ export default function LoginPage() {
                 autoComplete="current-password"
                 value={motDePasse}
                 onChange={(e) => setMotDePasse(e.target.value)}
-                className="mt-1.5 block w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm shadow-sm focus:border-neutral-900 focus:outline-none focus:ring-1 focus:ring-neutral-900"
+                className="mt-1.5 block w-full rounded-lg border border-neutral-300 px-3 py-2.5 text-sm shadow-sm transition-colors placeholder:text-neutral-400 focus:border-navex-ink focus:outline-none focus:ring-1 focus:ring-navex-ink"
               />
             </div>
 
             {erreur && (
-              <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+              <p role="alert" className="rounded-lg bg-navex-red-soft px-3 py-2 text-sm text-navex-red-dark">
                 {erreur}
               </p>
             )}
@@ -102,7 +100,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={enCours}
-              className="w-full rounded-lg bg-neutral-900 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-neutral-700 disabled:cursor-not-allowed disabled:opacity-50"
+              className="w-full rounded-full bg-navex-red px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-navex-red-dark disabled:cursor-not-allowed disabled:opacity-50"
             >
               {enCours ? t("commun.chargement") : t("login.valider")}
             </button>
@@ -110,9 +108,12 @@ export default function LoginPage() {
         </div>
 
         {/* Champ e-mail en LTR même en arabe — les identifiants restent lisibles */}
-        <p className="mt-4 text-center text-xs text-neutral-400" dir="ltr">
+        <p className="text-center text-xs text-neutral-400" dir="ltr">
           admin@navex.dz · Test@1234
         </p>
+        <div className="flex justify-center">
+          <LanguageSwitcher />
+        </div>
       </div>
     </main>
   );

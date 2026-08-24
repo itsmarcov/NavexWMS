@@ -28,7 +28,7 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"}>
-      <body className="min-h-dvh bg-neutral-50 text-neutral-900 antialiased">
+      <body className="min-h-dvh bg-navex-stone text-navex-ink antialiased">
         <NextIntlClientProvider locale={locale} messages={messages}>
           {children}
         </NextIntlClientProvider>

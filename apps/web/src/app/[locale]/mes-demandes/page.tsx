@@ -28,39 +28,39 @@ export default function PageMesDemandes() {
   return (
     <div className="min-h-dvh">
       <AppHeader />
-      <main className="mx-auto max-w-4xl px-4 py-8">
+      <main className="mx-auto max-w-4xl px-4 py-8 space-y-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h1 className="text-xl font-bold">{t("demandes.titre")}</h1>
-          <Link
+          <h1 className="text-xl font-bold text-navex-ink">{t("demandes.titre")}</h1>
+          <a
             href="/mes-demandes/nouvelle"
-            className="rounded-lg bg-neutral-900 px-4 py-2 text-sm font-semibold text-white hover:bg-neutral-700"
+            className="rounded-full bg-navex-red px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-navex-red-dark"
           >
             {t("demandes.nouvelle")}
-          </Link>
+          </a>
         </div>
 
         {erreur && (
-          <p role="alert" className="mt-6 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+          <p role="alert" className="rounded-lg bg-navex-red-soft px-3 py-2 text-sm text-navex-red-dark">
             {erreur}
           </p>
         )}
 
-        {!demandes && !erreur && <p className="mt-8 text-sm text-neutral-500">{t("commun.chargement")}</p>}
+        {!demandes && !erreur && <p className="text-sm text-neutral-500">{t("commun.chargement")}</p>}
 
         {demandes && demandes.length === 0 && (
-          <p className="mt-8 rounded-xl bg-white p-8 text-center text-sm text-neutral-500 ring-1 ring-neutral-200">
+          <p className="rounded-2xl bg-white p-8 text-center text-sm text-neutral-500 ring-1 ring-neutral-200">
             {t("demandes.vide")}
           </p>
         )}
 
         {demandes && demandes.length > 0 && (
-          <ul className="mt-6 space-y-3">
+          <ul className="space-y-3">
             {demandes.map((d) => (
-              <li key={d.id} className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-neutral-200">
+              <li key={d.id} className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-neutral-200">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="font-semibold" dir="ltr">
+                      <span className="font-semibold text-navex-ink" dir="ltr">
                         {d.reference}
                       </span>
                       <StatusBadge statut={d.statut} />
@@ -74,7 +74,7 @@ export default function PageMesDemandes() {
                     <div className="text-end text-xs text-neutral-500">
                       <span>{t("demandes.decharge_col")} : </span>
                       {d.decharge ? (
-                        <span className="font-medium text-neutral-800" dir="ltr">
+                        <span className="font-medium text-navex-ink" dir="ltr">
                           {d.decharge.numero_decharge}
                         </span>
                       ) : (
@@ -83,7 +83,7 @@ export default function PageMesDemandes() {
                     </div>
                     <Link
                       href={`/mes-demandes/${d.id}`}
-                      className="rounded-lg border border-neutral-300 px-3 py-1.5 text-sm font-medium hover:bg-neutral-100"
+                      className="rounded-full border border-navex-ink px-3 py-1.5 text-sm font-medium text-navex-ink transition-colors hover:bg-navex-stone"
                     >
                       {t("demandes.voir")}
                     </Link>

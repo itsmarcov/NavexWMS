@@ -11,13 +11,13 @@ import { AppHeader } from "@/components/app-header";
 function EtapeBadge({ evenements, libelle }: { evenements: string[]; libelle: string }) {
   if (!evenements.includes("reception_confirmee")) {
     return (
-      <span className="rounded-full bg-orange-100 px-2.5 py-1 text-xs font-medium text-orange-800">
+      <span className="rounded-full bg-navex-red-soft px-2.5 py-1 text-xs font-medium text-navex-red-dark">
         {libelle}
       </span>
     );
   }
   return (
-    <span className="rounded-full bg-sky-100 px-2.5 py-1 text-xs font-medium text-sky-800">
+    <span className="rounded-full bg-navex-ink px-2.5 py-1 text-xs font-medium text-white">
       {libelle}
     </span>
   );
@@ -31,7 +31,6 @@ export default function PageEntrepot() {
   const [token, setToken] = useState("");
   const [scanEnCours, setScanEnCours] = useState(false);
 
-  /** Résultat du dernier scan douchette (succès ou erreur riche). */
   const [dernierScan, setDernierScan] = useState<
     | { kind: "ok"; resultat: ScanResultDTO }
     | { kind: "erreur"; message: string; dechargeId?: string }
@@ -47,16 +46,10 @@ export default function PageEntrepot() {
 
   useEffect(charger, [charger]);
 
-  // Le poste de scan récupère le focus à l'ouverture et après chaque scan :
-  // la douchette saisit comme un clavier, le champ doit toujours écouter.
   useEffect(() => {
     champScan.current?.focus();
   }, []);
 
-  /**
-   * La douchette envoie le contenu du QR tel quel : soit l'URL complète
-   * encodée dans le PDF (…/fr/scan?t=<jwt>), soit un jeton brut.
-   */
   function extraireJeton(saisie: string) {
     const texte = saisie.trim();
     const correspondance = texte.match(/[?&]t=([^&\s]+)/);
@@ -105,17 +98,17 @@ export default function PageEntrepot() {
     <div className="min-h-dvh">
       <AppHeader />
       <main className="mx-auto max-w-4xl px-4 py-8 space-y-6">
-        <h1 className="text-xl font-bold">{t("entrepot.titre")}</h1>
+        <h1 className="text-xl font-bold text-navex-ink">{t("entrepot.titre")}</h1>
 
         {erreur && (
-          <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+          <p role="alert" className="rounded-lg bg-navex-red-soft px-3 py-2 text-sm text-navex-red-dark">
             {erreur}
           </p>
         )}
 
-        {/* Poste de scan : douchette (saisie clavier + Entrée) ou collage manuel */}
-        <section className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-neutral-200">
-          <h2 className="mb-3 text-sm font-semibold">{t("scan.titre")}</h2>
+        {/* Poste de scan douchette */}
+        <section className="rounded-2xl border-2 border-navex-red bg-navex-ink p-5 shadow-sm">
+          <h2 className="mb-3 text-sm font-semibold text-white">{t("scan.titre")}</h2>
           <div className="flex flex-wrap gap-2">
             <input
               ref={champScan}
@@ -125,25 +118,24 @@ export default function PageEntrepot() {
               placeholder={t("entrepot.token_placeholder")}
               dir="ltr"
               autoComplete="off"
-              className="min-w-60 flex-1 rounded-lg border border-neutral-300 px-3 py-2 font-mono text-xs focus:border-neutral-900 focus:outline-none"
+              className="min-w-60 flex-1 rounded-lg border border-neutral-600 bg-white/10 px-3 py-2.5 font-mono text-xs text-white placeholder:text-neutral-500 focus:border-navex-red focus:outline-none focus:ring-1 focus:ring-navex-red"
             />
             <button
               onClick={traiterScan}
               disabled={scanEnCours}
-              className="rounded-lg bg-neutral-900 px-4 py-2 text-sm font-semibold text-white hover:bg-neutral-700 disabled:opacity-50"
+              className="rounded-full bg-gradient-to-r from-navex-red to-navex-red-dark px-5 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50"
             >
               {scanEnCours ? t("commun.chargement") : t("scan.bouton")}
             </button>
           </div>
-          <p className="mt-2 text-xs text-neutral-500">{t("entrepot.scan_aide_douchette")}</p>
+          <p className="mt-2 text-xs text-neutral-400">{t("entrepot.scan_aide_douchette")}</p>
 
-          {/* Résultat du dernier scan, sans quitter le poste */}
           {dernierScan?.kind === "ok" && (
-            <div className="mt-4 space-y-2 rounded-lg bg-green-50 p-4 ring-1 ring-green-200">
-              <p className="flex items-center gap-2 text-sm font-semibold text-green-800">
+            <div className="mt-4 space-y-2 rounded-lg bg-navex-red-soft p-4 ring-1 ring-navex-red/30">
+              <p className="flex items-center gap-2 text-sm font-semibold text-navex-red-dark">
                 ✓ {t("scan.arrivee_confirmee")}
               </p>
-              <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-green-900">
+              <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-navex-ink">
                 <span dir="ltr">
                   {dernierScan.resultat.numero_decharge} · {dernierScan.resultat.demande_reference} ·{" "}
                   {dernierScan.resultat.expediteur_nom} · {dernierScan.resultat.nb_produits}{" "}
@@ -151,7 +143,7 @@ export default function PageEntrepot() {
                 </span>
                 <Link
                   href={`/entrepot/decharges/${dernierScan.resultat.decharge_id}`}
-                  className="font-semibold underline hover:text-green-700"
+                  className="font-semibold text-navex-red underline hover:text-navex-red-dark"
                 >
                   {t("entrepot.traiter_decharge")}
                 </Link>
@@ -160,14 +152,14 @@ export default function PageEntrepot() {
           )}
 
           {dernierScan?.kind === "erreur" && (
-            <div className="mt-4 rounded-lg bg-red-50 p-4 ring-1 ring-red-200">
-              <p role="alert" className="text-sm font-medium text-red-700">
+            <div className="mt-4 rounded-lg bg-navex-red/10 p-4 ring-1 ring-navex-red/30">
+              <p role="alert" className="text-sm font-medium text-navex-red">
                 ✗ {dernierScan.message}
               </p>
               {dernierScan.dechargeId && (
                 <Link
                   href={`/entrepot/decharges/${dernierScan.dechargeId}`}
-                  className="mt-1 inline-block text-xs font-semibold text-red-800 underline hover:text-red-600"
+                  className="mt-1 inline-block text-xs font-semibold text-navex-red underline hover:text-navex-red-dark"
                 >
                   {t("entrepot.traiter_decharge")}
                 </Link>
@@ -177,29 +169,29 @@ export default function PageEntrepot() {
         </section>
 
         {/* Compteurs */}
-        <section className="grid grid-cols-2 gap-3">
-          <div className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-orange-200">
+        <section className="grid grid-cols-2 gap-4">
+          <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-navex-red/20">
             <p className="text-xs uppercase tracking-wide text-neutral-400">
               {t("entrepot.attente_reception")}
             </p>
-            <p className="mt-1 text-2xl font-bold" dir="ltr">
+            <p className="mt-1 text-3xl font-bold text-navex-red" dir="ltr">
               {enAttenteReception}
             </p>
           </div>
-          <div className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-sky-200">
+          <div className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-navex-ink/10">
             <p className="text-xs uppercase tracking-wide text-neutral-400">
               {t("entrepot.attente_positionnement")}
             </p>
-            <p className="mt-1 text-2xl font-bold" dir="ltr">
+            <p className="mt-1 text-3xl font-bold text-navex-ink" dir="ltr">
               {enAttentePositionnement}
             </p>
           </div>
         </section>
 
         {/* File des décharges scannées */}
-        <section className="rounded-xl bg-white shadow-sm ring-1 ring-neutral-200">
+        <section className="rounded-2xl bg-white shadow-sm ring-1 ring-neutral-200">
           <div className="border-b border-neutral-100 px-5 py-3">
-            <h2 className="text-sm font-semibold">{t("entrepot.file_titre")}</h2>
+            <h2 className="text-sm font-semibold text-navex-ink">{t("entrepot.file_titre")}</h2>
           </div>
 
           {!decharges && !erreur && (
@@ -216,7 +208,7 @@ export default function PageEntrepot() {
                 <div className="space-y-0.5">
                   <Link
                     href={`/entrepot/decharges/${d.id}`}
-                    className="font-semibold hover:underline"
+                    className="font-semibold text-navex-ink hover:underline"
                     dir="ltr"
                   >
                     {d.numero_decharge}

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import type { UtilisateurDTO } from "@navex/contracts";
@@ -38,31 +39,35 @@ export function AppHeader() {
 
   return (
     <header className="flex flex-wrap items-center justify-between gap-3 border-b border-neutral-200 bg-white px-4 py-3">
-      <div className="flex items-center gap-4">
-        <Link href="/" className="text-lg font-bold text-neutral-900">
-          {t("commun.nom_app")}
+      <div className="flex items-center gap-5">
+        <Link href="/" className="flex shrink-0 items-center">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/navex-logo.png" alt="Navex" className="h-8 w-auto" />
         </Link>
         <nav className="flex items-center gap-1">
-          {liens.map((lien) => (
-            <Link
-              key={lien.href}
-              href={lien.href}
-              className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
-                pathname === lien.href
-                  ? "bg-neutral-900 text-white"
-                  : "text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900"
-              }`}
-            >
-              {lien.label}
-            </Link>
-          ))}
+          {liens.map((lien) => {
+            const actif = pathname === lien.href;
+            return (
+              <Link
+                key={lien.href}
+                href={lien.href}
+                className={`rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
+                  actif
+                    ? "bg-navex-red text-white"
+                    : "text-navex-ink hover:bg-navex-red-soft hover:text-navex-red"
+                }`}
+              >
+                {lien.label}
+              </Link>
+            );
+          })}
         </nav>
       </div>
       <div className="flex items-center gap-3">
         <LanguageSwitcher />
         <button
           onClick={deconnexion}
-          className="rounded-lg border border-neutral-300 px-3 py-1.5 text-sm font-medium hover:bg-neutral-100"
+          className="rounded-full border border-navex-ink px-3 py-1.5 text-sm font-medium text-navex-ink transition-colors hover:bg-navex-stone"
         >
           {t("commun.se_deconnecter")}
         </button>

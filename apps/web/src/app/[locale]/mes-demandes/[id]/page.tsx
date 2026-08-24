@@ -49,8 +49,7 @@ export default function PageDetailDemande() {
     utilisateurCourant().then(setUtilisateur).catch(() => undefined);
   }, [charger]);
 
-  const estAgent =
-    utilisateur?.role === "agent_commercial" || utilisateur?.role === "admin";
+  const estAgent = utilisateur?.role === "agent_commercial" || utilisateur?.role === "admin";
 
   async function decider(produit: ProduitDTO, decision: "approuve" | "refuse") {
     if (!demande) return;
@@ -122,7 +121,7 @@ export default function PageDetailDemande() {
       <div className="min-h-dvh">
         <AppHeader />
         <main className="mx-auto max-w-3xl px-4 py-8">
-          <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+          <p role="alert" className="rounded-lg bg-navex-red-soft px-3 py-2 text-sm text-navex-red-dark">
             {erreur}
           </p>
         </main>
@@ -151,63 +150,63 @@ export default function PageDetailDemande() {
       <AppHeader />
       <main className="mx-auto max-w-4xl px-4 py-8 space-y-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h1 className="flex items-center gap-3 text-xl font-bold">
+          <h1 className="flex items-center gap-3 text-xl font-bold text-navex-ink">
             <span dir="ltr">{t("demandes.detail_titre", { reference: demande.reference })}</span>
           </h1>
           <StatusBadge statut={demande.statut} />
         </div>
 
         {erreur && (
-          <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+          <p role="alert" className="rounded-lg bg-navex-red-soft px-3 py-2 text-sm text-navex-red-dark">
             {erreur}
           </p>
         )}
         {succes && (
-          <p role="status" className="rounded-lg bg-green-50 px-3 py-2 text-sm text-green-800">
+          <p role="status" className="rounded-lg bg-navex-stone px-3 py-2 text-sm text-navex-ink ring-1 ring-neutral-200">
             {succes}
           </p>
         )}
 
         {/* Informations générales */}
-        <section className="grid grid-cols-1 gap-4 rounded-xl bg-white p-5 shadow-sm ring-1 ring-neutral-200 sm:grid-cols-2">
+        <section className="grid grid-cols-1 gap-4 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-neutral-200 sm:grid-cols-2">
           <div>
             <p className="text-xs uppercase text-neutral-400">{t("demandes.expediteur_col")}</p>
-            <p className="mt-1 font-medium">{demande.expediteur.nom_entreprise}</p>
+            <p className="mt-1 font-medium text-navex-ink">{demande.expediteur.nom_entreprise}</p>
           </div>
           <div>
             <p className="text-xs uppercase text-neutral-400">{t("demandes.date_creation")}</p>
-            <p className="mt-1">{formaterDate(demande.date_creation, locale, true)}</p>
+            <p className="mt-1 text-navex-ink">{formaterDate(demande.date_creation, locale, true)}</p>
           </div>
           {demande.date_traitement && (
             <div>
               <p className="text-xs uppercase text-neutral-400">{t("demandes.date_traitement")}</p>
-              <p className="mt-1">{formaterDate(demande.date_traitement, locale, true)}</p>
+              <p className="mt-1 text-navex-ink">{formaterDate(demande.date_traitement, locale, true)}</p>
             </div>
           )}
           {demande.commentaire_agent && (
             <div>
               <p className="text-xs uppercase text-neutral-400">{t("demandes.commentaire_agent")}</p>
-              <p className="mt-1">{demande.commentaire_agent}</p>
+              <p className="mt-1 text-navex-ink">{demande.commentaire_agent}</p>
             </div>
           )}
         </section>
 
         {/* Planification de la réception (agent commercial) */}
         {estAgent && (
-          <section className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-neutral-200">
-            <h2 className="mb-3 text-sm font-semibold">{t("planification.titre")}</h2>
+          <section className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-neutral-200">
+            <h2 className="mb-3 text-sm font-semibold text-navex-ink">{t("planification.titre")}</h2>
             <div className="flex flex-wrap items-center gap-3">
               <input
                 type="date"
                 value={dateReception}
                 onChange={(e) => setDateReception(e.target.value)}
                 dir="ltr"
-                className="rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-neutral-900 focus:outline-none"
+                className="rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-navex-ink focus:outline-none focus:ring-1 focus:ring-navex-ink"
               />
               <button
                 onClick={planifier}
                 disabled={!dateReception || enCoursPlanif}
-                className="rounded-lg border border-neutral-900 px-4 py-2 text-sm font-semibold text-neutral-900 hover:bg-neutral-100 disabled:opacity-50"
+                className="rounded-full border border-navex-ink px-4 py-2 text-sm font-semibold text-navex-ink transition-colors hover:bg-navex-stone disabled:opacity-50"
               >
                 {enCoursPlanif ? t("commun.chargement") : t("planification.sauvegarder")}
               </button>
@@ -222,10 +221,10 @@ export default function PageDetailDemande() {
         )}
 
         {/* Produits */}
-        <section className="space-y-3 rounded-xl bg-white p-5 shadow-sm ring-1 ring-neutral-200">
-          <h2 className="text-sm font-semibold">{t("demandes.produits_titre")}</h2>
+        <section className="space-y-3 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-neutral-200">
+          <h2 className="text-sm font-semibold text-navex-ink">{t("demandes.produits_titre")}</h2>
           {produitsATraiter.length > 0 && (
-            <p className="rounded-lg bg-orange-50 px-3 py-2 text-xs font-medium text-orange-800">
+            <p className="rounded-lg bg-navex-red-soft px-3 py-2 text-xs font-medium text-navex-red-dark">
               {t("validation.produits_a_traiter", { nombre: produitsATraiter.length })}
             </p>
           )}
@@ -236,15 +235,13 @@ export default function PageDetailDemande() {
               <article
                 key={p.id}
                 className={`space-y-3 rounded-lg border p-4 ${
-                  aTraiter ? "border-orange-300 bg-orange-50/40" : "border-neutral-200"
+                  aTraiter ? "border-navex-red/30 bg-navex-red-soft/30" : "border-neutral-200"
                 }`}
               >
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <p className="font-medium">
+                  <p className="font-medium text-navex-ink">
                     <span dir="ltr">{p.sku_code}</span> — {p.designation}
-                    {p.fragile && (
-                      <span title={t("produit.fragile")}> ⚠</span>
-                    )}
+                    {p.fragile && <span title={t("produit.fragile")}> ⚠</span>}
                   </p>
                   <StatusBadge statut={p.statut_validation} />
                 </div>
@@ -271,35 +268,33 @@ export default function PageDetailDemande() {
                 </dl>
 
                 {p.statut_validation !== "en_attente" && p.commentaire && (
-                  <p className="rounded-md bg-neutral-100 px-3 py-2 text-xs italic text-neutral-700">
+                  <p className="rounded-md bg-navex-stone px-3 py-2 text-xs italic text-neutral-700">
                     « {p.commentaire} »
                   </p>
                 )}
 
                 {aTraiter && (
-                  <div className="space-y-2 border-t border-orange-200 pt-3">
+                  <div className="space-y-2 border-t border-navex-red/20 pt-3">
                     <textarea
                       value={commentaires[p.id] ?? ""}
-                      onChange={(e) =>
-                        setCommentaires((c) => ({ ...c, [p.id]: e.target.value }))
-                      }
+                      onChange={(e) => setCommentaires((c) => ({ ...c, [p.id]: e.target.value }))}
                       rows={2}
                       maxLength={500}
                       placeholder={t("validation.commentaire_placeholder")}
-                      className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-neutral-900 focus:outline-none"
+                      className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-navex-ink focus:outline-none focus:ring-1 focus:ring-navex-ink"
                     />
                     <div className="flex flex-wrap gap-2">
                       <button
                         onClick={() => decider(p, "approuve")}
                         disabled={!!decisionsEnCours[p.id]}
-                        className="rounded-lg bg-green-700 px-4 py-2 text-sm font-semibold text-white hover:bg-green-600 disabled:opacity-50"
+                        className="rounded-full bg-navex-ink px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-navex-ink/80 disabled:opacity-50"
                       >
                         ✓ {t("validation.approuver")}
                       </button>
                       <button
                         onClick={() => decider(p, "refuse")}
                         disabled={!!decisionsEnCours[p.id]}
-                        className="rounded-lg bg-red-700 px-4 py-2 text-sm font-semibold text-white hover:bg-red-600 disabled:opacity-50"
+                        className="rounded-full bg-navex-red px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-navex-red-dark disabled:opacity-50"
                       >
                         ✗ {t("validation.rejeter")}
                       </button>
@@ -312,12 +307,12 @@ export default function PageDetailDemande() {
         </section>
 
         {/* Décharge */}
-        <section className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-neutral-200">
-          <h2 className="mb-3 text-sm font-semibold">{t("demandes.decharge_titre")}</h2>
+        <section className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-neutral-200">
+          <h2 className="mb-3 text-sm font-semibold text-navex-ink">{t("demandes.decharge_titre")}</h2>
           {demande.decharge ? (
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
-                <p className="font-medium" dir="ltr">
+                <p className="font-medium text-navex-ink" dir="ltr">
                   {t("demandes.decharge_numero", { numero: demande.decharge.numero_decharge })}
                 </p>
                 <p className="mt-0.5 text-xs text-neutral-500">
@@ -327,7 +322,7 @@ export default function PageDetailDemande() {
               <button
                 onClick={telechargerPdf}
                 disabled={enCoursPdf}
-                className="rounded-lg bg-neutral-900 px-4 py-2 text-sm font-semibold text-white hover:bg-neutral-700 disabled:opacity-50"
+                className="rounded-full bg-navex-red px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-navex-red-dark disabled:opacity-50"
               >
                 {enCoursPdf ? t("demandes.generation_cours") : t("demandes.telecharger_pdf")}
               </button>
@@ -336,7 +331,7 @@ export default function PageDetailDemande() {
             <button
               onClick={generer}
               disabled={enCoursGeneration}
-              className="rounded-lg bg-neutral-900 px-4 py-2 text-sm font-semibold text-white hover:bg-neutral-700 disabled:opacity-50"
+              className="rounded-full bg-navex-red px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-navex-red-dark disabled:opacity-50"
             >
               {enCoursGeneration ? t("demandes.generation_cours") : t("demandes.generer_decharge")}
             </button>
@@ -345,7 +340,7 @@ export default function PageDetailDemande() {
           )}
         </section>
 
-        <Link href="/mes-demandes" className="inline-block text-xs text-neutral-500 underline hover:text-neutral-800">
+        <Link href="/mes-demandes" className="inline-block text-xs text-neutral-500 underline hover:text-navex-ink">
           ← {t("commun.retour")}
         </Link>
       </main>
