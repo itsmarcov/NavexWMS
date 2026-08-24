@@ -14,18 +14,20 @@ import { StatusBadge } from "@/components/status-badge";
 import { Link } from "@/i18n/navigation";
 
 function CarteStat({ label, valeur, hero }: { label: string; valeur: number; hero?: boolean }) {
+  if (hero) {
+    return (
+      <div className="hero-gradient rounded-3xl p-6 shadow-glow-red animate-slide-up">
+        <p className="text-xs font-medium uppercase tracking-wider text-white/60">{label}</p>
+        <p className="mt-2 text-4xl font-extrabold text-white" dir="ltr">
+          {valeur}
+        </p>
+      </div>
+    );
+  }
   return (
-    <div
-      className={`rounded-2xl p-5 shadow-sm ${
-        hero
-          ? "bg-gradient-to-br from-navex-red to-navex-red-dark text-white"
-          : "bg-white ring-1 ring-neutral-200"
-      }`}
-    >
-      <p className={`text-xs uppercase tracking-wide ${hero ? "text-white/70" : "text-neutral-400"}`}>
-        {label}
-      </p>
-      <p className={`mt-1 text-3xl font-bold ${hero ? "text-white" : "text-navex-ink"}`} dir="ltr">
+    <div className="card-glass rounded-3xl p-6 animate-slide-up">
+      <p className="text-xs font-medium uppercase tracking-wider text-neutral-400">{label}</p>
+      <p className="mt-2 text-4xl font-extrabold text-navex-ink" dir="ltr">
         {valeur}
       </p>
     </div>
@@ -60,8 +62,8 @@ export default function PageAccueil() {
 
   if (charge || !utilisateur) {
     return (
-      <main className="flex min-h-dvh items-center justify-center bg-navex-stone">
-        <p className="text-sm text-neutral-500">{t("commun.chargement")}</p>
+      <main className="flex min-h-dvh items-center justify-center bg-ambient">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-navex-red border-t-transparent" />
       </main>
     );
   }
@@ -78,12 +80,12 @@ export default function PageAccueil() {
         <AppHeader />
         <main className="mx-auto max-w-4xl px-4 py-8 space-y-8">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <h1 className="text-xl font-bold text-navex-ink">
+            <h1 className="text-2xl font-extrabold text-navex-ink">
               {t("accueil.titre", { role: t("roles.expediteur") })}
             </h1>
             <a
               href="/mes-demandes/nouvelle"
-              className="rounded-full bg-navex-red px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-navex-red-dark"
+              className="rounded-full bg-navex-red px-6 py-2.5 text-sm font-semibold text-white shadow-glow-red transition-all duration-200 hover:bg-navex-red-dark hover:shadow-lg"
             >
               + {t("demandes.nouvelle")}
             </a>
@@ -96,33 +98,33 @@ export default function PageAccueil() {
             <CarteStat label={t("accueil.stats_decharges")} valeur={decharges} />
           </section>
 
-          <section className="rounded-2xl bg-white shadow-sm ring-1 ring-neutral-200">
-            <div className="flex items-center justify-between border-b border-neutral-100 px-5 py-3">
+          <section className="card-glass-solid rounded-3xl animate-slide-up">
+            <div className="flex items-center justify-between border-b border-neutral-100/60 px-6 py-4">
               <h2 className="text-sm font-semibold text-navex-ink">{t("accueil.dernieres")}</h2>
               {total > 3 && (
-                <Link href="/mes-demandes" className="text-xs font-medium text-navex-red hover:text-navex-red-dark">
+                <Link href="/mes-demandes" className="text-xs font-medium text-navex-red hover:text-navex-red-dark transition-colors">
                   {t("accueil.voir_toutes")}
                 </Link>
               )}
             </div>
 
             {(demandes?.length ?? 0) === 0 ? (
-              <p className="px-5 py-8 text-center text-sm text-neutral-500">{t("demandes.vide")}</p>
+              <p className="px-6 py-10 text-center text-sm text-neutral-500">{t("demandes.vide")}</p>
             ) : (
-              <ul className="divide-y divide-neutral-100">
+              <ul className="divide-y divide-neutral-100/60">
                 {demandes?.slice(0, 3).map((d) => (
-                  <li key={d.id} className="flex flex-wrap items-center justify-between gap-2 px-5 py-3">
+                  <li key={d.id} className="flex flex-wrap items-center justify-between gap-2 px-6 py-4 transition-colors hover:bg-white/40">
                     <div>
                       <span className="text-sm font-semibold text-navex-ink" dir="ltr">
                         {d.reference}
                       </span>
-                      <span className="ms-2 text-xs text-neutral-500">
+                      <span className="ms-2 text-xs text-neutral-400">
                         {formaterDate(d.date_creation, locale)}
                       </span>
                     </div>
                     <div className="flex items-center gap-3">
                       {d.decharge && (
-                        <span className="text-xs text-neutral-500" dir="ltr">
+                        <span className="text-xs text-neutral-400" dir="ltr">
                           {d.decharge.numero_decharge}
                         </span>
                       )}
@@ -150,7 +152,7 @@ export default function PageAccueil() {
       <div className="min-h-dvh">
         <AppHeader />
         <main className="mx-auto max-w-4xl px-4 py-8 space-y-8">
-          <h1 className="text-xl font-bold text-navex-ink">
+          <h1 className="text-2xl font-extrabold text-navex-ink">
             {t("accueil.titre", { role: t("roles.agent_entrepot") })}
           </h1>
 
@@ -159,20 +161,20 @@ export default function PageAccueil() {
             <CarteStat label={t("entrepot.attente_positionnement")} valeur={aPositionner} />
           </section>
 
-          <section className="rounded-2xl bg-white shadow-sm ring-1 ring-neutral-200">
-            <div className="flex items-center justify-between border-b border-neutral-100 px-5 py-3">
+          <section className="card-glass-solid rounded-3xl animate-slide-up">
+            <div className="flex items-center justify-between border-b border-neutral-100/60 px-6 py-4">
               <h2 className="text-sm font-semibold text-navex-ink">{t("entrepot.file_titre")}</h2>
-              <Link href="/entrepot" className="text-xs font-medium text-navex-red hover:text-navex-red-dark">
+              <Link href="/entrepot" className="text-xs font-medium text-navex-red hover:text-navex-red-dark transition-colors">
                 {t("entrepot.tout_voir")}
               </Link>
             </div>
 
             {(fileEntrepot?.length ?? 0) === 0 ? (
-              <p className="px-5 py-8 text-center text-sm text-neutral-500">{t("entrepot.file_vide")}</p>
+              <p className="px-6 py-10 text-center text-sm text-neutral-500">{t("entrepot.file_vide")}</p>
             ) : (
-              <ul className="divide-y divide-neutral-100">
+              <ul className="divide-y divide-neutral-100/60">
                 {fileEntrepot?.slice(0, 5).map((d) => (
-                  <li key={d.id} className="flex flex-wrap items-center justify-between gap-2 px-5 py-3">
+                  <li key={d.id} className="flex flex-wrap items-center justify-between gap-2 px-6 py-4 transition-colors hover:bg-white/40">
                     <Link
                       href={`/entrepot/decharges/${d.id}`}
                       className="text-sm font-semibold text-navex-ink hover:underline"
@@ -180,7 +182,7 @@ export default function PageAccueil() {
                     >
                       {d.numero_decharge}
                     </Link>
-                    <span className="text-xs text-neutral-500" dir="ltr">
+                    <span className="text-xs text-neutral-400" dir="ltr">
                       {d.demande.reference}
                     </span>
                   </li>
@@ -206,7 +208,7 @@ export default function PageAccueil() {
       <div className="min-h-dvh">
         <AppHeader />
         <main className="mx-auto max-w-4xl px-4 py-8 space-y-8">
-          <h1 className="text-xl font-bold text-navex-ink">
+          <h1 className="text-2xl font-extrabold text-navex-ink">
             {t("accueil.titre", { role: t(`roles.${utilisateur.role}`) })}
           </h1>
 
@@ -216,32 +218,32 @@ export default function PageAccueil() {
             <CarteStat label={t("accueil.stats_total_demandes")} valeur={demandes?.length ?? 0} />
           </section>
 
-          <section className="rounded-2xl bg-white shadow-sm ring-1 ring-neutral-200">
-            <div className="flex items-center justify-between border-b border-neutral-100 px-5 py-3">
+          <section className="card-glass-solid rounded-3xl animate-slide-up">
+            <div className="flex items-center justify-between border-b border-neutral-100/60 px-6 py-4">
               <h2 className="text-sm font-semibold text-navex-ink">{t("file_attente.titre")}</h2>
-              <Link href="/file-attente" className="text-xs font-medium text-navex-red hover:text-navex-red-dark">
+              <Link href="/file-attente" className="text-xs font-medium text-navex-red hover:text-navex-red-dark transition-colors">
                 {t("file_attente.tout_voir")}
               </Link>
             </div>
 
             {enFile === 0 ? (
-              <p className="px-5 py-8 text-center text-sm text-neutral-500">{t("file_attente.vide")}</p>
+              <p className="px-6 py-10 text-center text-sm text-neutral-500">{t("file_attente.vide")}</p>
             ) : (
-              <ul className="divide-y divide-neutral-100">
+              <ul className="divide-y divide-neutral-100/60">
                 {fileAttente?.slice(0, 5).map((d) => {
                   const totalP = d._count?.produits ?? d.produits?.length ?? 0;
                   const traites =
                     d.produits?.filter((p) => p.statut_validation !== "en_attente").length ?? 0;
                   return (
-                    <li key={d.id} className="flex flex-wrap items-center justify-between gap-2 px-5 py-3">
+                    <li key={d.id} className="flex flex-wrap items-center justify-between gap-2 px-6 py-4 transition-colors hover:bg-white/40">
                       <div>
                         <Link href={`/mes-demandes/${d.id}`} className="text-sm font-semibold text-navex-ink hover:underline" dir="ltr">
                           {d.reference}
                         </Link>
-                        <span className="ms-2 text-xs text-neutral-500">{d.expediteur.nom_entreprise}</span>
+                        <span className="ms-2 text-xs text-neutral-400">{d.expediteur.nom_entreprise}</span>
                       </div>
                       <div className="flex items-center gap-3">
-                        <span className="text-xs text-neutral-500" dir="ltr">
+                        <span className="text-xs text-neutral-400" dir="ltr">
                           {traites}/{totalP}
                         </span>
                         <StatusBadge statut={d.statut} />
@@ -263,21 +265,21 @@ export default function PageAccueil() {
       <div className="min-h-dvh">
         <AppHeader />
         <main className="mx-auto max-w-4xl px-4 py-8 space-y-8">
-          <h1 className="text-xl font-bold text-navex-ink">{t("accueil.titre", { role: t("roles.admin") })}</h1>
+          <h1 className="text-2xl font-extrabold text-navex-ink">{t("accueil.titre", { role: t("roles.admin") })}</h1>
 
-          <section className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-neutral-200 space-y-2">
+          <section className="card-glass rounded-3xl p-6 animate-slide-up">
             <p className="text-sm text-neutral-500">{t("accueil.session")}</p>
-            <p className="font-medium text-navex-ink" dir="ltr">
+            <p className="mt-1 font-semibold text-navex-ink" dir="ltr">
               {utilisateur.email}
             </p>
           </section>
 
           <Link
             href="/admin"
-            className="block rounded-2xl bg-gradient-to-br from-navex-red to-navex-red-dark px-6 py-8 text-center shadow-sm transition-opacity hover:opacity-90"
+            className="hero-gradient block rounded-3xl px-6 py-8 text-center shadow-glow-red transition-opacity hover:opacity-90 animate-slide-up"
           >
-            <p className="text-lg font-semibold text-white">{t("admin.titre")}</p>
-            <p className="mt-1 text-xs text-white/70">{t("admin.sous_titre")}</p>
+            <p className="text-lg font-bold text-white">{t("admin.titre")}</p>
+            <p className="mt-1 text-xs text-white/60">{t("admin.sous_titre")}</p>
           </Link>
         </main>
       </div>
@@ -289,13 +291,13 @@ export default function PageAccueil() {
     <div className="min-h-dvh">
       <AppHeader />
       <main className="mx-auto max-w-3xl px-4 py-8">
-        <section className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-neutral-200">
+        <section className="card-glass-solid rounded-3xl p-6 animate-slide-up">
           <p className="text-sm text-neutral-500">{t("accueil.session")}</p>
-          <p className="mt-1 font-medium text-navex-ink" dir="ltr">
+          <p className="mt-1 font-semibold text-navex-ink" dir="ltr">
             {utilisateur.email}
           </p>
 
-          <h2 className="mt-4 text-lg font-semibold text-navex-ink">
+          <h2 className="mt-4 text-lg font-bold text-navex-ink">
             {t("accueil.titre", { role: t(`roles.${utilisateur.role}`) })}
           </h2>
 

@@ -49,13 +49,19 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="flex min-h-dvh flex-col items-center justify-center bg-navex-stone px-4">
-      <div className="w-full max-w-md space-y-8">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/navex-logo.png" alt="Navex" className="mx-auto h-10 w-auto" />
+    <main className="flex min-h-dvh flex-col items-center justify-center bg-ambient px-4">
+      {/* Éléments décoratifs ambiants */}
+      <div className="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden>
+        <div className="absolute -start-20 -top-20 h-72 w-72 rounded-full bg-navex-red/5 blur-3xl" />
+        <div className="absolute -bottom-32 -end-32 h-96 w-96 rounded-full bg-navex-red/3 blur-3xl" />
+      </div>
 
-        <div className="rounded-2xl bg-white p-8 shadow-sm ring-1 ring-neutral-200">
-          <h1 className="text-lg font-semibold text-navex-ink">{t("login.titre")}</h1>
+      <div className="relative w-full max-w-md space-y-8">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/navex-logo.png" alt="Navex" className="mx-auto h-10 w-auto animate-fade-in" />
+
+        <div className="card-glass-solid rounded-3xl p-8 animate-slide-up">
+          <h1 className="text-lg font-bold text-navex-ink">{t("login.titre")}</h1>
           <p className="mt-1 text-sm text-neutral-500">{t("login.soustitre")}</p>
 
           <form onSubmit={soumettre} className="mt-6 space-y-4">
@@ -71,7 +77,7 @@ export default function LoginPage() {
                 autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="mt-1.5 block w-full rounded-lg border border-neutral-300 px-3 py-2.5 text-sm shadow-sm transition-colors placeholder:text-neutral-400 focus:border-navex-ink focus:outline-none focus:ring-1 focus:ring-navex-ink"
+                className="mt-1.5 block w-full rounded-2xl border border-neutral-200/80 bg-white/60 px-4 py-3 text-sm shadow-soft transition-all placeholder:text-neutral-400 focus:border-navex-red/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-navex-red/10"
               />
             </div>
 
@@ -87,12 +93,12 @@ export default function LoginPage() {
                 autoComplete="current-password"
                 value={motDePasse}
                 onChange={(e) => setMotDePasse(e.target.value)}
-                className="mt-1.5 block w-full rounded-lg border border-neutral-300 px-3 py-2.5 text-sm shadow-sm transition-colors placeholder:text-neutral-400 focus:border-navex-ink focus:outline-none focus:ring-1 focus:ring-navex-ink"
+                className="mt-1.5 block w-full rounded-2xl border border-neutral-200/80 bg-white/60 px-4 py-3 text-sm shadow-soft transition-all placeholder:text-neutral-400 focus:border-navex-red/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-navex-red/10"
               />
             </div>
 
             {erreur && (
-              <p role="alert" className="rounded-lg bg-navex-red-soft px-3 py-2 text-sm text-navex-red-dark">
+              <p role="alert" className="rounded-2xl bg-navex-red-soft/80 px-4 py-2.5 text-sm text-navex-red-dark backdrop-blur-sm">
                 {erreur}
               </p>
             )}
@@ -100,14 +106,13 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={enCours}
-              className="w-full rounded-full bg-navex-red px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-navex-red-dark disabled:cursor-not-allowed disabled:opacity-50"
+              className="w-full rounded-full bg-navex-red px-4 py-3 text-sm font-semibold text-white shadow-glow-red transition-all duration-200 hover:bg-navex-red-dark hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none"
             >
               {enCours ? t("commun.chargement") : t("login.valider")}
             </button>
           </form>
         </div>
 
-        {/* Champ e-mail en LTR même en arabe — les identifiants restent lisibles */}
         <p className="text-center text-xs text-neutral-400" dir="ltr">
           admin@navex.dz · Test@1234
         </p>

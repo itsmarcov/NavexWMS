@@ -38,39 +38,41 @@ export function AppHeader() {
   }
 
   return (
-    <header className="flex flex-wrap items-center justify-between gap-3 border-b border-neutral-200 bg-white px-4 py-3">
-      <div className="flex items-center gap-5">
-        <Link href="/" className="flex shrink-0 items-center">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/navex-logo.png" alt="Navex" className="h-8 w-auto" />
-        </Link>
-        <nav className="flex items-center gap-1">
-          {liens.map((lien) => {
-            const actif = pathname === lien.href;
-            return (
-              <Link
-                key={lien.href}
-                href={lien.href}
-                className={`rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
-                  actif
-                    ? "bg-navex-red text-white"
-                    : "text-navex-ink hover:bg-navex-red-soft hover:text-navex-red"
-                }`}
-              >
-                {lien.label}
-              </Link>
-            );
-          })}
-        </nav>
-      </div>
-      <div className="flex items-center gap-3">
-        <LanguageSwitcher />
-        <button
-          onClick={deconnexion}
-          className="rounded-full border border-navex-ink px-3 py-1.5 text-sm font-medium text-navex-ink transition-colors hover:bg-navex-stone"
-        >
-          {t("commun.se_deconnecter")}
-        </button>
+    <header className="sticky top-0 z-40 border-b border-white/40 bg-white/60 backdrop-blur-xl backdrop-saturate-180 supports-[backdrop-filter]:bg-white/50">
+      <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-4 py-3">
+        <div className="flex items-center gap-5">
+          <Link href="/" className="flex shrink-0 items-center">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/navex-logo.png" alt="Navex" className="h-8 w-auto" />
+          </Link>
+          <nav className="flex items-center gap-1">
+            {liens.map((lien) => {
+              const actif = pathname === lien.href;
+              return (
+                <Link
+                  key={lien.href}
+                  href={lien.href}
+                  className={`rounded-full px-3 py-1.5 text-sm font-medium transition-all duration-200 ${
+                    actif
+                      ? "bg-navex-red text-white shadow-glow-red"
+                      : "text-navex-ink/70 hover:bg-navex-red-soft/60 hover:text-navex-red"
+                  }`}
+                >
+                  {lien.label}
+                </Link>
+              );
+            })}
+          </nav>
+        </div>
+        <div className="flex items-center gap-3">
+          <LanguageSwitcher />
+          <button
+            onClick={deconnexion}
+            className="rounded-full border border-navex-ink/15 px-3 py-1.5 text-sm font-medium text-navex-ink/70 transition-all duration-200 hover:border-navex-red/30 hover:bg-navex-red-soft/40 hover:text-navex-red"
+          >
+            {t("commun.se_deconnecter")}
+          </button>
+        </div>
       </div>
     </header>
   );

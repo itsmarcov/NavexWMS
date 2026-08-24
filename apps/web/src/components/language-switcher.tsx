@@ -10,12 +10,12 @@ export function LanguageSwitcher() {
   const t = useTranslations("commun");
 
   return (
-    <nav aria-label={t("langue")} className="flex items-center gap-1 rounded-full bg-navex-stone p-1">
+    <nav aria-label={t("langue")} className="flex items-center gap-0.5 rounded-full bg-navex-stone/80 p-0.5 backdrop-blur-sm">
       <Link
         href={pathname}
         locale="fr"
-        className={`rounded-full px-3 py-1 text-sm font-medium transition-colors ${
-          locale === "fr" ? "bg-white text-navex-ink shadow-sm" : "text-neutral-500 hover:text-navex-ink"
+        className={`rounded-full px-3 py-1 text-sm font-medium transition-all duration-200 ${
+          locale === "fr" ? "bg-white text-navex-ink shadow-soft" : "text-neutral-400 hover:text-navex-ink"
         }`}
       >
         Français
@@ -23,8 +23,8 @@ export function LanguageSwitcher() {
       <Link
         href={pathname}
         locale="ar"
-        className={`rounded-full px-3 py-1 text-sm font-medium transition-colors ${
-          locale === "ar" ? "bg-white text-navex-ink shadow-sm" : "text-neutral-500 hover:text-navex-ink"
+        className={`rounded-full px-3 py-1 text-sm font-medium transition-all duration-200 ${
+          locale === "ar" ? "bg-white text-navex-ink shadow-soft" : "text-neutral-400 hover:text-navex-ink"
         }`}
       >
         العربية

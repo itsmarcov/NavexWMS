@@ -1,3 +1,63 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-attachment: fixed;
+  }
+
+  ::selection {
+    background-color: rgba(200, 30, 30, 0.15);
+    color: #0A0A0A;
+  }
+}
+
+@layer components {
+  /* Carte glassmorphism — fond blanc semi-transparent + flou + bordure lumineuse */
+  .card-glass {
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow:
+      0 4px 30px rgba(0, 0, 0, 0.04),
+      inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  }
+
+  /* Variante plus opaque pour cartes avec contenu dense */
+  .card-glass-solid {
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(16px) saturate(160%);
+    -webkit-backdrop-filter: blur(16px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.06),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  }
+
+  /* Fond ambiant — gradient mesh très subtil */
+  .bg-ambient {
+    background:
+      radial-gradient(ellipse 80% 50% at 20% 10%, rgba(200, 30, 30, 0.04), transparent),
+      radial-gradient(ellipse 60% 60% at 80% 80%, rgba(200, 30, 30, 0.03), transparent),
+      radial-gradient(ellipse 50% 40% at 50% 50%, rgba(245, 245, 244, 1), transparent),
+      #F5F5F4;
+  }
+
+  /* Gradient hero pour la carte principale — un seul par écran */
+  .hero-gradient {
+    background: linear-gradient(135deg, #C81E1E 0%, #7F1414 100%);
+  }
+
+  /* Accent lumineux sur éléments actifs */
+  .ring-glow {
+    box-shadow: 0 0 0 1px rgba(200, 30, 30, 0.2), 0 0 20px rgba(200, 30, 30, 0.08);
+  }
+}

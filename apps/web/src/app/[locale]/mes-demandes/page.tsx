@@ -30,25 +30,29 @@ export default function PageMesDemandes() {
       <AppHeader />
       <main className="mx-auto max-w-4xl px-4 py-8 space-y-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h1 className="text-xl font-bold text-navex-ink">{t("demandes.titre")}</h1>
+          <h1 className="text-2xl font-extrabold text-navex-ink">{t("demandes.titre")}</h1>
           <a
             href="/mes-demandes/nouvelle"
-            className="rounded-full bg-navex-red px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-navex-red-dark"
+            className="rounded-full bg-navex-red px-6 py-2.5 text-sm font-semibold text-white shadow-glow-red transition-all duration-200 hover:bg-navex-red-dark hover:shadow-lg"
           >
             {t("demandes.nouvelle")}
           </a>
         </div>
 
         {erreur && (
-          <p role="alert" className="rounded-lg bg-navex-red-soft px-3 py-2 text-sm text-navex-red-dark">
+          <p role="alert" className="rounded-2xl bg-navex-red-soft/80 px-4 py-2.5 text-sm text-navex-red-dark backdrop-blur-sm">
             {erreur}
           </p>
         )}
 
-        {!demandes && !erreur && <p className="text-sm text-neutral-500">{t("commun.chargement")}</p>}
+        {!demandes && !erreur && (
+          <div className="flex justify-center py-12">
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-navex-red border-t-transparent" />
+          </div>
+        )}
 
         {demandes && demandes.length === 0 && (
-          <p className="rounded-2xl bg-white p-8 text-center text-sm text-neutral-500 ring-1 ring-neutral-200">
+          <p className="card-glass rounded-3xl p-10 text-center text-sm text-neutral-500">
             {t("demandes.vide")}
           </p>
         )}
@@ -56,7 +60,7 @@ export default function PageMesDemandes() {
         {demandes && demandes.length > 0 && (
           <ul className="space-y-3">
             {demandes.map((d) => (
-              <li key={d.id} className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-neutral-200">
+              <li key={d.id} className="card-glass rounded-3xl p-5 animate-slide-up">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div>
                     <div className="flex items-center gap-2">
@@ -65,13 +69,13 @@ export default function PageMesDemandes() {
                       </span>
                       <StatusBadge statut={d.statut} />
                     </div>
-                    <p className="mt-1 text-xs text-neutral-500">
+                    <p className="mt-1 text-xs text-neutral-400">
                       {t("demandes.date_creation")} {formaterDate(d.date_creation, locale)} ·{" "}
                       {t("demandes.produits_col")}: {d._count?.produits ?? 0}
                     </p>
                   </div>
                   <div className="flex items-center gap-3">
-                    <div className="text-end text-xs text-neutral-500">
+                    <div className="text-end text-xs text-neutral-400">
                       <span>{t("demandes.decharge_col")} : </span>
                       {d.decharge ? (
                         <span className="font-medium text-navex-ink" dir="ltr">
@@ -83,7 +87,7 @@ export default function PageMesDemandes() {
                     </div>
                     <Link
                       href={`/mes-demandes/${d.id}`}
-                      className="rounded-full border border-navex-ink px-3 py-1.5 text-sm font-medium text-navex-ink transition-colors hover:bg-navex-stone"
+                      className="rounded-full border border-navex-ink/15 px-3 py-1.5 text-sm font-medium text-navex-ink/70 transition-all duration-200 hover:border-navex-red/30 hover:bg-navex-red-soft/40 hover:text-navex-red"
                     >
                       {t("demandes.voir")}
                     </Link>

@@ -27,20 +27,22 @@ export default function PageFileAttente() {
     <div className="min-h-dvh">
       <AppHeader />
       <main className="mx-auto max-w-4xl px-4 py-8 space-y-6">
-        <h1 className="text-xl font-bold text-navex-ink">{t("file_attente.titre")}</h1>
+        <h1 className="text-2xl font-extrabold text-navex-ink">{t("file_attente.titre")}</h1>
 
         {erreur && (
-          <p role="alert" className="rounded-lg bg-navex-red-soft px-3 py-2 text-sm text-navex-red-dark">
+          <p role="alert" className="rounded-2xl bg-navex-red-soft/80 px-4 py-2.5 text-sm text-navex-red-dark backdrop-blur-sm">
             {erreur}
           </p>
         )}
 
         {!demandes && !erreur && (
-          <p className="text-sm text-neutral-500">{t("commun.chargement")}</p>
+          <div className="flex justify-center py-12">
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-navex-red border-t-transparent" />
+          </div>
         )}
 
         {demandes?.length === 0 && (
-          <div className="rounded-2xl bg-white p-8 text-center shadow-sm ring-1 ring-neutral-200">
+          <div className="card-glass rounded-3xl p-10 text-center">
             <p className="text-sm text-neutral-500">{t("file_attente.vide")}</p>
           </div>
         )}
@@ -53,7 +55,7 @@ export default function PageFileAttente() {
             const totalP = d._count?.produits ?? d.produits?.length ?? 0;
 
             return (
-              <li key={d.id} className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-neutral-200">
+              <li key={d.id} className="card-glass rounded-3xl p-5 animate-slide-up">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div className="min-w-40 flex-1 space-y-1">
                     <p className="font-semibold text-navex-ink" dir="ltr">
@@ -68,7 +70,7 @@ export default function PageFileAttente() {
                   </div>
                   <div className="flex flex-col items-end gap-2">
                     <StatusBadge statut={d.statut} />
-                    <p className="text-xs text-neutral-500" dir="ltr">
+                    <p className="text-xs text-neutral-400" dir="ltr">
                       {t("file_attente.progression", {
                         traites: approuves + refuses,
                         total: totalP,
@@ -77,15 +79,14 @@ export default function PageFileAttente() {
                   </div>
                 </div>
 
-                {/* Compteurs par décision */}
                 <div className="mt-3 flex flex-wrap gap-2 text-xs" dir={locale === "ar" ? "rtl" : "ltr"}>
-                  <span className="rounded-full bg-navex-red-soft px-2.5 py-1 font-medium text-navex-red-dark">
+                  <span className="rounded-full bg-navex-red-soft/80 px-2.5 py-1 font-medium text-navex-red-dark backdrop-blur-sm">
                     {enAttente} {t("file_attente.a_traiter")}
                   </span>
-                  <span className="rounded-full bg-navex-stone px-2.5 py-1 font-medium text-navex-ink">
+                  <span className="rounded-full bg-navex-stone/80 px-2.5 py-1 font-medium text-navex-ink backdrop-blur-sm">
                     {approuves} {t("file_attente.approuves")}
                   </span>
-                  <span className="rounded-full bg-navex-red px-2.5 py-1 font-medium text-white">
+                  <span className="rounded-full bg-navex-red/90 px-2.5 py-1 font-medium text-white backdrop-blur-sm">
                     {refuses} {t("file_attente.refuses")}
                   </span>
                 </div>
