@@ -192,7 +192,8 @@
     "succes": "Demande {reference} créée. Elle est maintenant en attente de validation par un agent commercial.",
     "recap_total_colis": "{total} colis au total",
     "recap_total_poids": "{total} kg au total",
-    "recap_vide": "Ajoutez au moins un produit."
+    "recap_vide": "Ajoutez au moins un produit.",
+    "champs_erreurs": "{nombre} champ(s) à corriger"
   },
   "produit": {
     "carte": "Produit {n}",
@@ -213,7 +214,9 @@
     "photo": "Photo (facultatif)",
     "photo_choisir": "Choisir une image",
     "photo_envoi": "Téléversement…",
-    "photo_ok": "Photo ajoutée"
+    "photo_ok": "Photo ajoutée",
+    "photo_retirer": "Retirer la photo",
+    "photo_erreur": "Échec de l'envoi"
   },
   "erreurs": {
     "identifiants_invalides": "E-mail ou mot de passe incorrect.",

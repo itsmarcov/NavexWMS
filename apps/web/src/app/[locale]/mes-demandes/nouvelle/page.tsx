@@ -22,6 +22,8 @@ interface ProduitForm {
   photo_nom?: string;
 }
 
+type ErreurProduit = Partial<Record<keyof ProduitForm, string>>;
+
 const PRODUIT_VIDE: ProduitForm = {
   sku_code: "", designation: "", longueur_cm: "", largeur_cm: "",
   hauteur_cm: "", poids_kg: "", fragile: false, type_emballage: "carton",
@@ -36,6 +38,30 @@ function produitComplet(p: ProduitForm): boolean {
   );
 }
 
+const CHAMPS_REQUIS: Array<keyof ProduitForm> = ["sku_code", "designation", "longueur_cm", "largeur_cm", "hauteur_cm", "poids_kg", "quantite"];
+
+function validerChamp(champ: keyof ProduitForm, valeur: unknown): string | null {
+  switch (champ) {
+    case "sku_code":    return (typeof valeur === "string" && valeur.trim().length > 0) ? null : "Ce champ est requis";
+    case "designation": return (typeof valeur === "string" && valeur.trim().length > 0) ? null : "Ce champ est requis";
+    case "longueur_cm": return Number(valeur) > 0 ? null : "Doit être supérieur à 0";
+    case "largeur_cm":  return Number(valeur) > 0 ? null : "Doit être supérieur à 0";
+    case "hauteur_cm":  return Number(valeur) > 0 ? null : "Doit être supérieur à 0";
+    case "poids_kg":    return Number(valeur) > 0 ? null : "Doit être supérieur à 0";
+    case "quantite":    return Number(valeur) >= 1 ? null : "Doit être au moins 1";
+    default:            return null;
+  }
+}
+
+function validerProduit(p: ProduitForm): ErreurProduit {
+  const e: ErreurProduit = {};
+  for (const champ of CHAMPS_REQUIS) {
+    const err = validerChamp(champ, p[champ]);
+    if (err) e[champ] = err;
+  }
+  return e;
+}
+
 export default function PageNouvelleDemande() {
   const t = useTranslations();
   const tProduit = useTranslations("produit");
@@ -43,6 +69,8 @@ export default function PageNouvelleDemande() {
   const [etape, setEtape] = useState(0);
   const [produits, setProduits] = useState<ProduitForm[]>([{ ...PRODUIT_VIDE }]);
   const [erreur, setErreur] = useState<string | null>(null);
+  const [erreursParProduit, setErreursParProduit] = useState<Record<number, ErreurProduit>>({});
+  const [uploadEnCours, setUploadEnCours] = useState<Record<number, boolean>>({});
   const [enEnvoi, setEnEnvoi] = useState(false);
   const [referenceCreee, setReferenceCreee] = useState<string | null>(null);
 
@@ -50,25 +78,72 @@ export default function PageNouvelleDemande() {
 
   function majProduit(index: number, changement: Partial<ProduitForm>) {
     setProduits((anciens) => anciens.map((p, i) => (i === index ? { ...p, ...changement } : p)));
+
+    const champ = Object.keys(changement)[0] as keyof ProduitForm;
+    const nouvelleValeur = changement[champ];
+    if (champ && nouvelleValeur !== undefined && !validerChamp(champ, nouvelleValeur)) {
+      setErreursParProduit((anciens) => {
+        const copie = { ...anciens[index] };
+        delete copie[champ];
+        return { ...anciens, [index]: copie };
+      });
+    }
   }
 
   async function televerserPhoto(index: number, fichier: File) {
     setErreur(null);
-    majProduit(index, { photo_nom: fichier.name });
+    majProduit(index, { photo_nom: fichier.name, photo_url: null });
+    setUploadEnCours((a) => ({ ...a, [index]: true }));
     try {
       const { url } = await uploaderPhoto(fichier);
       majProduit(index, { photo_url: url });
     } catch (e) {
       setErreur(messageErreur(t, e));
       majProduit(index, { photo_nom: undefined, photo_url: null });
+    } finally {
+      setUploadEnCours((a) => ({ ...a, [index]: false }));
     }
   }
 
+  function retirerPhoto(index: number) {
+    majProduit(index, { photo_url: null, photo_nom: undefined });
+  }
+
   function etapeSuivante() {
-    if (etape === 0 && (produits.length === 0 || !produits.every(produitComplet))) {
-      setErreur(t("erreurs.champs_manquants"));
+    if (etape !== 0) { setEtape((e) => e + 1); return; }
+
+    const nouvellesErreurs: Record<number, ErreurProduit> = {};
+    let premierChampIndex: number | null = null;
+    let premierChampCle: string | null = null;
+
+    produits.forEach((p, i) => {
+      const errs = validerProduit(p);
+      const cles = Object.keys(errs);
+      if (cles.length > 0) {
+        nouvellesErreurs[i] = errs;
+        if (premierChampIndex === null) {
+          premierChampIndex = i;
+          premierChampCle = cles[0]!;
+        }
+      }
+    });
+
+    const total = Object.values(nouvellesErreurs).reduce((s, e) => s + Object.keys(e).length, 0);
+
+    if (total > 0) {
+      setErreursParProduit(nouvellesErreurs);
+      setErreur(t("wizard.champs_erreurs", { nombre: total }));
+      if (premierChampIndex !== null && premierChampCle !== null) {
+        const el = document.querySelector<HTMLElement>(
+          `[data-produit="${premierChampIndex}"][data-champ="${premierChampCle}"]`,
+        );
+        el?.scrollIntoView({ behavior: "smooth", block: "center" });
+        setTimeout(() => el?.focus(), 350);
+      }
       return;
     }
+
+    setErreursParProduit({});
     setErreur(null);
     setEtape((e) => e + 1);
   }
@@ -99,6 +174,8 @@ export default function PageNouvelleDemande() {
 
   const champClasse =
     "mt-1 block w-full rounded-2xl border border-neutral-200/80 bg-white/60 px-4 py-2.5 text-sm shadow-soft transition-all placeholder:text-neutral-400 focus:border-navex-red/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-navex-red/10";
+  const champClasseErreur =
+    "mt-1 block w-full rounded-2xl border border-navex-red bg-white/60 px-4 py-2.5 text-sm shadow-soft transition-all placeholder:text-neutral-400 focus:border-navex-red focus:bg-white focus:outline-none focus:ring-2 focus:ring-navex-red/20";
 
   return (
     <div className="min-h-dvh">
@@ -143,22 +220,28 @@ export default function PageNouvelleDemande() {
                 </div>
                 <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <label className="block text-sm font-medium text-navex-ink">{tProduit("sku")}
-                    <input dir="ltr" value={p.sku_code} onChange={(e) => majProduit(index, { sku_code: e.target.value })} className={champClasse} />
+                    <input dir="ltr" data-produit={index} data-champ="sku_code" value={p.sku_code} onChange={(e) => majProduit(index, { sku_code: e.target.value })} className={erreursParProduit[index]?.sku_code ? champClasseErreur : champClasse} />
+                    {erreursParProduit[index]?.sku_code && <span className="mt-0.5 block text-xs text-navex-red">{erreursParProduit[index].sku_code}</span>}
                   </label>
                   <label className="block text-sm font-medium text-navex-ink">{tProduit("designation")}
-                    <input value={p.designation} onChange={(e) => majProduit(index, { designation: e.target.value })} className={champClasse} />
+                    <input data-produit={index} data-champ="designation" value={p.designation} onChange={(e) => majProduit(index, { designation: e.target.value })} className={erreursParProduit[index]?.designation ? champClasseErreur : champClasse} />
+                    {erreursParProduit[index]?.designation && <span className="mt-0.5 block text-xs text-navex-red">{erreursParProduit[index].designation}</span>}
                   </label>
                   <label className="block text-sm font-medium text-navex-ink">{tProduit("longueur")}
-                    <input type="number" min="0.1" step="0.1" dir="ltr" value={p.longueur_cm} onChange={(e) => majProduit(index, { longueur_cm: e.target.value })} className={champClasse} />
+                    <input type="number" min="0.1" step="0.1" dir="ltr" data-produit={index} data-champ="longueur_cm" value={p.longueur_cm} onChange={(e) => majProduit(index, { longueur_cm: e.target.value })} className={erreursParProduit[index]?.longueur_cm ? champClasseErreur : champClasse} />
+                    {erreursParProduit[index]?.longueur_cm && <span className="mt-0.5 block text-xs text-navex-red">{erreursParProduit[index].longueur_cm}</span>}
                   </label>
                   <label className="block text-sm font-medium text-navex-ink">{tProduit("largeur")}
-                    <input type="number" min="0.1" step="0.1" dir="ltr" value={p.largeur_cm} onChange={(e) => majProduit(index, { largeur_cm: e.target.value })} className={champClasse} />
+                    <input type="number" min="0.1" step="0.1" dir="ltr" data-produit={index} data-champ="largeur_cm" value={p.largeur_cm} onChange={(e) => majProduit(index, { largeur_cm: e.target.value })} className={erreursParProduit[index]?.largeur_cm ? champClasseErreur : champClasse} />
+                    {erreursParProduit[index]?.largeur_cm && <span className="mt-0.5 block text-xs text-navex-red">{erreursParProduit[index].largeur_cm}</span>}
                   </label>
                   <label className="block text-sm font-medium text-navex-ink">{tProduit("hauteur")}
-                    <input type="number" min="0.1" step="0.1" dir="ltr" value={p.hauteur_cm} onChange={(e) => majProduit(index, { hauteur_cm: e.target.value })} className={champClasse} />
+                    <input type="number" min="0.1" step="0.1" dir="ltr" data-produit={index} data-champ="hauteur_cm" value={p.hauteur_cm} onChange={(e) => majProduit(index, { hauteur_cm: e.target.value })} className={erreursParProduit[index]?.hauteur_cm ? champClasseErreur : champClasse} />
+                    {erreursParProduit[index]?.hauteur_cm && <span className="mt-0.5 block text-xs text-navex-red">{erreursParProduit[index].hauteur_cm}</span>}
                   </label>
                   <label className="block text-sm font-medium text-navex-ink">{tProduit("poids")}
-                    <input type="number" min="0.01" step="0.01" dir="ltr" value={p.poids_kg} onChange={(e) => majProduit(index, { poids_kg: e.target.value })} className={champClasse} />
+                    <input type="number" min="0.01" step="0.01" dir="ltr" data-produit={index} data-champ="poids_kg" value={p.poids_kg} onChange={(e) => majProduit(index, { poids_kg: e.target.value })} className={erreursParProduit[index]?.poids_kg ? champClasseErreur : champClasse} />
+                    {erreursParProduit[index]?.poids_kg && <span className="mt-0.5 block text-xs text-navex-red">{erreursParProduit[index].poids_kg}</span>}
                   </label>
                   <label className="block text-sm font-medium text-navex-ink">{tProduit("type_emballage")}
                     <select value={p.type_emballage} onChange={(e) => majProduit(index, { type_emballage: e.target.value as TypeEmballageDTO })} className={champClasse}>
@@ -169,7 +252,8 @@ export default function PageNouvelleDemande() {
                     </select>
                   </label>
                   <label className="block text-sm font-medium text-navex-ink">{tProduit("quantite")}
-                    <input type="number" min="1" step="1" dir="ltr" value={p.quantite} onChange={(e) => majProduit(index, { quantite: e.target.value })} className={champClasse} />
+                    <input type="number" min="1" step="1" dir="ltr" data-produit={index} data-champ="quantite" value={p.quantite} onChange={(e) => majProduit(index, { quantite: e.target.value })} className={erreursParProduit[index]?.quantite ? champClasseErreur : champClasse} />
+                    {erreursParProduit[index]?.quantite && <span className="mt-0.5 block text-xs text-navex-red">{erreursParProduit[index].quantite}</span>}
                   </label>
                 </div>
                 <div className="mt-4 flex flex-wrap items-center gap-4">
@@ -177,17 +261,33 @@ export default function PageNouvelleDemande() {
                     <input type="checkbox" checked={p.fragile} onChange={(e) => majProduit(index, { fragile: e.target.checked })} className="h-4 w-4 rounded border-neutral-300" />
                     {tProduit("fragile")}
                   </label>
-                  <label className="flex items-center gap-2 text-sm">
-                    <span className="font-medium text-navex-ink">{tProduit("photo")}</span>
-                    <input type="file" accept="image/jpeg,image/png,image/webp"
-                      onChange={(e) => { const f = e.target.files?.[0]; if (f) void televerserPhoto(index, f); }}
-                      className="text-xs text-neutral-500 file:me-2 file:rounded-full file:border-0 file:bg-navex-red-soft file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-navex-red-dark hover:file:bg-navex-red/20" />
-                    {p.photo_nom && (
-                      <span className="text-xs text-navex-ink">
-                        {p.photo_url ? tProduit("photo_ok") : `${tProduit("photo_envoi")} (${p.photo_nom})`}
-                      </span>
+                  <div className="flex items-center gap-3">
+                    <label className="flex items-center gap-2 text-sm">
+                      <span className="font-medium text-navex-ink">{tProduit("photo")}</span>
+                      <input type="file" accept="image/jpeg,image/png,image/webp"
+                        onChange={(e) => { const f = e.target.files?.[0]; if (f) void televerserPhoto(index, f); }}
+                        className="text-xs text-neutral-500 file:me-2 file:rounded-full file:border-0 file:bg-navex-red-soft file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-navex-red-dark hover:file:bg-navex-red/20" />
+                    </label>
+                    {/* Miniature photo */}
+                    {uploadEnCours[index] && (
+                      <div className="h-16 w-16 animate-pulse rounded-xl bg-navex-stone" />
                     )}
-                  </label>
+                    {!uploadEnCours[index] && p.photo_url && (
+                      <div className="relative group">
+                        <img src={p.photo_url} alt={p.photo_nom ?? ""} className="h-16 w-16 rounded-xl object-cover shadow-soft" />
+                        <button type="button" onClick={() => retirerPhoto(index)}
+                          className="absolute -top-1.5 -end-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-navex-red text-[10px] font-bold text-white opacity-0 shadow transition-opacity group-hover:opacity-100"
+                          title={tProduit("photo_retirer")}>
+                          ×
+                        </button>
+                      </div>
+                    )}
+                    {!uploadEnCours[index] && !p.photo_url && p.photo_nom && (
+                      <div className="flex h-16 w-16 items-center justify-center rounded-xl border-2 border-navex-red bg-navex-red-soft/40">
+                        <span className="text-lg text-navex-red">⚠</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </article>
             ))}

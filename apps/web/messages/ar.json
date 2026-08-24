@@ -192,7 +192,8 @@
     "succes": "تم إنشاء الطلب {reference}. وهو الآن في انتظار المصادقة من عون تجاري.",
     "recap_total_colis": "{total} طرداً في المجموع",
     "recap_total_poids": "{total} كغ في المجموع",
-    "recap_vide": "أضف منتجاً واحداً على الأقل."
+    "recap_vide": "أضف منتجاً واحداً على الأقل.",
+    "champs_erreurs": "{nombre} حقلاً (حقول) يجب تصحيحها"
   },
   "produit": {
     "carte": "المنتج {n}",
@@ -213,7 +214,9 @@
     "photo": "صورة (اختياري)",
     "photo_choisir": "اختيار صورة",
     "photo_envoi": "جارٍ الرفع…",
-    "photo_ok": "تمت إضافة الصورة"
+    "photo_ok": "تمت إضافة الصورة",
+    "photo_retirer": "إزالة الصورة",
+    "photo_erreur": "فشل الرفع"
   },
   "erreurs": {
     "identifiants_invalides": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
