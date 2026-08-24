@@ -4,11 +4,12 @@ import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import type { DechargeEntrepotListeDTO, DemandeListeDTO, UtilisateurDTO } from "@navex/contracts";
 import {
+  creerExpediteur,
   listerDechargesEntrepot,
   listerDemandes,
   utilisateurCourant,
 } from "@/lib/api-client";
-import { formaterDate } from "@/lib/ui";
+import { formaterDate, messageErreur } from "@/lib/ui";
 import { AppHeader } from "@/components/app-header";
 import { StatusBadge } from "@/components/status-badge";
 import { Link } from "@/i18n/navigation";
@@ -204,6 +205,24 @@ export default function PageAccueil() {
         0,
       ) ?? 0;
 
+    const [formExpediteur, setFormExpediteur] = useState({ nom_entreprise: "", email: "", telephone: "", adresse: "" });
+    const [formVisible, setFormVisible] = useState(false);
+    const [envoiEnCours, setEnvoiEnCours] = useState(false);
+    const [msgForm, setMsgForm] = useState<{ type: "ok" | "err"; text: string } | null>(null);
+
+    async function submitExpediteur(ev: React.FormEvent) {
+      ev.preventDefault();
+      setEnvoiEnCours(true); setMsgForm(null);
+      try {
+        const r = await creerExpediteur(formExpediteur);
+        setMsgForm({ type: "ok", text: `${r.nom_entreprise} — ${r.email} / ${r.mot_de_passe_defaut}` });
+        setFormExpediteur({ nom_entreprise: "", email: "", telephone: "", adresse: "" });
+        setFormVisible(false);
+      } catch (err) {
+        setMsgForm({ type: "err", text: messageErreur(t, err) });
+      } finally { setEnvoiEnCours(false); }
+    }
+
     return (
       <div className="min-h-dvh">
         <AppHeader />
@@ -216,6 +235,41 @@ export default function PageAccueil() {
             <CarteStat label={t("accueil.stats_file")} valeur={enFile} hero />
             <CarteStat label={t("accueil.stats_produits_a_decider")} valeur={produitsADecider} />
             <CarteStat label={t("accueil.stats_total_demandes")} valeur={demandes?.length ?? 0} />
+          </section>
+
+          {/* Ajouter un expéditeur */}
+          <section className="card-glass rounded-3xl p-6 animate-slide-up">
+            <div className="flex items-center justify-between">
+              <h2 className="text-sm font-semibold text-navex-ink">{t("admin.creer_expediteur_titre")}</h2>
+              <button onClick={() => setFormVisible((v) => !v)}
+                className="rounded-full border border-navex-ink/15 px-4 py-1.5 text-xs font-semibold text-navex-ink transition-all hover:bg-navex-stone">
+                {formVisible ? t("commun.annuler") : "+ " + t("admin.creer_expediteur")}
+              </button>
+            </div>
+            {msgForm && (
+              <p className={`mt-3 rounded-2xl px-4 py-2.5 text-sm backdrop-blur-sm ${msgForm.type === "ok" ? "bg-navex-stone/80 text-navex-ink" : "bg-navex-red-soft/80 text-navex-red-dark"}`}>
+                {msgForm.type === "ok" ? `✓ ${t("admin.expediteur_cree_simple")}` : msgForm.text}
+                {msgForm.type === "ok" && <span className="ms-2 font-mono text-xs">{msgForm.text}</span>}
+              </p>
+            )}
+            {formVisible && (
+              <form onSubmit={submitExpediteur} className="mt-4 space-y-3">
+                <input required placeholder={t("admin.nom_entreprise")} value={formExpediteur.nom_entreprise} onChange={(e) => setFormExpediteur((f) => ({ ...f, nom_entreprise: e.target.value }))}
+                  className="w-full rounded-2xl border border-neutral-200/80 bg-white/60 px-4 py-2.5 text-sm shadow-soft focus:border-navex-red/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-navex-red/10" />
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  <input type="email" required dir="ltr" placeholder={t("login.email")} value={formExpediteur.email} onChange={(e) => setFormExpediteur((f) => ({ ...f, email: e.target.value }))}
+                    className="rounded-2xl border border-neutral-200/80 bg-white/60 px-4 py-2.5 text-sm shadow-soft focus:border-navex-red/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-navex-red/10" />
+                  <input type="tel" required dir="ltr" placeholder={t("admin.telephone")} value={formExpediteur.telephone} onChange={(e) => setFormExpediteur((f) => ({ ...f, telephone: e.target.value }))}
+                    className="rounded-2xl border border-neutral-200/80 bg-white/60 px-4 py-2.5 text-sm shadow-soft focus:border-navex-red/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-navex-red/10" />
+                </div>
+                <input required placeholder={t("admin.adresse")} value={formExpediteur.adresse} onChange={(e) => setFormExpediteur((f) => ({ ...f, adresse: e.target.value }))}
+                  className="w-full rounded-2xl border border-neutral-200/80 bg-white/60 px-4 py-2.5 text-sm shadow-soft focus:border-navex-red/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-navex-red/10" />
+                <button type="submit" disabled={envoiEnCours}
+                  className="rounded-full bg-navex-red px-6 py-2.5 text-sm font-semibold text-white shadow-glow-red transition-all hover:bg-navex-red-dark disabled:opacity-50">
+                  {envoiEnCours ? t("commun.chargement") : t("admin.creer_expediteur")}
+                </button>
+              </form>
+            )}
           </section>
 
           <section className="card-glass-solid rounded-3xl animate-slide-up">

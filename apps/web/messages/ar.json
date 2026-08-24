@@ -4,7 +4,8 @@
     "se_deconnecter": "تسجيل الخروج",
     "chargement": "جارٍ التحميل…",
     "langue": "اللغة",
-    "retour": "رجوع"
+    "retour": "رجوع",
+    "annuler": "إلغاء"
   },
   "nav": {
     "accueil": "الرئيسية",
@@ -30,7 +31,20 @@
     "activer": "تفعيل",
     "suspendre": "تعليق",
     "remettre_attente": "إعادة إلى الانتظار",
-    "statut_modifie": "تم تعديل حالة المُرسِل."
+    "statut_modifie": "تم تعديل حالة المُرسِل.",
+    "tab_stats": "إحصائيات",
+    "tab_compte": "إنشاء حساب",
+    "tab_expediteur": "إنشاء مُرسِل",
+    "creer_compte_titre": "إنشاء حساب مستخدم",
+    "creer_compte": "إنشاء الحساب",
+    "compte_cree": "تم إنشاء الحساب بنجاح.",
+    "creer_expediteur_titre": "إنشاء مُرسِل",
+    "creer_expediteur": "إنشاء المُرسِل",
+    "expediteur_cree": "تم إنشاء المُرسِل — {email} / كلمة المرور: {mot_de_passe}",
+    "expediteur_cree_simple": "تم إنشاء المُرسِل بنجاح.",
+    "nom_entreprise": "اسم الشركة",
+    "telephone": "الهاتف",
+    "adresse": "العنوان"
   },
   "login": {
     "titre": "تسجيل الدخول",
@@ -220,6 +234,11 @@
     "expediteur_suspendu": "حساب شركتك معلّق. تواصل مع المدير.",
     "expediteur_en_attente": "حساب شركتك في انتظار المصادقة من المدير.",
     "statut_invalide": "حالة غير صالحة.",
-    "statut_deja_actuel": "العنصر يحمل هذه الحالة بالفعل."
+    "statut_deja_actuel": "العنصر يحمل هذه الحالة بالفعل.",
+    "email_deja_utilise": "البريد الإلكتروني مستخدم بالفعل من حساب آخر.",
+    "role_interdit": "ليس لديك صلاحية لإنشاء هذا النوع من الحسابات.",
+    "email_invalide": "البريد الإلكتروني غير صالح.",
+    "mot_de_passe_court": "يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل.",
+    "role_invalide": "دور غير صالح."
   }
 }

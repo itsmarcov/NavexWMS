@@ -1,36 +1,60 @@
-import { Body, Controller, Get, Param, Patch } from "@nestjs/common";
+import { Body, Controller, Get, Param, Patch, Post } from "@nestjs/common";
 import { CurrentUser } from "../auth/decorators/current-user.decorator";
 import { Roles } from "../auth/decorators/roles.decorator";
 import { AdminService } from "./admin.service";
-import { StatutExpediteurDto } from "./dto/admin.dto";
+import { CreerExpediteurDto, CreerUtilisateurDto, StatutExpediteurDto } from "./dto/admin.dto";
 
-@Roles("admin")
 @Controller("admin")
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
+  // ── Admin uniquement ──────────────────────────────────────
+
+  @Roles("admin")
   @Get("stats")
   stats() {
     return this.adminService.stats();
   }
 
+  @Roles("admin")
   @Get("expediteurs")
   listerExpediteurs() {
     return this.adminService.listerExpediteurs();
   }
 
-  /** Active / suspend / remet en attente un expéditeur. */
+  @Roles("admin")
   @Patch("expediteurs/:id/statut")
   changerStatut(
     @Param("id") id: string,
     @Body() dto: StatutExpediteurDto,
-    @CurrentUser() user: { sub: string },
+    @CurrentUser() user: { sub: string; role: string },
   ) {
     return this.adminService.changerStatutExpediteur(id, dto, user.sub);
   }
 
+  @Roles("admin")
   @Get("utilisateurs")
   listerUtilisateurs() {
     return this.adminService.listerUtilisateurs();
+  }
+
+  @Roles("admin")
+  @Post("utilisateurs")
+  creerUtilisateur(
+    @Body() dto: CreerUtilisateurDto,
+    @CurrentUser() user: { sub: string; role: string },
+  ) {
+    return this.adminService.creerUtilisateur(dto, user.role, user.sub);
+  }
+
+  // ── Admin OU agent commercial ─────────────────────────────
+
+  @Roles("admin", "agent_commercial")
+  @Post("expediteurs")
+  creerExpediteur(
+    @Body() dto: CreerExpediteurDto,
+    @CurrentUser() user: { sub: string; role: string },
+  ) {
+    return this.adminService.creerExpediteur(dto, user.role, user.sub);
   }
 }

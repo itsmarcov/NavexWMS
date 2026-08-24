@@ -1,5 +1,7 @@
 import type {
   AdminStatsDTO,
+  CreerExpediteurPayload,
+  CreerUtilisateurPayload,
   DechargeEntrepotDetailDTO,
   DechargeEntrepotListeDTO,
   DemandeDetailDTO,
@@ -213,6 +215,22 @@ export function changerStatutExpediteur(id: string, charge: StatutExpediteurPayl
 /** Comptes utilisateurs (lecture seule). */
 export function listerUtilisateursAdmin() {
   return requete<UtilisateurAdminDTO[]>("/admin/utilisateurs");
+}
+
+/** Crée un compte utilisateur (admin : tous les rôles ; commercial : expéditeur uniquement). */
+export function creerUtilisateur(charge: CreerUtilisateurPayload) {
+  return requete<{ id: string; email: string; role: string }>("/admin/utilisateurs", {
+    method: "POST",
+    body: JSON.stringify(charge),
+  });
+}
+
+/** Crée un expéditeur + son compte utilisateur (admin ou agent commercial). */
+export function creerExpediteur(charge: CreerExpediteurPayload) {
+  return requete<{ id: string; nom_entreprise: string; email: string; statut: string; mot_de_passe_defaut: string }>(
+    "/admin/expediteurs",
+    { method: "POST", body: JSON.stringify(charge) },
+  );
 }
 
 export function detailDemande(id: string) {

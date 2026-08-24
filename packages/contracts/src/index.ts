@@ -195,6 +195,23 @@ export interface StatutExpediteurPayload {
   statut: Exclude<StatutExpediteur, never>;
 }
 
+/** Création d'un expéditeur (admin ou agent commercial). */
+export interface CreerExpediteurPayload {
+  nom_entreprise: string;
+  email: string;
+  telephone: string;
+  adresse: string;
+  langue_preferee?: string;
+}
+
+/** Création d'un compte utilisateur (admin uniquement). */
+export interface CreerUtilisateurPayload {
+  email: string;
+  mot_de_passe: string;
+  role: Role;
+  expediteur_id?: string;
+}
+
 export interface DemandeDetailDTO extends Omit<DemandeListeDTO, "_count"> {
   commentaire_agent?: string | null;
   date_reception_prevue?: string | null;

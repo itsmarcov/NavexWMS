@@ -4,7 +4,8 @@
     "se_deconnecter": "Déconnexion",
     "chargement": "Chargement…",
     "langue": "Langue",
-    "retour": "Retour"
+    "retour": "Retour",
+    "annuler": "Annuler"
   },
   "nav": {
     "accueil": "Accueil",
@@ -30,7 +31,20 @@
     "activer": "Activer",
     "suspendre": "Suspendre",
     "remettre_attente": "Remettre en attente",
-    "statut_modifie": "Statut de l'expéditeur modifié."
+    "statut_modifie": "Statut de l'expéditeur modifié.",
+    "tab_stats": "Statistiques",
+    "tab_compte": "Créer un compte",
+    "tab_expediteur": "Créer un expéditeur",
+    "creer_compte_titre": "Créer un compte utilisateur",
+    "creer_compte": "Créer le compte",
+    "compte_cree": "Compte créé avec succès.",
+    "creer_expediteur_titre": "Créer un expéditeur",
+    "creer_expediteur": "Créer l'expéditeur",
+    "expediteur_cree": "Expéditeur créé — {email} / mot de passe : {mot_de_passe}",
+    "expediteur_cree_simple": "Expéditeur créé avec succès.",
+    "nom_entreprise": "Nom de l'entreprise",
+    "telephone": "Téléphone",
+    "adresse": "Adresse"
   },
   "login": {
     "titre": "Connexion",
@@ -220,6 +234,11 @@
     "expediteur_suspendu": "Votre compte entreprise est suspendu. Contactez l'administrateur.",
     "expediteur_en_attente": "Votre compte entreprise est en attente de validation par l'administrateur.",
     "statut_invalide": "Statut invalide.",
-    "statut_deja_actuel": "L'élément possède déjà ce statut."
+    "statut_deja_actuel": "L'élément possède déjà ce statut.",
+    "email_deja_utilise": "Cet e-mail est déjà utilisé par un autre compte.",
+    "role_interdit": "Vous n'avez pas les droits pour créer ce type de compte.",
+    "email_invalide": "Adresse e-mail invalide.",
+    "mot_de_passe_court": "Le mot de passe doit contenir au moins 8 caractères.",
+    "role_invalide": "Rôle invalide."
   }
 }

@@ -1,7 +1,8 @@
-import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
+import { ConflictException, ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
+import { hash } from "bcryptjs";
 import { AuditService } from "../audit/audit.service";
 import { PrismaService } from "../prisma/prisma.service";
-import { StatutExpediteurDto } from "./dto/admin.dto";
+import { CreerExpediteurDto, CreerUtilisateurDto, StatutExpediteurDto } from "./dto/admin.dto";
 
 @Injectable()
 export class AdminService {
@@ -97,5 +98,95 @@ export class AdminService {
       date_creation: u.date_creation,
       expediteur_nom: u.expediteur?.nom_entreprise ?? null,
     }));
+  }
+
+  /** Crée un compte utilisateur (admin : tous les rôles sauf admin ; commercial : expéditeur uniquement). */
+  async creerUtilisateur(
+    dto: CreerUtilisateurDto,
+    roleCreateur: string,
+    utilisateurId: string,
+    ip?: string,
+  ) {
+    if (roleCreateur === "agent_commercial" && dto.role !== "expediteur") {
+      throw new ForbiddenException({ code: "erreurs.role_interdit" });
+    }
+
+    const existant = await this.prisma.utilisateur.findUnique({ where: { email: dto.email } });
+    if (existant) throw new ConflictException({ code: "erreurs.email_deja_utilise" });
+
+    const passwordHash = await hash(dto.mot_de_passe, 12);
+
+    const utilisateur = await this.prisma.utilisateur.create({
+      data: {
+        email: dto.email,
+        password_hash: passwordHash,
+        role: dto.role,
+        expediteur_id: dto.expediteur_id ?? null,
+      },
+    });
+
+    await this.audit.log({
+      entite_type: "Utilisateur",
+      entite_id: utilisateur.id,
+      action: "ADMIN_UTILISATEUR_CREE",
+      utilisateur_id: utilisateurId,
+      donnees_apres: { email: dto.email, role: dto.role },
+      ip_adresse: ip,
+    });
+
+    return { id: utilisateur.id, email: utilisateur.email, role: utilisateur.role };
+  }
+
+  /** Crée un expéditeur + son premier compte utilisateur. */
+  async creerExpediteur(
+    dto: CreerExpediteurDto,
+    roleCreateur: string,
+    utilisateurId: string,
+    ip?: string,
+  ) {
+    const existant = await this.prisma.expediteur.findUnique({ where: { email: dto.email } });
+    if (existant) throw new ConflictException({ code: "erreurs.email_deja_utilise" });
+
+    const expediteur = await this.prisma.$transaction(async (tx) => {
+      const exp = await tx.expediteur.create({
+        data: {
+          nom_entreprise: dto.nom_entreprise,
+          email: dto.email,
+          telephone: dto.telephone,
+          adresse: dto.adresse,
+          langue_preferee: dto.langue_preferee ?? "fr",
+          statut: roleCreateur === "admin" ? "actif" : "en_attente",
+        },
+      });
+
+      const passwordHash = await hash("Navex@2026", 12);
+      await tx.utilisateur.create({
+        data: {
+          email: dto.email,
+          password_hash: passwordHash,
+          role: "expediteur",
+          expediteur_id: exp.id,
+        },
+      });
+
+      return exp;
+    });
+
+    await this.audit.log({
+      entite_type: "Expediteur",
+      entite_id: expediteur.id,
+      action: "ADMIN_EXPEDITEUR_CREE",
+      utilisateur_id: utilisateurId,
+      donnees_apres: { nom_entreprise: dto.nom_entreprise, email: dto.email },
+      ip_adresse: ip,
+    });
+
+    return {
+      id: expediteur.id,
+      nom_entreprise: expediteur.nom_entreprise,
+      email: expediteur.email,
+      statut: expediteur.statut,
+      mot_de_passe_defaut: "Navex@2026",
+    };
   }
 }
