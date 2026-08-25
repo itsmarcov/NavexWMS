@@ -1,7 +1,6 @@
 import "reflect-metadata";
 import { ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
-import express from "express";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import { AppModule } from "./app.module";
@@ -10,7 +9,8 @@ import { env } from "./env";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { bodyParser: false });
-  app.use(express.json({ limit: "10mb" }));
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  app.use(require("express").json({ limit: "10mb" }));
   app.use(helmet());
   app.use(cookieParser());
   app.enableCors({ origin: env.webOrigins, credentials: true });
