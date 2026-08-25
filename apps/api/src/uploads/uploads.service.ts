@@ -59,6 +59,12 @@ export class UploadsService {
     const extension = EXTENSIONS_AUTORISEES[fichier.mimetype];
     if (!extension) throw new ServiceUnavailableException({ code: "erreurs.type_fichier_refuse" });
 
+    if (!s3Configure()) {
+      const base64 = fichier.buffer.toString("base64");
+      const url = `data:${fichier.mimetype};base64,${base64}`;
+      return { url };
+    }
+
     const cle = `photos/${new Date().toISOString().slice(0, 10)}/${randomUUID()}.${extension}`;
     const url = await this.televerserObjet(cle, fichier.buffer, fichier.mimetype);
     return { url };
