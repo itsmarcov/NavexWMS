@@ -56,7 +56,6 @@ export class CreeProduitDto {
 
   @IsOptional()
   @IsString()
-  @MaxLength(500)
   photo_url?: string | null;
 }
 
