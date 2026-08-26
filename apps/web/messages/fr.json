@@ -254,5 +254,10 @@
     "aucune_modification": "Aucune modification détectée.",
     "autosuppression_interdite": "Vous ne pouvez pas supprimer votre propre compte.",
     "expediteur_avec_demandes": "Impossible de supprimer cet expéditeur : des demandes lui sont rattachées."
+  },
+  "filter": {
+    "rechercher": "Rechercher par référence ou entreprise…",
+    "tous": "Tous",
+    "aucun_resultat": "Aucun résultat ne correspond à votre recherche."
   }
 }

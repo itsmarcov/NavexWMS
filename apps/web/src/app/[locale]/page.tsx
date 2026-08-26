@@ -314,26 +314,65 @@ export default function PageAccueil() {
 
   // ── Tableau de bord administrateur ──────────────────────────
   if (utilisateur.role === "admin") {
+    const parExpediteur = new Map<string, { nom: string; demandes: DemandeListeDTO[] }>();
+    for (const d of demandes ?? []) {
+      const key = d.expediteur.id;
+      const entry = parExpediteur.get(key);
+      if (entry) { entry.demandes.push(d); }
+      else { parExpediteur.set(key, { nom: d.expediteur.nom_entreprise, demandes: [d] }); }
+    }
+
     return (
       <div className="min-h-dvh">
         <AppHeader />
         <main className="mx-auto max-w-4xl px-4 py-8 space-y-8">
-          <h1 className="text-2xl font-extrabold text-navex-ink">{t("accueil.titre", { role: t("roles.admin") })}</h1>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h1 className="text-2xl font-extrabold text-navex-ink">
+              {t("accueil.titre", { role: t("roles.admin") })}
+            </h1>
+            <Link
+              href="/admin"
+              className="rounded-full bg-navex-red px-6 py-2.5 text-sm font-semibold text-white shadow-glow-red transition-all duration-200 hover:bg-navex-red-dark hover:shadow-lg"
+            >
+              {t("admin.titre")}
+            </Link>
+          </div>
 
-          <section className="card-glass rounded-3xl p-6 animate-slide-up">
-            <p className="text-sm text-neutral-500">{t("accueil.session")}</p>
-            <p className="mt-1 font-semibold text-navex-ink" dir="ltr">
-              {utilisateur.email}
-            </p>
+          <section className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+            <CarteStat label={t("accueil.stats_demandes")} valeur={demandes?.length ?? 0} hero />
+            <CarteStat label={t("accueil.stats_en_attente")} valeur={demandes?.filter((d) => d.statut === "en_attente").length ?? 0} />
+            <CarteStat label={t("accueil.stats_approuvees")} valeur={demandes?.filter((d) => d.statut === "approuvee").length ?? 0} />
+            <CarteStat label={t("admin.expediteurs_actifs")} valeur={parExpediteur.size} />
           </section>
 
-          <Link
-            href="/admin"
-            className="hero-gradient block rounded-3xl px-6 py-8 text-center shadow-glow-red transition-opacity hover:opacity-90 animate-slide-up"
-          >
-            <p className="text-lg font-bold text-white">{t("admin.titre")}</p>
-            <p className="mt-1 text-xs text-white/60">{t("admin.sous_titre")}</p>
-          </Link>
+          {[...parExpediteur.entries()].map(([id, { nom, demandes: dmds }]) => (
+            <section key={id} className="card-glass-solid rounded-3xl animate-slide-up">
+              <div className="flex items-center justify-between border-b border-neutral-100/60 px-6 py-4">
+                <h2 className="text-sm font-semibold text-navex-ink">{nom}</h2>
+                <span className="text-xs text-neutral-400">{dmds.length} {t("demandes.produits_col").toLowerCase()}</span>
+              </div>
+              <ul className="divide-y divide-neutral-100/60">
+                {dmds.map((d) => (
+                  <li key={d.id} className="flex flex-wrap items-center justify-between gap-2 px-6 py-4 transition-colors hover:bg-white/40">
+                    <div>
+                      <span className="text-sm font-semibold text-navex-ink" dir="ltr">{d.reference}</span>
+                      <span className="ms-2 text-xs text-neutral-400">{formaterDate(d.date_creation, locale)}</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      {d.decharge && (
+                        <span className="text-xs text-neutral-400" dir="ltr">{d.decharge.numero_decharge}</span>
+                      )}
+                      <StatusBadge statut={d.statut} />
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
+
+          {(!demandes || demandes.length === 0) && (
+            <p className="card-glass rounded-3xl p-10 text-center text-sm text-neutral-500">{t("demandes.vide")}</p>
+          )}
         </main>
       </div>
     );

@@ -155,16 +155,25 @@ export default function PageDetailDemande() {
             const aTraiter = produitsATraiter.some((x) => x.id === p.id);
             return (
               <article key={p.id} className={`space-y-3 rounded-2xl border p-4 ${aTraiter ? "border-navex-red/20 bg-navex-red-soft/30 backdrop-blur-sm" : "border-neutral-200/60"}`}>
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <p className="font-medium text-navex-ink"><span dir="ltr">{p.sku_code}</span> — {p.designation}{p.fragile && " ⚠"}</p>
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div className="flex items-start gap-3">
+                    {p.photo_url && (
+                      <a href={p.photo_url} target="_blank" rel="noopener noreferrer" className="shrink-0">
+                        <img src={p.photo_url} alt={p.designation} className="h-20 w-20 rounded-xl object-cover shadow-soft ring-1 ring-neutral-200/60 transition-transform hover:scale-105" />
+                      </a>
+                    )}
+                    <div>
+                      <p className="font-medium text-navex-ink"><span dir="ltr">{p.sku_code}</span> — {p.designation}{p.fragile && " ⚠"}</p>
+                      <dl className="mt-1 flex flex-wrap gap-x-6 gap-y-1 text-xs text-neutral-500" dir={locale === "ar" ? "rtl" : "ltr"}>
+                        <div className="flex gap-1"><dt className="text-neutral-400">{t("produit.dimensions_court")} :</dt><dd dir="ltr">{p.longueur_cm}×{p.largeur_cm}×{p.hauteur_cm}</dd></div>
+                        <div className="flex gap-1"><dt className="text-neutral-400">{t("produit.poids")} :</dt><dd dir="ltr">{p.poids_kg}</dd></div>
+                        <div className="flex gap-1"><dt className="text-neutral-400">{t("produit.quantite")} :</dt><dd dir="ltr">{p.quantite}</dd></div>
+                        <div className="flex gap-1"><dt className="text-neutral-400">{t("produit.type_emballage")} :</dt><dd>{t(`produit.emballage_${p.type_emballage}`)}</dd></div>
+                      </dl>
+                    </div>
+                  </div>
                   <StatusBadge statut={p.statut_validation} />
                 </div>
-                <dl className="flex flex-wrap gap-x-6 gap-y-1 text-xs text-neutral-500" dir={locale === "ar" ? "rtl" : "ltr"}>
-                  <div className="flex gap-1"><dt className="text-neutral-400">{t("produit.dimensions_court")} :</dt><dd dir="ltr">{p.longueur_cm}×{p.largeur_cm}×{p.hauteur_cm}</dd></div>
-                  <div className="flex gap-1"><dt className="text-neutral-400">{t("produit.poids")} :</dt><dd dir="ltr">{p.poids_kg}</dd></div>
-                  <div className="flex gap-1"><dt className="text-neutral-400">{t("produit.quantite")} :</dt><dd dir="ltr">{p.quantite}</dd></div>
-                  <div className="flex gap-1"><dt className="text-neutral-400">{t("produit.type_emballage")} :</dt><dd>{t(`produit.emballage_${p.type_emballage}`)}</dd></div>
-                </dl>
                 {p.statut_validation !== "en_attente" && p.commentaire && (
                   <p className="rounded-xl bg-navex-stone/80 px-3 py-2 text-xs italic text-neutral-600 backdrop-blur-sm">« {p.commentaire} »</p>
                 )}

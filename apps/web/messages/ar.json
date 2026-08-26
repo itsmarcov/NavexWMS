@@ -254,5 +254,10 @@
     "aucune_modification": "لم يتم اكتشاف أي تعديل.",
     "autosuppression_interdite": "لا يمكنك حذف حسابك الخاص.",
     "expediteur_avec_demandes": "لا يمكن حذف هذا المُرسِل: توجد طلبات مرتبطة به."
+  },
+  "filter": {
+    "rechercher": "بحث بالمرجع أو اسم الشركة…",
+    "tous": "الكل",
+    "aucun_resultat": "لا توجد نتائج تطابق بحثك."
   }
 }
