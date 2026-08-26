@@ -44,6 +44,10 @@ export default function PageAccueil() {
   const [fileAttente, setFileAttente] = useState<DemandeListeDTO[] | null>(null);
   const [fileEntrepot, setFileEntrepot] = useState<DechargeEntrepotListeDTO[] | null>(null);
   const [charge, setCharge] = useState(true);
+  const [formExpediteur, setFormExpediteur] = useState({ nom_entreprise: "", email: "", telephone: "", adresse: "" });
+  const [formVisible, setFormVisible] = useState(false);
+  const [envoiEnCours, setEnvoiEnCours] = useState(false);
+  const [msgForm, setMsgForm] = useState<{ type: "ok" | "err"; text: string } | null>(null);
 
   useEffect(() => {
     Promise.all([utilisateurCourant(), listerDemandes().catch(() => null)])
@@ -204,11 +208,6 @@ export default function PageAccueil() {
         (n, d) => n + (d.produits?.filter((p) => p.statut_validation === "en_attente").length ?? 0),
         0,
       ) ?? 0;
-
-    const [formExpediteur, setFormExpediteur] = useState({ nom_entreprise: "", email: "", telephone: "", adresse: "" });
-    const [formVisible, setFormVisible] = useState(false);
-    const [envoiEnCours, setEnvoiEnCours] = useState(false);
-    const [msgForm, setMsgForm] = useState<{ type: "ok" | "err"; text: string } | null>(null);
 
     async function submitExpediteur(ev: React.FormEvent) {
       ev.preventDefault();
