@@ -158,6 +158,7 @@
   },
   "demandes": {
     "titre": "طلبات التخزين الخاصة بي",
+    "titre_all": "طلبات التخزين",
     "nouvelle": "طلب جديد",
     "reference": "المرجع",
     "date_creation": "أُنشئت في",

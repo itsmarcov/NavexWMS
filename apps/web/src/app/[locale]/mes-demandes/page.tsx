@@ -67,7 +67,11 @@ export default function PageMesDemandes() {
       <AppHeader />
       <main className="mx-auto max-w-4xl px-4 py-8 space-y-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h1 className="text-2xl font-extrabold text-navex-ink">{t("demandes.titre")}</h1>
+          <h1 className="text-2xl font-extrabold text-navex-ink">
+            {(utilisateur?.role === "admin" || utilisateur?.role === "agent_commercial")
+              ? t("demandes.titre_all")
+              : t("demandes.titre")}
+          </h1>
           {utilisateur?.role === "expediteur" && (
             <Bouton href="/mes-demandes/nouvelle" variante="primaire">
               {t("demandes.nouvelle")}

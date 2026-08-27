@@ -158,6 +158,7 @@
   },
   "demandes": {
     "titre": "Mes demandes de stockage",
+    "titre_all": "Demandes de stockage",
     "nouvelle": "Nouvelle demande",
     "reference": "Référence",
     "date_creation": "Créée le",
