@@ -16,7 +16,7 @@ export class AdminController {
     return this.adminService.stats();
   }
 
-  @Roles("admin")
+  @Roles("admin", "agent_commercial")
   @Get("expediteurs")
   listerExpediteurs() {
     return this.adminService.listerExpediteurs();
