@@ -45,7 +45,7 @@ export default function PageAccueil() {
   const [fileAttente, setFileAttente] = useState<DemandeListeDTO[] | null>(null);
   const [fileEntrepot, setFileEntrepot] = useState<DechargeEntrepotListeDTO[] | null>(null);
   const [charge, setCharge] = useState(true);
-  const [formExpediteur, setFormExpediteur] = useState({ nom_entreprise: "", email: "", telephone: "", adresse: "", volume_expedition_journalier_m3: "", volume_expedition_mensuel_m3: "" });
+  const [formExpediteur, setFormExpediteur] = useState({ nom_entreprise: "", email: "", telephone: "", adresse: "" });
   const [formVisible, setFormVisible] = useState(false);
   const [envoiEnCours, setEnvoiEnCours] = useState(false);
   const [msgForm, setMsgForm] = useState<{ type: "ok" | "err"; text: string } | null>(null);
@@ -215,11 +215,9 @@ export default function PageAccueil() {
       try {
         const r = await creerExpediteur({
           ...formExpediteur,
-          volume_expedition_journalier_m3: formExpediteur.volume_expedition_journalier_m3 ? Number(formExpediteur.volume_expedition_journalier_m3) : null,
-          volume_expedition_mensuel_m3: formExpediteur.volume_expedition_mensuel_m3 ? Number(formExpediteur.volume_expedition_mensuel_m3) : null,
         });
         setMsgForm({ type: "ok", text: `${r.nom_entreprise} — ${r.email} / ${r.mot_de_passe_defaut}` });
-        setFormExpediteur({ nom_entreprise: "", email: "", telephone: "", adresse: "", volume_expedition_journalier_m3: "", volume_expedition_mensuel_m3: "" });
+        setFormExpediteur({ nom_entreprise: "", email: "", telephone: "", adresse: "" });
         setFormVisible(false);
       } catch (err) {
         setMsgForm({ type: "err", text: messageErreur(t, err) });
@@ -266,12 +264,6 @@ export default function PageAccueil() {
                 </div>
                 <input required placeholder={t("admin.adresse")} value={formExpediteur.adresse} onChange={(e) => setFormExpediteur((f) => ({ ...f, adresse: e.target.value }))}
                   className="w-full rounded-2xl border border-neutral-200/80 bg-white/60 px-4 py-2.5 text-sm shadow-soft focus:border-navex-red/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-navex-red/10" />
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                  <input type="number" min="0" step="0.01" dir="ltr" placeholder={t("volume_journalier")} value={formExpediteur.volume_expedition_journalier_m3} onChange={(e) => setFormExpediteur((f) => ({ ...f, volume_expedition_journalier_m3: e.target.value }))}
-                    className="rounded-2xl border border-neutral-200/80 bg-white/60 px-4 py-2.5 text-sm shadow-soft focus:border-navex-red/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-navex-red/10" />
-                  <input type="number" min="0" step="0.01" dir="ltr" placeholder={t("volume_mensuel")} value={formExpediteur.volume_expedition_mensuel_m3} onChange={(e) => setFormExpediteur((f) => ({ ...f, volume_expedition_mensuel_m3: e.target.value }))}
-                    className="rounded-2xl border border-neutral-200/80 bg-white/60 px-4 py-2.5 text-sm shadow-soft focus:border-navex-red/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-navex-red/10" />
-                </div>
                 <Bouton type="submit" disabled={envoiEnCours} variante="primaire">
                   {envoiEnCours ? t("commun.chargement") : t("admin.creer_expediteur")}
                 </Bouton>

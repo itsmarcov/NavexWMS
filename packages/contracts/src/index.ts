@@ -78,8 +78,15 @@ export interface DemandeListeDTO {
   _count?: { produits: number };
   decharge?: DechargeResumeDTO | null;
   compteurs?: { en_attente: number; approuve: number; refuse: number };
-  /** Statuts produits — présent quand la liste est filtrée sur la file d'attente. */
-  produits?: Array<{ statut_validation: StatutValidationProduit }>;
+  volume_expedition_journalier?: number | null;
+  volume_expedition_mensuel?: number | null;
+  produits?: Array<{
+    statut_validation: StatutValidationProduit;
+    longueur_cm: number;
+    largeur_cm: number;
+    hauteur_cm: number;
+    quantite: number;
+  }>;
 }
 
 /** Décision de l'agent commercial sur un produit. */
@@ -178,8 +185,6 @@ export interface ExpediteurAdminDTO {
   telephone: string;
   adresse: string;
   statut: StatutExpediteur;
-  volume_expedition_journalier_m3?: number | null;
-  volume_expedition_mensuel_m3?: number | null;
   date_creation: string;
   nb_utilisateurs: number;
   nb_demandes: number;
@@ -205,8 +210,6 @@ export interface CreerExpediteurPayload {
   telephone: string;
   adresse: string;
   langue_preferee?: string;
-  volume_expedition_journalier_m3?: number | null;
-  volume_expedition_mensuel_m3?: number | null;
 }
 
 /** Création d'un compte utilisateur (admin uniquement). */
@@ -233,8 +236,6 @@ export interface ModifierExpediteurPayload {
   telephone?: string;
   adresse?: string;
   langue_preferee?: string;
-  volume_expedition_journalier_m3?: number | null;
-  volume_expedition_mensuel_m3?: number | null;
 }
 
 export interface DemandeDetailDTO extends Omit<DemandeListeDTO, "_count"> {
@@ -242,6 +243,8 @@ export interface DemandeDetailDTO extends Omit<DemandeListeDTO, "_count"> {
   date_reception_prevue?: string | null;
   date_traitement?: string | null;
   conditions_acceptee: boolean;
+  volume_expedition_journalier?: number | null;
+  volume_expedition_mensuel?: number | null;
   produits: ProduitDTO[];
   decharge?:
     | (DechargeResumeDTO & { date_generation: string; pdf_url?: string | null })

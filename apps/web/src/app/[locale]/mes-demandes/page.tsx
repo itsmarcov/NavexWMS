@@ -170,6 +170,11 @@ export default function PageMesDemandes() {
                     <p className="mt-1 text-xs text-neutral-400">
                       {t("demandes.date_creation")} {formaterDate(d.date_creation, locale)} ·{" "}
                       {t("demandes.produits_col")}: {d._count?.produits ?? 0}
+                      {utilisateur && (utilisateur.role === "admin" || utilisateur.role === "agent_commercial") && d.produits && d.produits.length > 0 && (
+                        <span> · {t("volume_estime")}: <span className="font-semibold text-navex-ink" dir="ltr">
+                          {d.produits.reduce((s, p) => s + (p.longueur_cm * p.largeur_cm * p.hauteur_cm * p.quantite) / 1_000_000, 0).toFixed(2)} m³
+                        </span></span>
+                      )}
                     </p>
                   </div>
                   <div className="flex items-center gap-3">

@@ -51,6 +51,8 @@ export class DemandesService {
           expediteur_id: expediteurId,
           statut: StatutDemande.en_attente,
           conditions_acceptee: dto.conditions_acceptee ?? false,
+          volume_expedition_journalier: dto.volume_expedition_journalier ?? null,
+          volume_expedition_mensuel: dto.volume_expedition_mensuel ?? null,
           produits: {
             create: dto.produits.map((p) => ({
               sku_code: p.sku_code,
@@ -107,7 +109,15 @@ export class DemandesService {
         expediteur: { select: { id: true, nom_entreprise: true } },
         _count: { select: { produits: true } },
         decharge: { select: { id: true, numero_decharge: true, statut: true } },
-        ...(attente ? { produits: { select: { statut_validation: true } } } : {}),
+        produits: {
+          select: {
+            longueur_cm: true,
+            largeur_cm: true,
+            hauteur_cm: true,
+            quantite: true,
+            ...(attente ? { statut_validation: true } : {}),
+          },
+        },
       },
     });
   }

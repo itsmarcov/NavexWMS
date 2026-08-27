@@ -65,12 +65,12 @@ export default function PageAdmin() {
   // ── États formulaires ──
   const [onglet, setOnglet] = useState<"stats" | "creer_compte" | "creer_expediteur">("stats");
   const [formCompte, setFormCompte] = useState({ email: "", mot_de_passe: "", role: "agent_commercial" as Role });
-  const [formExpediteur, setFormExpediteur] = useState({ nom_entreprise: "", email: "", telephone: "", adresse: "", volume_expedition_journalier_m3: "", volume_expedition_mensuel_m3: "" });
+  const [formExpediteur, setFormExpediteur] = useState({ nom_entreprise: "", email: "", telephone: "", adresse: "" });
   const [envoiEnCours, setEnvoiEnCours] = useState(false);
 
   // ── États modification / suppression ──
   const [expEditId, setExpEditId] = useState<string | null>(null);
-  const [expEditForm, setExpEditForm] = useState({ nom_entreprise: "", email: "", telephone: "", adresse: "", volume_expedition_journalier_m3: "", volume_expedition_mensuel_m3: "" });
+  const [expEditForm, setExpEditForm] = useState({ nom_entreprise: "", email: "", telephone: "", adresse: "" });
   const [expSupprId, setExpSupprId] = useState<string | null>(null);
   const [userEditId, setUserEditId] = useState<string | null>(null);
   const [userEditForm, setUserEditForm] = useState({ email: "", role: "agent_commercial" as Role, actif: true });
@@ -109,11 +109,9 @@ export default function PageAdmin() {
     try {
       const resultat = await creerExpediteur({
         ...formExpediteur,
-        volume_expedition_journalier_m3: formExpediteur.volume_expedition_journalier_m3 ? Number(formExpediteur.volume_expedition_journalier_m3) : null,
-        volume_expedition_mensuel_m3: formExpediteur.volume_expedition_mensuel_m3 ? Number(formExpediteur.volume_expedition_mensuel_m3) : null,
       });
       setSucces(t("admin.expediteur_cree", { email: resultat.email, mot_de_passe: resultat.mot_de_passe_defaut }));
-      setFormExpediteur({ nom_entreprise: "", email: "", telephone: "", adresse: "", volume_expedition_journalier_m3: "", volume_expedition_mensuel_m3: "" });
+      setFormExpediteur({ nom_entreprise: "", email: "", telephone: "", adresse: "" });
       charger();
     } catch (err) { setErreur(messageErreur(t, err)); }
     finally { setEnvoiEnCours(false); }
@@ -124,8 +122,6 @@ export default function PageAdmin() {
     setExpEditId(e.id);
     setExpEditForm({
       nom_entreprise: e.nom_entreprise, email: e.email, telephone: e.telephone, adresse: e.adresse,
-      volume_expedition_journalier_m3: e.volume_expedition_journalier_m3 != null ? String(e.volume_expedition_journalier_m3) : "",
-      volume_expedition_mensuel_m3: e.volume_expedition_mensuel_m3 != null ? String(e.volume_expedition_mensuel_m3) : "",
     });
     setExpSupprId(null);
   }
@@ -137,8 +133,6 @@ export default function PageAdmin() {
     try {
       await modifierExpediteur(expEditId, {
         ...expEditForm,
-        volume_expedition_journalier_m3: expEditForm.volume_expedition_journalier_m3 ? Number(expEditForm.volume_expedition_journalier_m3) : null,
-        volume_expedition_mensuel_m3: expEditForm.volume_expedition_mensuel_m3 ? Number(expEditForm.volume_expedition_mensuel_m3) : null,
       });
       setSucces(t("admin.expediteur_modifie"));
       setExpEditId(null);
@@ -308,14 +302,6 @@ export default function PageAdmin() {
                             {t("admin.adresse")}
                             <input required value={expEditForm.adresse} onChange={(ev) => setExpEditForm((f) => ({ ...f, adresse: ev.target.value }))} className={CHAMP} />
                           </label>
-                          <label className="block text-xs font-medium text-navex-ink">
-                            {t("volume_journalier")}
-                            <input type="number" min="0" step="0.01" dir="ltr" value={expEditForm.volume_expedition_journalier_m3} onChange={(ev) => setExpEditForm((f) => ({ ...f, volume_expedition_journalier_m3: ev.target.value }))} className={CHAMP} />
-                          </label>
-                          <label className="block text-xs font-medium text-navex-ink">
-                            {t("volume_mensuel")}
-                            <input type="number" min="0" step="0.01" dir="ltr" value={expEditForm.volume_expedition_mensuel_m3} onChange={(ev) => setExpEditForm((f) => ({ ...f, volume_expedition_mensuel_m3: ev.target.value }))} className={CHAMP} />
-                          </label>
                         </div>
                         <div className="flex gap-2">
                           <Bouton type="submit" variante="primaire" disabled={actionEnCours !== null}
@@ -383,14 +369,6 @@ export default function PageAdmin() {
               <label className="block text-sm font-medium text-navex-ink">
                 {t("admin.adresse")}
                 <input required value={formExpediteur.adresse} onChange={(e) => setFormExpediteur((f) => ({ ...f, adresse: e.target.value }))} className={CHAMP} />
-              </label>
-              <label className="block text-sm font-medium text-navex-ink">
-                {t("volume_journalier")}
-                <input type="number" min="0" step="0.01" dir="ltr" value={formExpediteur.volume_expedition_journalier_m3} onChange={(e) => setFormExpediteur((f) => ({ ...f, volume_expedition_journalier_m3: e.target.value }))} className={CHAMP} />
-              </label>
-              <label className="block text-sm font-medium text-navex-ink">
-                {t("volume_mensuel")}
-                <input type="number" min="0" step="0.01" dir="ltr" value={formExpediteur.volume_expedition_mensuel_m3} onChange={(e) => setFormExpediteur((f) => ({ ...f, volume_expedition_mensuel_m3: e.target.value }))} className={CHAMP} />
               </label>
               <Bouton type="submit" variante="primaire" disabled={envoiEnCours}
                 className="!px-6 !py-2.5 shadow-glow-red">

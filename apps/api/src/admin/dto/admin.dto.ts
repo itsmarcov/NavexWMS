@@ -1,4 +1,4 @@
-import { IsBoolean, IsEmail, IsIn, IsNumber, IsOptional, IsString, Min, MinLength } from "class-validator";
+import { IsBoolean, IsEmail, IsIn, IsOptional, IsString, MinLength } from "class-validator";
 
 const STATUTS = ["en_attente", "actif", "suspendu"] as const;
 
@@ -41,16 +41,6 @@ export class CreerExpediteurDto {
   @IsOptional()
   @IsString()
   langue_preferee?: string;
-
-  @IsOptional()
-  @IsNumber()
-  @Min(0)
-  volume_expedition_journalier_m3?: number;
-
-  @IsOptional()
-  @IsNumber()
-  @Min(0)
-  volume_expedition_mensuel_m3?: number;
 }
 
 export class ModifierUtilisateurDto {
@@ -96,14 +86,4 @@ export class ModifierExpediteurDto {
   @IsOptional()
   @IsString()
   langue_preferee?: string;
-
-  @IsOptional()
-  @IsNumber()
-  @Min(0)
-  volume_expedition_journalier_m3?: number;
-
-  @IsOptional()
-  @IsNumber()
-  @Min(0)
-  volume_expedition_mensuel_m3?: number;
 }

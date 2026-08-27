@@ -75,6 +75,8 @@ export default function PageNouvelleDemande() {
   const [enEnvoi, setEnEnvoi] = useState(false);
   const [referenceCreee, setReferenceCreee] = useState<string | null>(null);
   const [conditionsAcceptee, setConditionsAcceptee] = useState(false);
+  const [volumeExpeditionJournalier, setVolumeExpeditionJournalier] = useState("");
+  const [volumeExpeditionMensuel, setVolumeExpeditionMensuel] = useState("");
 
   const etapes = [t("wizard.etape_produits"), t("wizard.etape_recapitulatif"), t("wizard.etape_envoi")];
 
@@ -161,7 +163,12 @@ export default function PageNouvelleDemande() {
         fragile: p.fragile, type_emballage: p.type_emballage,
         quantite: Number(p.quantite), photo_url: p.photo_url,
       }));
-      const creee = await creerDemande(charge, conditionsAcceptee);
+      const creee = await creerDemande(
+        charge,
+        conditionsAcceptee,
+        volumeExpeditionJournalier ? Number(volumeExpeditionJournalier) : null,
+        volumeExpeditionMensuel ? Number(volumeExpeditionMensuel) : null,
+      );
       setReferenceCreee(creee.reference);
       setEtape(2);
     } catch (e) {
@@ -302,6 +309,19 @@ export default function PageNouvelleDemande() {
                 {t("wizard.suivant")}
               </Bouton>
             </div>
+            <section className="card-glass rounded-3xl p-6 space-y-4">
+              <h3 className="text-sm font-semibold text-navex-ink">{t("wizard.activite_previsionnelle")}</h3>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <label className="block text-sm font-medium text-navex-ink">{t("volume_journalier")}
+                  <input type="number" min="0" step="1" dir="ltr" value={volumeExpeditionJournalier} onChange={(e) => setVolumeExpeditionJournalier(e.target.value)}
+                    className={champClasse} />
+                </label>
+                <label className="block text-sm font-medium text-navex-ink">{t("volume_mensuel")}
+                  <input type="number" min="0" step="1" dir="ltr" value={volumeExpeditionMensuel} onChange={(e) => setVolumeExpeditionMensuel(e.target.value)}
+                    className={champClasse} />
+                </label>
+              </div>
+            </section>
           </section>
         )}
 
@@ -334,6 +354,12 @@ export default function PageNouvelleDemande() {
             <p className="text-sm text-neutral-500">
               {t("wizard.recap_total_colis", { total: totalColis })} · {t("wizard.recap_total_poids", { total: totalPoids.toFixed(2) })} · {t("volume_estime")} : {totalVolumeM3.toFixed(2)} m³
             </p>
+            <div className="card-glass rounded-3xl p-5 space-y-2">
+              <h3 className="text-sm font-semibold text-navex-ink">{t("wizard.recap_volume_m3")}</h3>
+              <p className="text-3xl font-extrabold text-navex-ink" dir="ltr">{totalVolumeM3.toFixed(2)} m³</p>
+              {volumeExpeditionJournalier && <p className="text-xs text-neutral-500">{t("volume_journalier")} : <span className="font-semibold text-navex-ink" dir="ltr">{volumeExpeditionJournalier}</span></p>}
+              {volumeExpeditionMensuel && <p className="text-xs text-neutral-500">{t("volume_mensuel")} : <span className="font-semibold text-navex-ink" dir="ltr">{volumeExpeditionMensuel}</span></p>}
+            </div>
             <div className="flex items-center justify-between">
               <Bouton type="button" onClick={() => setEtape(0)} variante="secondaire">
                 {t("wizard.precedent")}

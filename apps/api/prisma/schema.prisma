@@ -64,8 +64,6 @@ model Expediteur {
   adresse         String
   statut          StatutExpediteur @default(en_attente)
   langue_preferee String           @default("fr")
-  volume_expedition_journalier_m3 Float?
-  volume_expedition_mensuel_m3    Float?
   date_creation   DateTime         @default(now())
 
   utilisateurs Utilisateur[]
@@ -113,6 +111,8 @@ model DemandeStockage {
   date_reception_prevue DateTime?
   commentaire_agent     String?
   conditions_acceptee   Boolean       @default(false)
+  volume_expedition_journalier Int?
+  volume_expedition_mensuel    Int?
 
   produits Produit[]
   decharge Decharge?

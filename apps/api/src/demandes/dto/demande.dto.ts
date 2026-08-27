@@ -69,6 +69,16 @@ export class CreeDemandeDto {
   @IsOptional()
   @IsBoolean()
   conditions_acceptee?: boolean;
+
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  volume_expedition_journalier?: number;
+
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  volume_expedition_mensuel?: number;
 }
 
 const DECISIONS = ["approuve", "refuse"] as const;

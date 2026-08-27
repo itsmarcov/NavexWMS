@@ -93,6 +93,7 @@ export default function PageDetailDemande() {
 
   const auMoinsUnApprouve = demande.produits.some((p) => p.statut_validation === "approuve");
   const produitsATraiter = estAgent ? demande.produits.filter((p) => p.statut_validation === "en_attente") : [];
+  const volumeEstimeM3 = demande.produits.reduce((s, p) => s + (p.longueur_cm * p.largeur_cm * p.hauteur_cm * p.quantite) / 1_000_000, 0);
 
   return (
     <div className="min-h-dvh">
@@ -129,6 +130,18 @@ export default function PageDetailDemande() {
             <p className="text-xs uppercase text-neutral-400">{t("conditions_titre")}</p>
             <p className="mt-1 text-navex-ink">{demande.conditions_acceptee ? t("conditions_acceptee") : t("conditions_non_acceptee")}</p>
           </div>
+          {estAgent && (demande.volume_expedition_journalier != null || demande.volume_expedition_mensuel != null) && (
+            <>
+              {demande.volume_expedition_journalier != null && <div>
+                <p className="text-xs uppercase text-neutral-400">{t("volume_journalier")}</p>
+                <p className="mt-1 font-medium text-navex-ink" dir="ltr">{demande.volume_expedition_journalier}</p>
+              </div>}
+              {demande.volume_expedition_mensuel != null && <div>
+                <p className="text-xs uppercase text-neutral-400">{t("volume_mensuel")}</p>
+                <p className="mt-1 font-medium text-navex-ink" dir="ltr">{demande.volume_expedition_mensuel}</p>
+              </div>}
+            </>
+          )}
         </section>
 
         {estAgent && (
@@ -150,6 +163,7 @@ export default function PageDetailDemande() {
 
         <section className="space-y-3 rounded-3xl card-glass p-6">
           <h2 className="text-sm font-semibold text-navex-ink">{t("demandes.produits_titre")}</h2>
+          <p className="text-xs text-neutral-500">{t("volume_estime")} : <span className="font-semibold text-navex-ink" dir="ltr">{volumeEstimeM3.toFixed(2)} m³</span></p>
           {produitsATraiter.length > 0 && (
             <p className="rounded-2xl bg-navex-red-soft/80 px-4 py-2.5 text-xs font-medium text-navex-red-dark backdrop-blur-sm">
               {t("validation.produits_a_traiter", { nombre: produitsATraiter.length })}
