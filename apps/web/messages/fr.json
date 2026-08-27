@@ -10,6 +10,7 @@
   "nav": {
     "accueil": "Accueil",
     "mes_demandes": "Mes demandes",
+    "demandes": "Demandes",
     "file_attente": "File d'attente",
     "entrepot": "Entrepôt",
     "admin": "Administration"

@@ -20,7 +20,10 @@ export function AppHeader() {
 
   const liens: Array<{ href: string; label: string }> = [{ href: "/", label: t("nav.accueil") }];
   if (utilisateur && utilisateur.role !== "agent_entrepot") {
-    liens.push({ href: "/mes-demandes", label: t("nav.mes_demandes") });
+    const label = (utilisateur.role === "admin" || utilisateur.role === "agent_commercial")
+      ? t("nav.demandes")
+      : t("nav.mes_demandes");
+    liens.push({ href: "/mes-demandes", label });
   }
   if (utilisateur && (utilisateur.role === "agent_commercial" || utilisateur.role === "admin")) {
     liens.push({ href: "/file-attente", label: t("nav.file_attente") });
