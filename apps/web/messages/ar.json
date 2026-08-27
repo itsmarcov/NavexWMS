@@ -258,6 +258,8 @@
   "filter": {
     "rechercher": "بحث بالمرجع أو اسم الشركة…",
     "tous": "الكل",
+    "tous_expediteurs": "جميع الموردين",
+    "filtrer_expediteur": "تصفية حسب المورد",
     "aucun_resultat": "لا توجد نتائج تطابق بحثك."
   }
 }

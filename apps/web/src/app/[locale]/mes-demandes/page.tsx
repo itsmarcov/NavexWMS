@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import type { DemandeListeDTO, StatutDemande, UtilisateurDTO } from "@navex/contracts";
-import { listerDemandes, utilisateurCourant } from "@/lib/api-client";
+import { listerDemandes, listerExpediteursAdmin, utilisateurCourant } from "@/lib/api-client";
 import { formaterDate, messageErreur } from "@/lib/ui";
 import { AppHeader } from "@/components/app-header";
 import { StatusBadge } from "@/components/status-badge";
@@ -23,9 +23,11 @@ export default function PageMesDemandes() {
 
   const [demandes, setDemandes] = useState<DemandeListeDTO[] | null>(null);
   const [utilisateur, setUtilisateur] = useState<UtilisateurDTO | null>(null);
+  const [expediteurs, setExpediteurs] = useState<Array<{ id: string; nom_entreprise: string }>>([]);
   const [erreur, setErreur] = useState<string | null>(null);
   const [recherche, setRecherche] = useState("");
   const [filtreStatut, setFiltreStatut] = useState<StatutDemande | "">("");
+  const [filtreExpediteurId, setFiltreExpediteurId] = useState<string>("");
 
   const charger = useCallback(() => {
     listerDemandes()
@@ -36,7 +38,12 @@ export default function PageMesDemandes() {
 
   useEffect(() => {
     charger();
-    utilisateurCourant().then(setUtilisateur).catch(() => undefined);
+    utilisateurCourant().then((u) => {
+      setUtilisateur(u);
+      if (u.role === "admin" || u.role === "agent_commercial") {
+        listerExpediteursAdmin().then(setExpediteurs).catch(() => undefined);
+      }
+    }).catch(() => undefined);
   }, [charger]);
 
   const demandesFiltrees = useMemo(() => {
@@ -44,6 +51,7 @@ export default function PageMesDemandes() {
     const q = recherche.toLowerCase().trim();
     return demandes.filter((d) => {
       if (filtreStatut && d.statut !== filtreStatut) return false;
+      if (filtreExpediteurId && d.expediteur.id !== filtreExpediteurId) return false;
       if (q) {
         return (
           d.reference.toLowerCase().includes(q) ||
@@ -52,7 +60,7 @@ export default function PageMesDemandes() {
       }
       return true;
     });
-  }, [demandes, recherche, filtreStatut]);
+  }, [demandes, recherche, filtreStatut, filtreExpediteurId]);
 
   return (
     <div className="min-h-dvh">
@@ -101,6 +109,34 @@ export default function PageMesDemandes() {
           </div>
         )}
 
+        {/* Filtre expéditeur (admin/commercial uniquement) */}
+        {demandes && expediteurs.length > 0 && (
+          <div className="flex items-center gap-3">
+            <label htmlFor="filtre-expediteur" className="text-xs font-medium text-neutral-400 shrink-0">
+              {t("filter.filtrer_expediteur")} :
+            </label>
+            <select
+              id="filtre-expediteur"
+              value={filtreExpediteurId}
+              onChange={(e) => setFiltreExpediteurId(e.target.value)}
+              className="rounded-2xl border border-neutral-200/80 bg-white/60 px-3 py-2 text-sm shadow-soft transition-all focus:border-navex-red/40 focus:outline-none focus:ring-2 focus:ring-navex-red/10"
+            >
+              <option value="">{t("filter.tous_expediteurs")}</option>
+              {expediteurs.map((exp) => (
+                <option key={exp.id} value={exp.id}>{exp.nom_entreprise}</option>
+              ))}
+            </select>
+            {filtreExpediteurId && (
+              <button
+                onClick={() => setFiltreExpediteurId("")}
+                className="text-xs text-navex-red underline transition-colors hover:text-navex-red-dark"
+              >
+                ✕
+              </button>
+            )}
+          </div>
+        )}
+
         {!demandes && !erreur && (
           <div className="flex justify-center py-12">
             <div className="h-8 w-8 animate-spin rounded-full border-2 border-navex-red border-t-transparent" />
@@ -109,7 +145,7 @@ export default function PageMesDemandes() {
 
         {demandes && demandesFiltrees.length === 0 && (
           <p className="card-glass rounded-3xl p-10 text-center text-sm text-neutral-500">
-            {recherche || filtreStatut ? t("filter.aucun_resultat") : t("demandes.vide")}
+            {recherche || filtreStatut || filtreExpediteurId ? t("filter.aucun_resultat") : t("demandes.vide")}
           </p>
         )}
 

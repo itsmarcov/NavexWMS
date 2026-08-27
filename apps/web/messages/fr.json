@@ -258,6 +258,8 @@
   "filter": {
     "rechercher": "Rechercher par référence ou entreprise…",
     "tous": "Tous",
+    "tous_expediteurs": "Tous les expéditeurs",
+    "filtrer_expediteur": "Filtrer par expéditeur",
     "aucun_resultat": "Aucun résultat ne correspond à votre recherche."
   }
 }
