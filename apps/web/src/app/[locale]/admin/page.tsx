@@ -19,6 +19,7 @@ import { formaterDate, messageErreur } from "@/lib/ui";
 import { AppHeader } from "@/components/app-header";
 import { StatusBadge } from "@/components/status-badge";
 import { RequireRole } from "@/components/require-role";
+import { Bouton } from "@/components/bouton";
 
 function CarteKpi({ label, valeur, hero }: { label: string; valeur: number; hero?: boolean }) {
   if (hero) {
@@ -257,27 +258,27 @@ export default function PageAdmin() {
                             {t(a.cle)}
                           </button>
                         ))}
-                        <button onClick={() => ouvrirEditExp(e)} disabled={actionEnCours !== null}
-                          className="rounded-full border border-navex-ink/15 px-3 py-1.5 text-xs font-semibold text-navex-ink/70 transition-all hover:bg-navex-stone disabled:opacity-50">
+                        <Bouton variante="secondaire" onClick={() => ouvrirEditExp(e)} disabled={actionEnCours !== null}
+                          className="!px-3 !py-1.5 !text-xs !border-navex-ink/15 !text-navex-ink/70">
                           {t("admin.modifier")}
-                        </button>
+                        </Bouton>
                         {e.nb_demandes === 0 && (
                           expSupprId === e.id ? (
                             <div className="flex items-center gap-1">
-                              <button onClick={confirmerSupprExp} disabled={actionEnCours !== null}
-                                className="rounded-full bg-navex-red px-3 py-1.5 text-xs font-semibold text-white transition-all hover:bg-navex-red-dark disabled:opacity-50">
+                              <Bouton variante="primaire" onClick={confirmerSupprExp} disabled={actionEnCours !== null}
+                                className="!px-3 !py-1.5 !text-xs">
                                 {t("admin.confirmer_suppression")}
-                              </button>
-                              <button onClick={() => setExpSupprId(null)}
-                                className="rounded-full border border-neutral-200 px-3 py-1.5 text-xs font-semibold text-neutral-500 transition-all hover:bg-navex-stone">
+                              </Bouton>
+                              <Bouton variante="secondaire" onClick={() => setExpSupprId(null)}
+                                className="!px-3 !py-1.5 !text-xs !text-neutral-500 !border-neutral-200">
                                 {t("commun.annuler")}
-                              </button>
+                              </Bouton>
                             </div>
                           ) : (
-                            <button onClick={() => { setExpSupprId(e.id); setExpEditId(null); }} disabled={actionEnCours !== null}
-                              className="rounded-full border border-navex-red/30 px-3 py-1.5 text-xs font-semibold text-navex-red transition-all hover:bg-navex-red-soft disabled:opacity-50">
+                            <Bouton variante="secondaire" onClick={() => { setExpSupprId(e.id); setExpEditId(null); }} disabled={actionEnCours !== null}
+                              className="!px-3 !py-1.5 !text-xs !border-navex-red/30 !text-navex-red hover:!bg-navex-red-soft">
                               {t("admin.supprimer")}
-                            </button>
+                            </Bouton>
                           )
                         )}
                       </div>
@@ -304,14 +305,14 @@ export default function PageAdmin() {
                           </label>
                         </div>
                         <div className="flex gap-2">
-                          <button type="submit" disabled={actionEnCours !== null}
-                            className="rounded-full bg-navex-red px-5 py-2 text-xs font-semibold text-white shadow-glow-red transition-all hover:bg-navex-red-dark disabled:opacity-50">
+                          <Bouton type="submit" variante="primaire" disabled={actionEnCours !== null}
+                            className="!px-5 !py-2 !text-xs shadow-glow-red">
                             {actionEnCours === e.id ? t("commun.chargement") : t("admin.modifier")}
-                          </button>
-                          <button type="button" onClick={() => setExpEditId(null)}
-                            className="rounded-full border border-neutral-200 px-5 py-2 text-xs font-semibold text-neutral-500 transition-all hover:bg-navex-stone">
+                          </Bouton>
+                          <Bouton type="button" variante="secondaire" onClick={() => setExpEditId(null)}
+                            className="!px-5 !py-2 !text-xs !text-neutral-500 !border-neutral-200">
                             {t("commun.annuler")}
-                          </button>
+                          </Bouton>
                         </div>
                       </form>
                     )}
@@ -341,10 +342,10 @@ export default function PageAdmin() {
                   {ROLES_CREABLES.map((r) => <option key={r.value} value={r.value}>{t(r.label)}</option>)}
                 </select>
               </label>
-              <button type="submit" disabled={envoiEnCours}
-                className="rounded-full bg-navex-red px-6 py-2.5 text-sm font-semibold text-white shadow-glow-red transition-all hover:bg-navex-red-dark disabled:opacity-50">
+              <Bouton type="submit" variante="primaire" disabled={envoiEnCours}
+                className="!px-6 !py-2.5 shadow-glow-red">
                 {envoiEnCours ? t("commun.chargement") : t("admin.creer_compte")}
-              </button>
+              </Bouton>
             </form>
           </section>
         )}
@@ -370,10 +371,10 @@ export default function PageAdmin() {
                 {t("admin.adresse")}
                 <input required value={formExpediteur.adresse} onChange={(e) => setFormExpediteur((f) => ({ ...f, adresse: e.target.value }))} className={CHAMP} />
               </label>
-              <button type="submit" disabled={envoiEnCours}
-                className="rounded-full bg-navex-red px-6 py-2.5 text-sm font-semibold text-white shadow-glow-red transition-all hover:bg-navex-red-dark disabled:opacity-50">
+              <Bouton type="submit" variante="primaire" disabled={envoiEnCours}
+                className="!px-6 !py-2.5 shadow-glow-red">
                 {envoiEnCours ? t("commun.chargement") : t("admin.creer_expediteur")}
-              </button>
+              </Bouton>
             </form>
           </section>
         )}
@@ -402,26 +403,26 @@ export default function PageAdmin() {
                   <td className="py-2 text-navex-ink">{formaterDate(u.date_creation, locale)}</td>
                   <td className="py-2 text-end">
                     <div className="flex items-center justify-end gap-1">
-                      <button onClick={() => ouvrirEditUser(u)} disabled={actionEnCours !== null}
-                        className="rounded-full border border-navex-ink/15 px-2.5 py-1 text-xs font-semibold text-navex-ink/70 transition-all hover:bg-navex-stone disabled:opacity-50">
+                      <Bouton variante="secondaire" onClick={() => ouvrirEditUser(u)} disabled={actionEnCours !== null}
+                        className="!px-2.5 !py-1 !text-xs !border-navex-ink/15 !text-navex-ink/70">
                         {t("admin.modifier")}
-                      </button>
+                      </Bouton>
                       {userSupprId === u.id ? (
                         <div className="flex items-center gap-1">
-                          <button onClick={confirmerSupprUser} disabled={actionEnCours !== null}
-                            className="rounded-full bg-navex-red px-2.5 py-1 text-xs font-semibold text-white transition-all hover:bg-navex-red-dark disabled:opacity-50">
+                          <Bouton variante="primaire" onClick={confirmerSupprUser} disabled={actionEnCours !== null}
+                            className="!px-2.5 !py-1 !text-xs">
                             {t("admin.confirmer_suppression")}
-                          </button>
-                          <button onClick={() => setUserSupprId(null)}
-                            className="rounded-full border border-neutral-200 px-2.5 py-1 text-xs font-semibold text-neutral-500 transition-all hover:bg-navex-stone">
+                          </Bouton>
+                          <Bouton variante="secondaire" onClick={() => setUserSupprId(null)}
+                            className="!px-2.5 !py-1 !text-xs !text-neutral-500 !border-neutral-200">
                             {t("commun.annuler")}
-                          </button>
+                          </Bouton>
                         </div>
                       ) : (
-                        <button onClick={() => { setUserSupprId(u.id); setUserEditId(null); }} disabled={actionEnCours !== null}
-                          className="rounded-full border border-navex-red/30 px-2.5 py-1 text-xs font-semibold text-navex-red transition-all hover:bg-navex-red-soft disabled:opacity-50">
+                        <Bouton variante="secondaire" onClick={() => { setUserSupprId(u.id); setUserEditId(null); }} disabled={actionEnCours !== null}
+                          className="!px-2.5 !py-1 !text-xs !border-navex-red/30 !text-navex-red hover:!bg-navex-red-soft">
                           {t("admin.supprimer")}
-                        </button>
+                        </Bouton>
                       )}
                     </div>
                   </td>
@@ -454,14 +455,14 @@ export default function PageAdmin() {
                 </label>
               </div>
               <div className="flex gap-2">
-                <button type="submit" disabled={actionEnCours !== null}
-                  className="rounded-full bg-navex-red px-5 py-2 text-xs font-semibold text-white shadow-glow-red transition-all hover:bg-navex-red-dark disabled:opacity-50">
+                <Bouton type="submit" variante="primaire" disabled={actionEnCours !== null}
+                  className="!px-5 !py-2 !text-xs shadow-glow-red">
                   {actionEnCours === userEditId ? t("commun.chargement") : t("admin.modifier")}
-                </button>
-                <button type="button" onClick={() => setUserEditId(null)}
-                  className="rounded-full border border-neutral-200 px-5 py-2 text-xs font-semibold text-neutral-500 transition-all hover:bg-navex-stone">
+                </Bouton>
+                <Bouton type="button" variante="secondaire" onClick={() => setUserEditId(null)}
+                  className="!px-5 !py-2 !text-xs !text-neutral-500 !border-neutral-200">
                   {t("commun.annuler")}
-                </button>
+                </Bouton>
               </div>
             </form>
           )}

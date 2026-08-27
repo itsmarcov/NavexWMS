@@ -8,6 +8,7 @@ import { listerDemandes, utilisateurCourant } from "@/lib/api-client";
 import { formaterDate, messageErreur } from "@/lib/ui";
 import { AppHeader } from "@/components/app-header";
 import { StatusBadge } from "@/components/status-badge";
+import { Bouton } from "@/components/bouton";
 
 const STATUTS_FILTRABLES: Array<{ value: StatutDemande | ""; label: string }> = [
   { value: "", label: "filter.tous" },
@@ -60,12 +61,9 @@ export default function PageMesDemandes() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h1 className="text-2xl font-extrabold text-navex-ink">{t("demandes.titre")}</h1>
           {utilisateur?.role === "expediteur" && (
-            <a
-              href="/mes-demandes/nouvelle"
-              className="rounded-full bg-navex-red px-6 py-2.5 text-sm font-semibold text-white shadow-glow-red transition-all duration-200 hover:bg-navex-red-dark hover:shadow-lg"
-            >
+            <Bouton href="/mes-demandes/nouvelle" variante="primaire">
               {t("demandes.nouvelle")}
-            </a>
+            </Bouton>
           )}
         </div>
 

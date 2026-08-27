@@ -10,6 +10,7 @@ import { formaterDate, messageErreur } from "@/lib/ui";
 import { AppHeader } from "@/components/app-header";
 import { StatusBadge } from "@/components/status-badge";
 import { RequireRole } from "@/components/require-role";
+import { Bouton } from "@/components/bouton";
 
 export default function PageDechargeEntrepot() {
   const t = useTranslations();
@@ -102,10 +103,9 @@ export default function PageDechargeEntrepot() {
                 <div className="space-y-3">
                   <textarea value={notesReception} onChange={(e) => setNotesReception(e.target.value)} rows={2} maxLength={500} placeholder={t("entrepot.notes_placeholder")}
                     className="w-full rounded-2xl border border-neutral-200/80 bg-white/60 px-4 py-2.5 text-sm shadow-soft focus:border-navex-red/40 focus:outline-none focus:ring-2 focus:ring-navex-red/10" />
-                  <button onClick={confirmerReception} disabled={enCours || decharge.statut !== "scannee"}
-                    className="rounded-full bg-navex-red px-6 py-2.5 text-sm font-semibold text-white shadow-glow-red transition-all hover:bg-navex-red-dark disabled:opacity-50">
+                  <Bouton variante="primaire" onClick={confirmerReception} disabled={enCours || decharge.statut !== "scannee"}>
                     ✓ {t("entrepot.confirmer_reception")}
-                  </button>
+                  </Bouton>
                 </div>
               )}
               {recue && !positionnee && (
@@ -120,10 +120,9 @@ export default function PageDechargeEntrepot() {
                         </optgroup>
                       ))}
                   </select>
-                  <button onClick={positionner} disabled={!emplacementChoisi || enCours}
-                    className="rounded-full bg-navex-ink px-6 py-2.5 text-sm font-semibold text-white transition-all hover:bg-navex-ink/80 disabled:opacity-50">
+                  <Bouton variante="primaire" onClick={positionner} disabled={!emplacementChoisi || enCours}>
                     📍 {t("entrepot.positionner")}
-                  </button>
+                  </Bouton>
                   {emplacements.length === 0 && <span className="text-xs font-medium text-navex-red">{t("erreurs.aucun_emplacement_libre")}</span>}
                 </div>
               )}
@@ -152,7 +151,9 @@ export default function PageDechargeEntrepot() {
               </ol>
             </section>
 
-            <Link href="/entrepot" className="inline-block text-xs text-neutral-400 underline transition-colors hover:text-navex-ink">← {t("commun.retour")}</Link>
+            <Bouton variante="secondaire" href="/entrepot">
+              ← {t("commun.retour")}
+            </Bouton>
           </>
         )}
       </main>

@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import type { NouveauProduit, TypeEmballageDTO } from "@navex/contracts";
 import { creerDemande, uploaderPhoto } from "@/lib/api-client";
 import { messageErreur } from "@/lib/ui";
 import { AppHeader } from "@/components/app-header";
 import { RequireRole } from "@/components/require-role";
+import { Bouton, classesBouton } from "@/components/bouton";
 
 interface ProduitForm {
   sku_code: string;
@@ -295,13 +295,12 @@ export default function PageNouvelleDemande() {
             ))}
             <div className="flex flex-wrap items-center justify-between gap-3">
               <button type="button" onClick={() => setProduits((a) => [...a, { ...PRODUIT_VIDE }])}
-                className="rounded-full border border-dashed border-neutral-300 px-5 py-2 text-sm font-medium text-navex-ink/70 transition-all hover:border-navex-red/40 hover:text-navex-red">
+                className={classesBouton("secondaire", "border-dashed")}>
                 {t("wizard.ajouter_produit")}
               </button>
-              <button type="button" onClick={etapeSuivante}
-                className="rounded-full bg-navex-red px-6 py-2.5 text-sm font-semibold text-white shadow-glow-red transition-all duration-200 hover:bg-navex-red-dark hover:shadow-lg">
+              <Bouton type="button" onClick={etapeSuivante} variante="primaire">
                 {t("wizard.suivant")}
-              </button>
+              </Bouton>
             </div>
           </section>
         )}
@@ -336,14 +335,12 @@ export default function PageNouvelleDemande() {
               {t("wizard.recap_total_colis", { total: totalColis })} · {t("wizard.recap_total_poids", { total: totalPoids.toFixed(2) })}
             </p>
             <div className="flex items-center justify-between">
-              <button type="button" onClick={() => setEtape(0)}
-                className="rounded-full border border-navex-ink/15 px-5 py-2 text-sm font-medium text-navex-ink/70 transition-all hover:bg-navex-stone">
+              <Bouton type="button" onClick={() => setEtape(0)} variante="secondaire">
                 {t("wizard.precedent")}
-              </button>
-              <button type="button" onClick={etapeSuivante}
-                className="rounded-full bg-navex-red px-6 py-2.5 text-sm font-semibold text-white shadow-glow-red transition-all duration-200 hover:bg-navex-red-dark hover:shadow-lg">
+              </Bouton>
+              <Bouton type="button" onClick={etapeSuivante} variante="primaire">
                 {t("wizard.suivant")}
-              </button>
+              </Bouton>
             </div>
           </section>
         )}
@@ -356,18 +353,17 @@ export default function PageNouvelleDemande() {
                   ✓
                 </div>
                 <p className="text-sm font-medium text-navex-ink">{t("wizard.succes", { reference: referenceCreee })}</p>
-                <a href="/mes-demandes" className="inline-block rounded-full bg-navex-red px-6 py-2.5 text-sm font-semibold text-white shadow-glow-red transition-all hover:bg-navex-red-dark">
+                <Bouton href="/mes-demandes" variante="primaire">
                   {t("nav.mes_demandes")}
-                </a>
+                </Bouton>
               </div>
             ) : (
               <div className="space-y-4">
                 <p className="text-sm text-navex-ink">{enEnvoi ? t("wizard.envoi_cours") : t("wizard.recap_vide")}</p>
                 {!enEnvoi && (
-                  <button type="button" onClick={envoyer}
-                    className="rounded-full bg-navex-red px-6 py-2.5 text-sm font-semibold text-white shadow-glow-red transition-all hover:bg-navex-red-dark">
-                    {t("wizard.envoyer")}
-                  </button>
+                <Bouton type="button" onClick={envoyer} variante="primaire">
+                  {t("wizard.envoyer")}
+                </Bouton>
                 )}
               </div>
             )}
@@ -375,9 +371,9 @@ export default function PageNouvelleDemande() {
         )}
 
         <p className="text-start">
-          <Link href="/mes-demandes" className="text-xs text-neutral-400 underline transition-colors hover:text-navex-ink">
+          <Bouton href="/mes-demandes" variante="secondaire">
             ← {t("commun.retour")}
-          </Link>
+          </Bouton>
         </p>
       </main>
     </div>

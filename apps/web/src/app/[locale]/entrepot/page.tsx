@@ -8,6 +8,7 @@ import { ApiError, listerDechargesEntrepot, scannerQr } from "@/lib/api-client";
 import { formaterDate, messageErreur } from "@/lib/ui";
 import { AppHeader } from "@/components/app-header";
 import { RequireRole } from "@/components/require-role";
+import { Bouton, classesBouton } from "@/components/bouton";
 
 function EtapeBadge({ evenements, libelle }: { evenements: string[]; libelle: string }) {
   if (!evenements.includes("reception_confirmee")) {
@@ -75,10 +76,10 @@ export default function PageEntrepot() {
             <input ref={champScan} value={token} onChange={(e) => setToken(e.target.value)} onKeyDown={(e) => e.key === "Enter" && traiterScan()}
               placeholder={t("entrepot.token_placeholder")} dir="ltr" autoComplete="off"
               className="min-w-60 flex-1 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 font-mono text-xs text-white placeholder:text-neutral-500 focus:border-navex-red/60 focus:outline-none focus:ring-2 focus:ring-navex-red/20" />
-            <button onClick={traiterScan} disabled={scanEnCours}
-              className="rounded-full bg-gradient-to-r from-navex-red to-navex-red-dark px-6 py-3 text-sm font-semibold text-white shadow-glow-red transition-all hover:opacity-90 disabled:opacity-50">
+            <Bouton variante="primaire" onClick={traiterScan} disabled={scanEnCours}
+              className={classesBouton("primaire", "bg-gradient-to-r from-navex-red to-navex-red-dark px-6 py-3 shadow-glow-red hover:opacity-90")}>
               {scanEnCours ? t("commun.chargement") : t("scan.bouton")}
-            </button>
+            </Bouton>
           </div>
           <p className="mt-2 text-xs text-neutral-400">{t("entrepot.scan_aide_douchette")}</p>
 

@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import { useTranslations } from "next-intl";
 import type { ScanResultDTO } from "@navex/contracts";
 import { scannerQr } from "@/lib/api-client";
 import { messageErreur } from "@/lib/ui";
 import { AppHeader } from "@/components/app-header";
+import { Bouton } from "@/components/bouton";
 
 type Etat = { kind: "chargement" } | { kind: "ok"; resultat: ScanResultDTO } | { kind: "erreur"; code?: string };
 
@@ -44,9 +44,9 @@ export default function PageScan() {
             <p role="alert" className="rounded-2xl bg-navex-red-soft/80 px-4 py-2.5 text-sm font-medium text-navex-red-dark backdrop-blur-sm">
               {etat.code?.startsWith("erreurs.") ? t(etat.code) : messageErreur(t, new Error("generique"))}
             </p>
-            <Link href="/entrepot" className="mt-4 inline-block rounded-full border border-navex-ink/15 px-5 py-2 text-sm font-semibold text-navex-ink transition-all hover:bg-navex-stone">
+            <Bouton href="/entrepot" variante="secondaire" className="mt-4">
               {t("entrepot.retour_tableau")}
-            </Link>
+            </Bouton>
           </div>
         )}
 
@@ -62,10 +62,9 @@ export default function PageScan() {
               <div><dt className="text-xs uppercase text-neutral-400">{t("demandes.expediteur_col")}</dt><dd className="mt-0.5 text-navex-ink">{etat.resultat.expediteur_nom}</dd></div>
               <div><dt className="text-xs uppercase text-neutral-400">{t("file_attente.produits_approuves")}</dt><dd className="mt-0.5 text-navex-ink" dir="ltr">{etat.resultat.nb_produits}</dd></div>
             </dl>
-            <Link href={`/entrepot/decharges/${etat.resultat.decharge_id}`}
-              className="block rounded-full bg-navex-red px-5 py-3 text-center text-sm font-semibold text-white shadow-glow-red transition-all hover:bg-navex-red-dark">
+            <Bouton href={`/entrepot/decharges/${etat.resultat.decharge_id}`} variante="primaire" className="block text-center">
               {t("entrepot.traiter_decharge")}
-            </Link>
+            </Bouton>
           </div>
         )}
       </main>

@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import type { DemandeDetailDTO, ProduitDTO, UtilisateurDTO } from "@navex/contracts";
@@ -12,6 +11,7 @@ import {
 import { formaterDate, messageErreur } from "@/lib/ui";
 import { AppHeader } from "@/components/app-header";
 import { StatusBadge } from "@/components/status-badge";
+import { Bouton, classesBouton } from "@/components/bouton";
 
 export default function PageDetailDemande() {
   const t = useTranslations();
@@ -133,10 +133,9 @@ export default function PageDetailDemande() {
             <div className="flex flex-wrap items-center gap-3">
               <input type="date" value={dateReception} onChange={(e) => setDateReception(e.target.value)} dir="ltr"
                 className="rounded-2xl border border-neutral-200/80 bg-white/60 px-3 py-2 text-sm shadow-soft focus:border-navex-red/40 focus:outline-none focus:ring-2 focus:ring-navex-red/10" />
-              <button onClick={planifier} disabled={!dateReception || enCoursPlanif}
-                className="rounded-full border border-navex-ink/15 px-5 py-2 text-sm font-semibold text-navex-ink transition-all hover:bg-navex-stone disabled:opacity-50">
+              <Bouton onClick={planifier} disabled={!dateReception || enCoursPlanif} variante="secondaire">
                 {enCoursPlanif ? t("commun.chargement") : t("planification.sauvegarder")}
-              </button>
+              </Bouton>
               {demande.date_reception_prevue && (
                 <span className="text-xs text-neutral-400">{t("planification.actuelle")} : {formaterDate(demande.date_reception_prevue, locale)}</span>
               )}
@@ -184,13 +183,12 @@ export default function PageDetailDemande() {
                       className="w-full rounded-2xl border border-neutral-200/80 bg-white/60 px-4 py-2.5 text-sm shadow-soft focus:border-navex-red/40 focus:outline-none focus:ring-2 focus:ring-navex-red/10" />
                     <div className="flex flex-wrap gap-2">
                       <button onClick={() => decider(p, "approuve")} disabled={!!decisionsEnCours[p.id]}
-                        className="rounded-full bg-navex-ink px-5 py-2 text-sm font-semibold text-white transition-all hover:bg-navex-ink/80 disabled:opacity-50">
+                        className={classesBouton("primaire", "bg-navex-ink hover:bg-navex-ink/80")}>
                         ✓ {t("validation.approuver")}
                       </button>
-                      <button onClick={() => decider(p, "refuse")} disabled={!!decisionsEnCours[p.id]}
-                        className="rounded-full bg-navex-red px-5 py-2 text-sm font-semibold text-white transition-all hover:bg-navex-red-dark disabled:opacity-50">
+                      <Bouton onClick={() => decider(p, "refuse")} disabled={!!decisionsEnCours[p.id]} variante="primaire">
                         ✗ {t("validation.rejeter")}
-                      </button>
+                      </Bouton>
                     </div>
                   </div>
                 )}
@@ -207,22 +205,20 @@ export default function PageDetailDemande() {
                 <p className="font-medium text-navex-ink" dir="ltr">{t("demandes.decharge_numero", { numero: demande.decharge.numero_decharge })}</p>
                 <p className="mt-0.5 text-xs text-neutral-500"><StatusBadge statut={demande.decharge.statut} /></p>
               </div>
-              <button onClick={telechargerPdf} disabled={enCoursPdf}
-                className="rounded-full bg-navex-red px-5 py-2 text-sm font-semibold text-white shadow-glow-red transition-all hover:bg-navex-red-dark disabled:opacity-50">
+              <Bouton onClick={telechargerPdf} disabled={enCoursPdf} variante="primaire">
                 {enCoursPdf ? t("demandes.generation_cours") : t("demandes.telecharger_pdf")}
-              </button>
+              </Bouton>
             </div>
           ) : auMoinsUnApprouve ? (
-            <button onClick={generer} disabled={enCoursGeneration}
-              className="rounded-full bg-navex-red px-5 py-2 text-sm font-semibold text-white shadow-glow-red transition-all hover:bg-navex-red-dark disabled:opacity-50">
+            <Bouton onClick={generer} disabled={enCoursGeneration} variante="primaire">
               {enCoursGeneration ? t("demandes.generation_cours") : t("demandes.generer_decharge")}
-            </button>
+            </Bouton>
           ) : (
             <p className="text-xs text-neutral-400">{t("erreurs.aucun_produit_approuve")}</p>
           )}
         </section>
 
-        <Link href="/mes-demandes" className="inline-block text-xs text-neutral-400 underline transition-colors hover:text-navex-ink">← {t("commun.retour")}</Link>
+        <Bouton href="/mes-demandes" variante="secondaire">← {t("commun.retour")}</Bouton>
       </main>
     </div>
   );

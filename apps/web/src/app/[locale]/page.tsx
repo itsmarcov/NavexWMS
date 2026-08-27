@@ -13,6 +13,7 @@ import { formaterDate, messageErreur } from "@/lib/ui";
 import { AppHeader } from "@/components/app-header";
 import { StatusBadge } from "@/components/status-badge";
 import { Link } from "@/i18n/navigation";
+import { Bouton } from "@/components/bouton";
 
 function CarteStat({ label, valeur, hero }: { label: string; valeur: number; hero?: boolean }) {
   if (hero) {
@@ -88,12 +89,9 @@ export default function PageAccueil() {
             <h1 className="text-2xl font-extrabold text-navex-ink">
               {t("accueil.titre", { role: t("roles.expediteur") })}
             </h1>
-            <a
-              href="/mes-demandes/nouvelle"
-              className="rounded-full bg-navex-red px-6 py-2.5 text-sm font-semibold text-white shadow-glow-red transition-all duration-200 hover:bg-navex-red-dark hover:shadow-lg"
-            >
+            <Bouton href="/mes-demandes/nouvelle" variante="primaire">
               + {t("demandes.nouvelle")}
-            </a>
+            </Bouton>
           </div>
 
           <section className="grid grid-cols-2 gap-4 sm:grid-cols-4">
@@ -107,9 +105,9 @@ export default function PageAccueil() {
             <div className="flex items-center justify-between border-b border-neutral-100/60 px-6 py-4">
               <h2 className="text-sm font-semibold text-navex-ink">{t("accueil.dernieres")}</h2>
               {total > 3 && (
-                <Link href="/mes-demandes" className="text-xs font-medium text-navex-red hover:text-navex-red-dark transition-colors">
+                <Bouton href="/mes-demandes" variante="secondaire">
                   {t("accueil.voir_toutes")}
-                </Link>
+                </Bouton>
               )}
             </div>
 
@@ -169,9 +167,9 @@ export default function PageAccueil() {
           <section className="card-glass-solid rounded-3xl animate-slide-up">
             <div className="flex items-center justify-between border-b border-neutral-100/60 px-6 py-4">
               <h2 className="text-sm font-semibold text-navex-ink">{t("entrepot.file_titre")}</h2>
-              <Link href="/entrepot" className="text-xs font-medium text-navex-red hover:text-navex-red-dark transition-colors">
+              <Bouton href="/entrepot" variante="secondaire">
                 {t("entrepot.tout_voir")}
-              </Link>
+              </Bouton>
             </div>
 
             {(fileEntrepot?.length ?? 0) === 0 ? (
@@ -240,10 +238,9 @@ export default function PageAccueil() {
           <section className="card-glass rounded-3xl p-6 animate-slide-up">
             <div className="flex items-center justify-between">
               <h2 className="text-sm font-semibold text-navex-ink">{t("admin.creer_expediteur_titre")}</h2>
-              <button onClick={() => setFormVisible((v) => !v)}
-                className="rounded-full border border-navex-ink/15 px-4 py-1.5 text-xs font-semibold text-navex-ink transition-all hover:bg-navex-stone">
+              <Bouton onClick={() => setFormVisible((v) => !v)} variante="secondaire">
                 {formVisible ? t("commun.annuler") : "+ " + t("admin.creer_expediteur")}
-              </button>
+              </Bouton>
             </div>
             {msgForm && (
               <p className={`mt-3 rounded-2xl px-4 py-2.5 text-sm backdrop-blur-sm ${msgForm.type === "ok" ? "bg-navex-stone/80 text-navex-ink" : "bg-navex-red-soft/80 text-navex-red-dark"}`}>
@@ -263,10 +260,9 @@ export default function PageAccueil() {
                 </div>
                 <input required placeholder={t("admin.adresse")} value={formExpediteur.adresse} onChange={(e) => setFormExpediteur((f) => ({ ...f, adresse: e.target.value }))}
                   className="w-full rounded-2xl border border-neutral-200/80 bg-white/60 px-4 py-2.5 text-sm shadow-soft focus:border-navex-red/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-navex-red/10" />
-                <button type="submit" disabled={envoiEnCours}
-                  className="rounded-full bg-navex-red px-6 py-2.5 text-sm font-semibold text-white shadow-glow-red transition-all hover:bg-navex-red-dark disabled:opacity-50">
+                <Bouton type="submit" disabled={envoiEnCours} variante="primaire">
                   {envoiEnCours ? t("commun.chargement") : t("admin.creer_expediteur")}
-                </button>
+                </Bouton>
               </form>
             )}
           </section>
@@ -274,9 +270,9 @@ export default function PageAccueil() {
           <section className="card-glass-solid rounded-3xl animate-slide-up">
             <div className="flex items-center justify-between border-b border-neutral-100/60 px-6 py-4">
               <h2 className="text-sm font-semibold text-navex-ink">{t("file_attente.titre")}</h2>
-              <Link href="/file-attente" className="text-xs font-medium text-navex-red hover:text-navex-red-dark transition-colors">
+              <Bouton href="/file-attente" variante="secondaire">
                 {t("file_attente.tout_voir")}
-              </Link>
+              </Bouton>
             </div>
 
             {enFile === 0 ? (
@@ -330,12 +326,9 @@ export default function PageAccueil() {
             <h1 className="text-2xl font-extrabold text-navex-ink">
               {t("accueil.titre", { role: t("roles.admin") })}
             </h1>
-            <Link
-              href="/admin"
-              className="rounded-full bg-navex-red px-6 py-2.5 text-sm font-semibold text-white shadow-glow-red transition-all duration-200 hover:bg-navex-red-dark hover:shadow-lg"
-            >
+            <Bouton href="/admin" variante="primaire">
               {t("admin.titre")}
-            </Link>
+            </Bouton>
           </div>
 
           <section className="grid grid-cols-2 gap-4 sm:grid-cols-4">

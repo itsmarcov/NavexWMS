@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { ApiError, COOKIE_ACCES, seConnecter } from "@/lib/api-client";
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { Bouton } from "@/components/bouton";
 
 export default function LoginPage() {
   const t = useTranslations();
@@ -103,13 +104,9 @@ export default function LoginPage() {
               </p>
             )}
 
-            <button
-              type="submit"
-              disabled={enCours}
-              className="w-full rounded-full bg-navex-red px-4 py-3 text-sm font-semibold text-white shadow-glow-red transition-all duration-200 hover:bg-navex-red-dark hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none"
-            >
+            <Bouton type="submit" disabled={enCours} className="w-full" variante="primaire">
               {enCours ? t("commun.chargement") : t("login.valider")}
-            </button>
+            </Bouton>
           </form>
         </div>
 
