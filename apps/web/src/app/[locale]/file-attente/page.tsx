@@ -8,6 +8,7 @@ import { listerDemandes } from "@/lib/api-client";
 import { formaterDate, messageErreur } from "@/lib/ui";
 import { AppHeader } from "@/components/app-header";
 import { StatusBadge } from "@/components/status-badge";
+import { RequireRole } from "@/components/require-role";
 
 export default function PageFileAttente() {
   const t = useTranslations();
@@ -35,6 +36,7 @@ export default function PageFileAttente() {
   }, [demandes, recherche]);
 
   return (
+    <RequireRole roles={["agent_commercial", "admin"]}>
     <div className="min-h-dvh">
       <AppHeader />
       <main className="mx-auto max-w-4xl px-4 py-8 space-y-6">
@@ -128,5 +130,6 @@ export default function PageFileAttente() {
         </ul>
       </main>
     </div>
+    </RequireRole>
   );
 }

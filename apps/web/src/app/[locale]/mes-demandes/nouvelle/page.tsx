@@ -7,6 +7,7 @@ import type { NouveauProduit, TypeEmballageDTO } from "@navex/contracts";
 import { creerDemande, uploaderPhoto } from "@/lib/api-client";
 import { messageErreur } from "@/lib/ui";
 import { AppHeader } from "@/components/app-header";
+import { RequireRole } from "@/components/require-role";
 
 interface ProduitForm {
   sku_code: string;
@@ -178,6 +179,7 @@ export default function PageNouvelleDemande() {
     "mt-1 block w-full rounded-2xl border border-navex-red bg-white/60 px-4 py-2.5 text-sm shadow-soft transition-all placeholder:text-neutral-400 focus:border-navex-red focus:bg-white focus:outline-none focus:ring-2 focus:ring-navex-red/20";
 
   return (
+    <RequireRole roles={["expediteur"]}>
     <div className="min-h-dvh">
       <AppHeader />
       <main className="mx-auto max-w-3xl px-4 py-8 space-y-6">
@@ -379,5 +381,6 @@ export default function PageNouvelleDemande() {
         </p>
       </main>
     </div>
+    </RequireRole>
   );
 }

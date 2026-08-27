@@ -9,6 +9,7 @@ import { confirmerReceptionEntrepot, detailDechargeEntrepot, listerEmplacements,
 import { formaterDate, messageErreur } from "@/lib/ui";
 import { AppHeader } from "@/components/app-header";
 import { StatusBadge } from "@/components/status-badge";
+import { RequireRole } from "@/components/require-role";
 
 export default function PageDechargeEntrepot() {
   const t = useTranslations();
@@ -55,6 +56,7 @@ export default function PageDechargeEntrepot() {
   function libelleEmplacement(e: EmplacementDTO) { return `${e.zone}-${e.allee}-${e.rack}-${e.niveau}`; }
 
   return (
+    <RequireRole roles={["agent_entrepot", "admin"]}>
     <div className="min-h-dvh">
       <AppHeader />
       <main className="mx-auto max-w-4xl px-4 py-8 space-y-6">
@@ -155,5 +157,6 @@ export default function PageDechargeEntrepot() {
         )}
       </main>
     </div>
+    </RequireRole>
   );
 }

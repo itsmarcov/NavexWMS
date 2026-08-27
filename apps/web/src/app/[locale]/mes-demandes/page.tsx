@@ -3,8 +3,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
-import type { DemandeListeDTO, StatutDemande } from "@navex/contracts";
-import { listerDemandes } from "@/lib/api-client";
+import type { DemandeListeDTO, StatutDemande, UtilisateurDTO } from "@navex/contracts";
+import { listerDemandes, utilisateurCourant } from "@/lib/api-client";
 import { formaterDate, messageErreur } from "@/lib/ui";
 import { AppHeader } from "@/components/app-header";
 import { StatusBadge } from "@/components/status-badge";
@@ -21,6 +21,7 @@ export default function PageMesDemandes() {
   const locale = useLocale();
 
   const [demandes, setDemandes] = useState<DemandeListeDTO[] | null>(null);
+  const [utilisateur, setUtilisateur] = useState<UtilisateurDTO | null>(null);
   const [erreur, setErreur] = useState<string | null>(null);
   const [recherche, setRecherche] = useState("");
   const [filtreStatut, setFiltreStatut] = useState<StatutDemande | "">("");
@@ -32,7 +33,10 @@ export default function PageMesDemandes() {
       .finally(() => undefined);
   }, [t]);
 
-  useEffect(charger, [charger]);
+  useEffect(() => {
+    charger();
+    utilisateurCourant().then(setUtilisateur).catch(() => undefined);
+  }, [charger]);
 
   const demandesFiltrees = useMemo(() => {
     if (!demandes) return [];
@@ -55,12 +59,14 @@ export default function PageMesDemandes() {
       <main className="mx-auto max-w-4xl px-4 py-8 space-y-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h1 className="text-2xl font-extrabold text-navex-ink">{t("demandes.titre")}</h1>
-          <a
-            href="/mes-demandes/nouvelle"
-            className="rounded-full bg-navex-red px-6 py-2.5 text-sm font-semibold text-white shadow-glow-red transition-all duration-200 hover:bg-navex-red-dark hover:shadow-lg"
-          >
-            {t("demandes.nouvelle")}
-          </a>
+          {utilisateur?.role === "expediteur" && (
+            <a
+              href="/mes-demandes/nouvelle"
+              className="rounded-full bg-navex-red px-6 py-2.5 text-sm font-semibold text-white shadow-glow-red transition-all duration-200 hover:bg-navex-red-dark hover:shadow-lg"
+            >
+              {t("demandes.nouvelle")}
+            </a>
+          )}
         </div>
 
         {erreur && (

@@ -113,9 +113,6 @@ export default function LoginPage() {
           </form>
         </div>
 
-        <p className="text-center text-xs text-neutral-400" dir="ltr">
-          admin@navex.dz · Test@1234
-        </p>
         <div className="flex justify-center">
           <LanguageSwitcher />
         </div>

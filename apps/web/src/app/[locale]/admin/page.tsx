@@ -18,6 +18,7 @@ import {
 import { formaterDate, messageErreur } from "@/lib/ui";
 import { AppHeader } from "@/components/app-header";
 import { StatusBadge } from "@/components/status-badge";
+import { RequireRole } from "@/components/require-role";
 
 function CarteKpi({ label, valeur, hero }: { label: string; valeur: number; hero?: boolean }) {
   if (hero) {
@@ -180,6 +181,7 @@ export default function PageAdmin() {
   }
 
   return (
+    <RequireRole roles={["admin"]}>
     <div className="min-h-dvh">
       <AppHeader />
       <main className="mx-auto max-w-5xl px-4 py-8 space-y-6">
@@ -466,5 +468,6 @@ export default function PageAdmin() {
         </section>
       </main>
     </div>
+    </RequireRole>
   );
 }

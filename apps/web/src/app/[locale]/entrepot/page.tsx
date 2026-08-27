@@ -7,6 +7,7 @@ import type { DechargeEntrepotListeDTO, ScanResultDTO } from "@navex/contracts";
 import { ApiError, listerDechargesEntrepot, scannerQr } from "@/lib/api-client";
 import { formaterDate, messageErreur } from "@/lib/ui";
 import { AppHeader } from "@/components/app-header";
+import { RequireRole } from "@/components/require-role";
 
 function EtapeBadge({ evenements, libelle }: { evenements: string[]; libelle: string }) {
   if (!evenements.includes("reception_confirmee")) {
@@ -59,6 +60,7 @@ export default function PageEntrepot() {
   const enAttentePositionnement = decharges?.filter((d) => d.evenements.includes("reception_confirmee") && !d.evenements.includes("repositionnement")).length ?? 0;
 
   return (
+    <RequireRole roles={["agent_entrepot", "admin"]}>
     <div className="min-h-dvh">
       <AppHeader />
       <main className="mx-auto max-w-4xl px-4 py-8 space-y-6">
@@ -130,5 +132,6 @@ export default function PageEntrepot() {
         </section>
       </main>
     </div>
+    </RequireRole>
   );
 }
