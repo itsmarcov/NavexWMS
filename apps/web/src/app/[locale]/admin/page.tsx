@@ -221,14 +221,7 @@ export default function PageAdmin() {
                     <CarteKpi label={t("admin.produits_a_decider")} valeur={stats.produits_en_attente} />
                   </div>
                 </section>
-                <section className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                  <div className="card-glass rounded-3xl p-6">
-                    <p className="text-xs font-medium uppercase tracking-wider text-neutral-400">{t("admin.occupation_entrepot")}</p>
-                    <p className="mt-2 text-3xl font-extrabold text-navex-ink" dir="ltr">
-                      {stats.emplacements.total > 0 ? Math.round((stats.emplacements.occupes / stats.emplacements.total) * 100) : 0}%
-                    </p>
-                    <p className="text-xs text-neutral-400" dir="ltr">{stats.emplacements.occupes}/{stats.emplacements.total}</p>
-                  </div>
+                <section className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <CarteKpi label={t("admin.expediteurs_actifs")} valeur={stats.expediteurs_par_statut.actif} />
                   <CarteKpi label={t("admin.decharges_en_cours")} valeur={stats.decharges_par_statut.scannee} />
                 </section>
