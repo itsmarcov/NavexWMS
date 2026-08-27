@@ -86,6 +86,7 @@ export interface DemandeListeDTO {
     largeur_cm: number;
     hauteur_cm: number;
     quantite: number;
+    volume_expedition_journalier?: number | null;
   }>;
 }
 
