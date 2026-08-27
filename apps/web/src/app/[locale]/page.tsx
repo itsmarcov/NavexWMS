@@ -69,7 +69,9 @@ export default function PageAccueil() {
   if (charge || !utilisateur) {
     return (
       <main className="flex min-h-dvh items-center justify-center bg-ambient">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-navex-red border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-navex-red border-t-transparent" role="status">
+          <span className="sr-only">{t("commun.chargement")}</span>
+        </div>
       </main>
     );
   }

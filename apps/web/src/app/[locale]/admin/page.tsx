@@ -38,10 +38,10 @@ function CarteKpi({ label, valeur, hero }: { label: string; valeur: number; hero
   );
 }
 
-const ACTIONS_STATUT: Array<{ vers: StatutExpediteur; cle: string; classe: string }> = [
-  { vers: "actif", cle: "admin.activer", classe: "bg-navex-ink text-white hover:bg-navex-ink/80" },
-  { vers: "suspendu", cle: "admin.suspendre", classe: "bg-navex-red text-white hover:bg-navex-red-dark" },
-  { vers: "en_attente", cle: "admin.remettre_attente", classe: "border border-navex-ink/15 text-navex-ink/70 hover:bg-navex-stone" },
+const ACTIONS_STATUT: Array<{ vers: StatutExpediteur; cle: string; variante: "primaire" | "secondaire"; classe: string }> = [
+  { vers: "actif", cle: "admin.activer", variante: "primaire", classe: "!bg-navex-ink !text-white hover:!bg-navex-ink/80" },
+  { vers: "suspendu", cle: "admin.suspendre", variante: "secondaire", classe: "!border-navex-red/30 !text-navex-red hover:!bg-navex-red-soft" },
+  { vers: "en_attente", cle: "admin.remettre_attente", variante: "secondaire", classe: "" },
 ];
 
 const ROLES_CREABLES: Array<{ value: Role; label: string }> = [
@@ -192,13 +192,13 @@ export default function PageAdmin() {
         {succes && <p role="status" className="rounded-2xl bg-navex-stone/80 px-4 py-2.5 text-sm text-navex-ink backdrop-blur-sm">{succes}</p>}
 
         {/* Onglets */}
-        <nav className="flex gap-1 rounded-full bg-navex-stone/80 p-1 backdrop-blur-sm">
+        <nav role="tablist" className="flex gap-1 rounded-full bg-navex-stone/80 p-1 backdrop-blur-sm">
           {([
             ["stats", "admin.tab_stats"],
             ["creer_compte", "admin.tab_compte"],
             ["creer_expediteur", "admin.tab_expediteur"],
           ] as const).map(([cle, label]) => (
-            <button key={cle} onClick={() => setOnglet(cle)}
+            <button key={cle} role="tab" aria-selected={onglet === cle} onClick={() => setOnglet(cle)}
               className={`flex-1 rounded-full px-4 py-2 text-sm font-medium transition-all duration-200 ${
                 onglet === cle ? "bg-white text-navex-ink shadow-soft" : "text-neutral-400 hover:text-navex-ink"
               }`}>
@@ -246,10 +246,10 @@ export default function PageAdmin() {
                       <div className="flex flex-wrap items-center gap-2">
                         <StatusBadge statut={e.statut} />
                         {ACTIONS_STATUT.filter((a) => a.vers !== e.statut).map((a) => (
-                          <button key={a.vers} onClick={() => appliquerStatut(e.id, a.vers)} disabled={actionEnCours !== null}
-                            className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-all disabled:opacity-50 ${a.classe}`}>
+                          <Bouton key={a.vers} variante={a.variante} onClick={() => appliquerStatut(e.id, a.vers)} disabled={actionEnCours !== null}
+                            className={`!px-3 !py-1.5 !text-xs ${a.classe}`}>
                             {t(a.cle)}
-                          </button>
+                          </Bouton>
                         ))}
                         <Bouton variante="secondaire" onClick={() => ouvrirEditExp(e)} disabled={actionEnCours !== null}
                           className="!px-3 !py-1.5 !text-xs !border-navex-ink/15 !text-navex-ink/70">
@@ -442,8 +442,8 @@ export default function PageAdmin() {
                 <label className="block text-xs font-medium text-navex-ink">
                   {t("admin.compte")}
                   <select value={userEditForm.actif ? "true" : "false"} onChange={(ev) => setUserEditForm((f) => ({ ...f, actif: ev.target.value === "true" }))} className={CHAMP}>
-                    <option value="true">Actif</option>
-                    <option value="false">Inactif</option>
+                    <option value="true">{t("statuts.actif_compte")}</option>
+                    <option value="false">{t("statuts.inactif")}</option>
                   </select>
                 </label>
               </div>

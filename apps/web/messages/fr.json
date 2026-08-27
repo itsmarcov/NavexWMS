@@ -93,6 +93,8 @@
   },
   "entrepot": {
     "titre": "Espace entrepôt",
+    "scan_label": "Saisir le jeton QR à scanner",
+    "notes_label": "Notes de réception",
     "token_placeholder": "Scannez avec la douchette ou collez le contenu du QR…",
     "scan_aide": "Scannez le QR du PDF de décharge avec un téléphone, ou collez le jeton manuellement.",
     "scan_aide_douchette": "La douchette saisit le contenu du QR puis valide avec Entrée automatiquement. Le champ reste focalisé : enchaînez les scans sans toucher la souris.",
@@ -195,7 +197,10 @@
     "recap_total_colis": "{total} colis au total",
     "recap_total_poids": "{total} kg au total",
     "recap_vide": "Ajoutez au moins un produit.",
-    "champs_erreurs": "{nombre} champ(s) à corriger"
+    "champs_erreurs": "{nombre} champ(s) à corriger",
+    "err_requis": "Ce champ est requis",
+    "err_superieur_0": "Doit être supérieur à 0",
+    "err_min_1": "Doit être au moins 1"
   },
   "produit": {
     "carte": "Produit {n}",
@@ -262,6 +267,7 @@
     "tous": "Tous",
     "tous_expediteurs": "Tous les expéditeurs",
     "filtrer_expediteur": "Filtrer par expéditeur",
-    "aucun_resultat": "Aucun résultat ne correspond à votre recherche."
+    "aucun_resultat": "Aucun résultat ne correspond à votre recherche.",
+    "effacer": "Effacer le filtre"
   }
 }

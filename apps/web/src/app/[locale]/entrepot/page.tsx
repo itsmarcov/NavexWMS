@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import type { DechargeEntrepotListeDTO, ScanResultDTO } from "@navex/contracts";
 import { ApiError, listerDechargesEntrepot, scannerQr } from "@/lib/api-client";
@@ -74,7 +74,7 @@ export default function PageEntrepot() {
           <h2 className="mb-3 text-sm font-semibold text-white">{t("scan.titre")}</h2>
           <div className="flex flex-wrap gap-2">
             <input ref={champScan} value={token} onChange={(e) => setToken(e.target.value)} onKeyDown={(e) => e.key === "Enter" && traiterScan()}
-              placeholder={t("entrepot.token_placeholder")} dir="ltr" autoComplete="off"
+              aria-label={t("entrepot.scan_label")} placeholder={t("entrepot.token_placeholder")} dir="ltr" autoComplete="off"
               className="min-w-60 flex-1 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 font-mono text-xs text-white placeholder:text-neutral-500 focus:border-navex-red/60 focus:outline-none focus:ring-2 focus:ring-navex-red/20" />
             <Bouton variante="primaire" onClick={traiterScan} disabled={scanEnCours}
               className={classesBouton("primaire", "bg-gradient-to-r from-navex-red to-navex-red-dark px-6 py-3 shadow-glow-red hover:opacity-90")}>

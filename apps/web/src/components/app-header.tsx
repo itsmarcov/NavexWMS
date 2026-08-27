@@ -6,6 +6,7 @@ import { useLocale, useTranslations } from "next-intl";
 import type { UtilisateurDTO } from "@navex/contracts";
 import { Link, usePathname } from "@/i18n/navigation";
 import { seDeconnecter, utilisateurCourant } from "@/lib/api-client";
+import { Bouton } from "@/components/bouton";
 import { LanguageSwitcher } from "@/components/language-switcher";
 
 export function AppHeader() {
@@ -69,12 +70,9 @@ export function AppHeader() {
         </div>
         <div className="flex items-center gap-3">
           <LanguageSwitcher />
-          <button
-            onClick={deconnexion}
-            className="rounded-full border border-navex-ink/15 px-3 py-1.5 text-sm font-medium text-navex-ink/70 transition-all duration-200 hover:border-navex-red/30 hover:bg-navex-red-soft/40 hover:text-navex-red"
-          >
+          <Bouton variante="secondaire" onClick={deconnexion} aria-label={t("commun.se_deconnecter")}>
             {t("commun.se_deconnecter")}
-          </button>
+          </Bouton>
         </div>
       </div>
     </header>

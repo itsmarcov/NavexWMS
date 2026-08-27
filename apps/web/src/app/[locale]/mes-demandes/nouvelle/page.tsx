@@ -7,7 +7,7 @@ import { creerDemande, uploaderPhoto } from "@/lib/api-client";
 import { messageErreur } from "@/lib/ui";
 import { AppHeader } from "@/components/app-header";
 import { RequireRole } from "@/components/require-role";
-import { Bouton, classesBouton } from "@/components/bouton";
+import { Bouton } from "@/components/bouton";
 
 interface ProduitForm {
   sku_code: string;
@@ -43,13 +43,13 @@ const CHAMPS_REQUIS: Array<keyof ProduitForm> = ["sku_code", "designation", "lon
 
 function validerChamp(champ: keyof ProduitForm, valeur: unknown): string | null {
   switch (champ) {
-    case "sku_code":    return (typeof valeur === "string" && valeur.trim().length > 0) ? null : "Ce champ est requis";
-    case "designation": return (typeof valeur === "string" && valeur.trim().length > 0) ? null : "Ce champ est requis";
-    case "longueur_cm": return Number(valeur) > 0 ? null : "Doit être supérieur à 0";
-    case "largeur_cm":  return Number(valeur) > 0 ? null : "Doit être supérieur à 0";
-    case "hauteur_cm":  return Number(valeur) > 0 ? null : "Doit être supérieur à 0";
-    case "poids_kg":    return Number(valeur) > 0 ? null : "Doit être supérieur à 0";
-    case "quantite":    return Number(valeur) >= 1 ? null : "Doit être au moins 1";
+    case "sku_code":    return (typeof valeur === "string" && valeur.trim().length > 0) ? null : "wizard.err_requis";
+    case "designation": return (typeof valeur === "string" && valeur.trim().length > 0) ? null : "wizard.err_requis";
+    case "longueur_cm": return Number(valeur) > 0 ? null : "wizard.err_superieur_0";
+    case "largeur_cm":  return Number(valeur) > 0 ? null : "wizard.err_superieur_0";
+    case "hauteur_cm":  return Number(valeur) > 0 ? null : "wizard.err_superieur_0";
+    case "poids_kg":    return Number(valeur) > 0 ? null : "wizard.err_superieur_0";
+    case "quantite":    return Number(valeur) >= 1 ? null : "wizard.err_min_1";
     default:            return null;
   }
 }
@@ -214,36 +214,35 @@ export default function PageNouvelleDemande() {
                 <div className="flex items-center justify-between">
                   <h2 className="text-sm font-semibold text-navex-ink">{tProduit("carte", { n: index + 1 })}</h2>
                   {produits.length > 1 && (
-                    <button type="button" onClick={() => setProduits((a) => a.filter((_, i) => i !== index))}
-                      className="text-xs font-medium text-navex-red hover:text-navex-red-dark transition-colors">
+                    <Bouton variante="secondaire" onClick={() => setProduits((a) => a.filter((_, i) => i !== index))} className="text-xs font-medium">
                       {t("wizard.supprimer_produit")}
-                    </button>
+                    </Bouton>
                   )}
                 </div>
                 <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <label className="block text-sm font-medium text-navex-ink">{tProduit("sku")}
                     <input dir="ltr" data-produit={index} data-champ="sku_code" value={p.sku_code} onChange={(e) => majProduit(index, { sku_code: e.target.value })} className={erreursParProduit[index]?.sku_code ? champClasseErreur : champClasse} />
-                    {erreursParProduit[index]?.sku_code && <span className="mt-0.5 block text-xs text-navex-red">{erreursParProduit[index].sku_code}</span>}
+                    {erreursParProduit[index]?.sku_code && <span className="mt-0.5 block text-xs text-navex-red">{t(erreursParProduit[index].sku_code)}</span>}
                   </label>
                   <label className="block text-sm font-medium text-navex-ink">{tProduit("designation")}
                     <input data-produit={index} data-champ="designation" value={p.designation} onChange={(e) => majProduit(index, { designation: e.target.value })} className={erreursParProduit[index]?.designation ? champClasseErreur : champClasse} />
-                    {erreursParProduit[index]?.designation && <span className="mt-0.5 block text-xs text-navex-red">{erreursParProduit[index].designation}</span>}
+                    {erreursParProduit[index]?.designation && <span className="mt-0.5 block text-xs text-navex-red">{t(erreursParProduit[index].designation)}</span>}
                   </label>
                   <label className="block text-sm font-medium text-navex-ink">{tProduit("longueur")}
                     <input type="number" min="0.1" step="0.1" dir="ltr" data-produit={index} data-champ="longueur_cm" value={p.longueur_cm} onChange={(e) => majProduit(index, { longueur_cm: e.target.value })} className={erreursParProduit[index]?.longueur_cm ? champClasseErreur : champClasse} />
-                    {erreursParProduit[index]?.longueur_cm && <span className="mt-0.5 block text-xs text-navex-red">{erreursParProduit[index].longueur_cm}</span>}
+                    {erreursParProduit[index]?.longueur_cm && <span className="mt-0.5 block text-xs text-navex-red">{t(erreursParProduit[index].longueur_cm)}</span>}
                   </label>
                   <label className="block text-sm font-medium text-navex-ink">{tProduit("largeur")}
                     <input type="number" min="0.1" step="0.1" dir="ltr" data-produit={index} data-champ="largeur_cm" value={p.largeur_cm} onChange={(e) => majProduit(index, { largeur_cm: e.target.value })} className={erreursParProduit[index]?.largeur_cm ? champClasseErreur : champClasse} />
-                    {erreursParProduit[index]?.largeur_cm && <span className="mt-0.5 block text-xs text-navex-red">{erreursParProduit[index].largeur_cm}</span>}
+                    {erreursParProduit[index]?.largeur_cm && <span className="mt-0.5 block text-xs text-navex-red">{t(erreursParProduit[index].largeur_cm)}</span>}
                   </label>
                   <label className="block text-sm font-medium text-navex-ink">{tProduit("hauteur")}
                     <input type="number" min="0.1" step="0.1" dir="ltr" data-produit={index} data-champ="hauteur_cm" value={p.hauteur_cm} onChange={(e) => majProduit(index, { hauteur_cm: e.target.value })} className={erreursParProduit[index]?.hauteur_cm ? champClasseErreur : champClasse} />
-                    {erreursParProduit[index]?.hauteur_cm && <span className="mt-0.5 block text-xs text-navex-red">{erreursParProduit[index].hauteur_cm}</span>}
+                    {erreursParProduit[index]?.hauteur_cm && <span className="mt-0.5 block text-xs text-navex-red">{t(erreursParProduit[index].hauteur_cm)}</span>}
                   </label>
                   <label className="block text-sm font-medium text-navex-ink">{tProduit("poids")}
                     <input type="number" min="0.01" step="0.01" dir="ltr" data-produit={index} data-champ="poids_kg" value={p.poids_kg} onChange={(e) => majProduit(index, { poids_kg: e.target.value })} className={erreursParProduit[index]?.poids_kg ? champClasseErreur : champClasse} />
-                    {erreursParProduit[index]?.poids_kg && <span className="mt-0.5 block text-xs text-navex-red">{erreursParProduit[index].poids_kg}</span>}
+                    {erreursParProduit[index]?.poids_kg && <span className="mt-0.5 block text-xs text-navex-red">{t(erreursParProduit[index].poids_kg)}</span>}
                   </label>
                   <label className="block text-sm font-medium text-navex-ink">{tProduit("type_emballage")}
                     <select value={p.type_emballage} onChange={(e) => majProduit(index, { type_emballage: e.target.value as TypeEmballageDTO })} className={champClasse}>
@@ -255,7 +254,7 @@ export default function PageNouvelleDemande() {
                   </label>
                   <label className="block text-sm font-medium text-navex-ink">{tProduit("quantite")}
                     <input type="number" min="1" step="1" dir="ltr" data-produit={index} data-champ="quantite" value={p.quantite} onChange={(e) => majProduit(index, { quantite: e.target.value })} className={erreursParProduit[index]?.quantite ? champClasseErreur : champClasse} />
-                    {erreursParProduit[index]?.quantite && <span className="mt-0.5 block text-xs text-navex-red">{erreursParProduit[index].quantite}</span>}
+                    {erreursParProduit[index]?.quantite && <span className="mt-0.5 block text-xs text-navex-red">{t(erreursParProduit[index].quantite)}</span>}
                   </label>
                 </div>
                 <div className="mt-4 flex flex-wrap items-center gap-4">
@@ -294,10 +293,9 @@ export default function PageNouvelleDemande() {
               </article>
             ))}
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <button type="button" onClick={() => setProduits((a) => [...a, { ...PRODUIT_VIDE }])}
-                className={classesBouton("secondaire", "border-dashed")}>
+              <Bouton variante="secondaire" onClick={() => setProduits((a) => [...a, { ...PRODUIT_VIDE }])} className="border-dashed">
                 {t("wizard.ajouter_produit")}
-              </button>
+              </Bouton>
               <Bouton type="button" onClick={etapeSuivante} variante="primaire">
                 {t("wizard.suivant")}
               </Bouton>

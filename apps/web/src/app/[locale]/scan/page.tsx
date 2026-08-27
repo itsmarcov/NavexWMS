@@ -33,7 +33,9 @@ export default function PageScan() {
 
         {etat.kind === "chargement" && (
           <div className="card-glass rounded-3xl p-8 text-center">
-            <div className="mx-auto mb-4 h-10 w-10 animate-spin rounded-full border-2 border-navex-red border-t-transparent" />
+            <div className="mx-auto mb-4 h-10 w-10 animate-spin rounded-full border-2 border-navex-red border-t-transparent" role="status">
+              <span className="sr-only">{t("commun.chargement")}</span>
+            </div>
             <p className="text-sm text-neutral-500">{t("commun.chargement")}</p>
           </div>
         )}

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import type { Role, UtilisateurDTO } from "@navex/contracts";
 import { utilisateurCourant } from "@/lib/api-client";
 
@@ -12,6 +13,7 @@ export function RequireRole({
   roles: Role[];
   children: React.ReactNode;
 }) {
+  const t = useTranslations();
   const router = useRouter();
   const pathname = usePathname();
   const [utilisateur, setUtilisateur] = useState<UtilisateurDTO | null>(null);
@@ -35,7 +37,9 @@ export function RequireRole({
   if (!pret) {
     return (
       <div className="flex min-h-dvh items-center justify-center bg-ambient">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-navex-red border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-navex-red border-t-transparent" role="status">
+          <span className="sr-only">{t("commun.chargement")}</span>
+        </div>
       </div>
     );
   }

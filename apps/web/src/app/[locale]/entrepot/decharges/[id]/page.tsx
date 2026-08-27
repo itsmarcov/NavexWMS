@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { useParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import type { DechargeEntrepotDetailDTO, EmplacementDTO } from "@navex/contracts";
@@ -72,7 +72,7 @@ export default function PageDechargeEntrepot() {
               <StatusBadge statut={decharge.statut} />
             </div>
 
-            <section className="grid grid-cols-1 gap-4 rounded-3xl bg-white/70 p-6 shadow-soft backdrop-blur-xl ring-1 ring-white/50 sm:grid-cols-3">
+            <section className="grid grid-cols-1 gap-4 rounded-3xl card-glass p-6 sm:grid-cols-3">
               <div><p className="text-xs uppercase text-neutral-400">{t("demandes.reference")}</p><p className="mt-1 font-medium text-navex-ink" dir="ltr">{decharge.demande.reference}</p></div>
               <div><p className="text-xs uppercase text-neutral-400">{t("demandes.expediteur_col")}</p><p className="mt-1 font-medium text-navex-ink">{decharge.expediteur_nom}</p></div>
               <div><p className="text-xs uppercase text-neutral-400">{t("file_attente.produits_approuves")}</p><p className="mt-1 font-medium text-navex-ink" dir="ltr">{decharge.produits.length}</p></div>
@@ -97,11 +97,12 @@ export default function PageDechargeEntrepot() {
               </table>
             </section>
 
-            <section className="space-y-4 rounded-3xl bg-white/70 p-6 shadow-soft backdrop-blur-xl ring-1 ring-white/50">
+            <section className="space-y-4 rounded-3xl card-glass p-6">
               <h2 className="text-sm font-semibold text-navex-ink">{t("entrepot.actions_titre")}</h2>
               {!recue && (
                 <div className="space-y-3">
-                  <textarea value={notesReception} onChange={(e) => setNotesReception(e.target.value)} rows={2} maxLength={500} placeholder={t("entrepot.notes_placeholder")}
+                   <textarea value={notesReception} onChange={(e) => setNotesReception(e.target.value)} rows={2} maxLength={500} placeholder={t("entrepot.notes_placeholder")}
+                    aria-label={t("entrepot.notes_label")}
                     className="w-full rounded-2xl border border-neutral-200/80 bg-white/60 px-4 py-2.5 text-sm shadow-soft focus:border-navex-red/40 focus:outline-none focus:ring-2 focus:ring-navex-red/10" />
                   <Bouton variante="primaire" onClick={confirmerReception} disabled={enCours || decharge.statut !== "scannee"}>
                     ✓ {t("entrepot.confirmer_reception")}
@@ -110,7 +111,8 @@ export default function PageDechargeEntrepot() {
               )}
               {recue && !positionnee && (
                 <div className="flex flex-wrap items-center gap-3">
-                  <select value={emplacementChoisi} onChange={(e) => setEmplacementChoisi(e.target.value)} aria-label={t("entrepot.choisir_emplacement")}
+                  <label htmlFor="emplacement-select" className="sr-only">{t("entrepot.choisir_emplacement")}</label>
+                  <select id="emplacement-select" value={emplacementChoisi} onChange={(e) => setEmplacementChoisi(e.target.value)} aria-label={t("entrepot.choisir_emplacement")}
                     className="rounded-2xl border border-neutral-200/80 bg-white/60 px-3 py-2 text-sm shadow-soft focus:border-navex-red/40 focus:outline-none focus:ring-2 focus:ring-navex-red/10">
                     <option value="">{t("entrepot.choisir_emplacement")}</option>
                     {Object.entries(emplacements.reduce<Record<string, EmplacementDTO[]>>((g, e) => { (g[e.zone] ??= []).push(e); return g; }, {}))

@@ -108,7 +108,7 @@ export default function PageDetailDemande() {
         {erreur && <p role="alert" className="rounded-2xl bg-navex-red-soft/80 px-4 py-2.5 text-sm text-navex-red-dark backdrop-blur-sm">{erreur}</p>}
         {succes && <p role="status" className="rounded-2xl bg-navex-stone/80 px-4 py-2.5 text-sm text-navex-ink backdrop-blur-sm">{succes}</p>}
 
-        <section className="grid grid-cols-1 gap-4 rounded-3xl bg-white/70 p-6 shadow-soft backdrop-blur-xl ring-1 ring-white/50 sm:grid-cols-2">
+        <section className="grid grid-cols-1 gap-4 rounded-3xl card-glass p-6 sm:grid-cols-2">
           <div>
             <p className="text-xs uppercase text-neutral-400">{t("demandes.expediteur_col")}</p>
             <p className="mt-1 font-medium text-navex-ink">{demande.expediteur.nom_entreprise}</p>
@@ -131,7 +131,8 @@ export default function PageDetailDemande() {
           <section className="card-glass rounded-3xl p-6">
             <h2 className="mb-3 text-sm font-semibold text-navex-ink">{t("planification.titre")}</h2>
             <div className="flex flex-wrap items-center gap-3">
-              <input type="date" value={dateReception} onChange={(e) => setDateReception(e.target.value)} dir="ltr"
+               <label htmlFor="date-reception" className="sr-only">{t("planification.titre")}</label>
+                <input id="date-reception" type="date" value={dateReception} onChange={(e) => setDateReception(e.target.value)} dir="ltr"
                 className="rounded-2xl border border-neutral-200/80 bg-white/60 px-3 py-2 text-sm shadow-soft focus:border-navex-red/40 focus:outline-none focus:ring-2 focus:ring-navex-red/10" />
               <Bouton onClick={planifier} disabled={!dateReception || enCoursPlanif} variante="secondaire">
                 {enCoursPlanif ? t("commun.chargement") : t("planification.sauvegarder")}
@@ -143,7 +144,7 @@ export default function PageDetailDemande() {
           </section>
         )}
 
-        <section className="space-y-3 rounded-3xl bg-white/70 p-6 shadow-soft backdrop-blur-xl ring-1 ring-white/50">
+        <section className="space-y-3 rounded-3xl card-glass p-6">
           <h2 className="text-sm font-semibold text-navex-ink">{t("demandes.produits_titre")}</h2>
           {produitsATraiter.length > 0 && (
             <p className="rounded-2xl bg-navex-red-soft/80 px-4 py-2.5 text-xs font-medium text-navex-red-dark backdrop-blur-sm">
@@ -180,6 +181,7 @@ export default function PageDetailDemande() {
                   <div className="space-y-3 border-t border-navex-red/10 pt-3">
                     <textarea value={commentaires[p.id] ?? ""} onChange={(e) => setCommentaires((c) => ({ ...c, [p.id]: e.target.value }))}
                       rows={2} maxLength={500} placeholder={t("validation.commentaire_placeholder")}
+                      aria-label={t("validation.commentaire_placeholder")}
                       className="w-full rounded-2xl border border-neutral-200/80 bg-white/60 px-4 py-2.5 text-sm shadow-soft focus:border-navex-red/40 focus:outline-none focus:ring-2 focus:ring-navex-red/10" />
                     <div className="flex flex-wrap gap-2">
                       <button onClick={() => decider(p, "approuve")} disabled={!!decisionsEnCours[p.id]}
