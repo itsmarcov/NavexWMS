@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import type { NouveauProduit, TypeEmballageDTO } from "@navex/contracts";
-import { creerDemande, uploaderPhoto } from "@/lib/api-client";
+import { ajouterCatalogue, creerDemande, listerCatalogue, uploaderPhoto, type CatalogueProduitDTO } from "@/lib/api-client";
 import { messageErreur } from "@/lib/ui";
 import { AppHeader } from "@/components/app-header";
 import { RequireRole } from "@/components/require-role";
@@ -21,6 +21,8 @@ interface ProduitForm {
   quantite: string;
   photo_url: string | null;
   photo_nom?: string;
+  volume_expedition_journalier: string;
+  volume_expedition_mensuel: string;
 }
 
 type ErreurProduit = Partial<Record<keyof ProduitForm, string>>;
@@ -29,7 +31,10 @@ const PRODUIT_VIDE: ProduitForm = {
   sku_code: "", designation: "", longueur_cm: "", largeur_cm: "",
   hauteur_cm: "", poids_kg: "", fragile: false, type_emballage: "carton",
   quantite: "1", photo_url: null,
+  volume_expedition_journalier: "", volume_expedition_mensuel: "",
 };
+
+const SKU_PATTERN = /^SKU-\d+$/;
 
 function produitComplet(p: ProduitForm): boolean {
   return (
@@ -43,7 +48,11 @@ const CHAMPS_REQUIS: Array<keyof ProduitForm> = ["sku_code", "designation", "lon
 
 function validerChamp(champ: keyof ProduitForm, valeur: unknown): string | null {
   switch (champ) {
-    case "sku_code":    return (typeof valeur === "string" && valeur.trim().length > 0) ? null : "wizard.err_requis";
+    case "sku_code": {
+      if (typeof valeur !== "string" || valeur.trim().length === 0) return "wizard.err_requis";
+      if (!SKU_PATTERN.test(valeur.trim())) return "sku_format";
+      return null;
+    }
     case "designation": return (typeof valeur === "string" && valeur.trim().length > 0) ? null : "wizard.err_requis";
     case "longueur_cm": return Number(valeur) > 0 ? null : "wizard.err_superieur_0";
     case "largeur_cm":  return Number(valeur) > 0 ? null : "wizard.err_superieur_0";
@@ -75,8 +84,12 @@ export default function PageNouvelleDemande() {
   const [enEnvoi, setEnEnvoi] = useState(false);
   const [referenceCreee, setReferenceCreee] = useState<string | null>(null);
   const [conditionsAcceptee, setConditionsAcceptee] = useState(false);
-  const [volumeExpeditionJournalier, setVolumeExpeditionJournalier] = useState("");
-  const [volumeExpeditionMensuel, setVolumeExpeditionMensuel] = useState("");
+  const [catalogue, setCatalogue] = useState<CatalogueProduitDTO[]>([]);
+  const [catalogueSelection, setCatalogueSelection] = useState<Record<number, string>>({});
+
+  useEffect(() => {
+    listerCatalogue().then(setCatalogue).catch(() => undefined);
+  }, []);
 
   const etapes = [t("wizard.etape_produits"), t("wizard.etape_recapitulatif"), t("wizard.etape_envoi")];
 
@@ -92,6 +105,21 @@ export default function PageNouvelleDemande() {
         return { ...anciens, [index]: copie };
       });
     }
+  }
+
+  function appliquerCatalogue(index: number, entryId: string) {
+    setCatalogueSelection((a) => ({ ...a, [index]: entryId }));
+    const entry = catalogue.find((e) => e.id === entryId);
+    if (!entry) return;
+    majProduit(index, {
+      sku_code: entry.sku_code,
+      designation: entry.designation,
+      longueur_cm: String(entry.longueur_cm),
+      largeur_cm: String(entry.largeur_cm),
+      hauteur_cm: String(entry.hauteur_cm),
+      poids_kg: String(entry.poids_kg),
+      type_emballage: entry.type_emballage as TypeEmballageDTO,
+    });
   }
 
   async function televerserPhoto(index: number, fichier: File) {
@@ -162,13 +190,25 @@ export default function PageNouvelleDemande() {
         hauteur_cm: Number(p.hauteur_cm), poids_kg: Number(p.poids_kg),
         fragile: p.fragile, type_emballage: p.type_emballage,
         quantite: Number(p.quantite), photo_url: p.photo_url,
+        volume_expedition_journalier: p.volume_expedition_journalier ? Number(p.volume_expedition_journalier) : null,
+        volume_expedition_mensuel: p.volume_expedition_mensuel ? Number(p.volume_expedition_mensuel) : null,
       }));
-      const creee = await creerDemande(
-        charge,
-        conditionsAcceptee,
-        volumeExpeditionJournalier ? Number(volumeExpeditionJournalier) : null,
-        volumeExpeditionMensuel ? Number(volumeExpeditionMensuel) : null,
-      );
+      const creee = await creerDemande(charge, conditionsAcceptee);
+      const skusExistants = new Set(catalogue.map((e) => e.sku_code));
+      for (const p of produits) {
+        const sku = p.sku_code.trim();
+        if (sku && !skusExistants.has(sku)) {
+          await ajouterCatalogue({
+            sku_code: sku,
+            designation: p.designation.trim(),
+            longueur_cm: Number(p.longueur_cm),
+            largeur_cm: Number(p.largeur_cm),
+            hauteur_cm: Number(p.hauteur_cm),
+            poids_kg: Number(p.poids_kg),
+            type_emballage: p.type_emballage,
+          }).catch(() => undefined);
+        }
+      }
       setReferenceCreee(creee.reference);
       setEtape(2);
     } catch (e) {
@@ -218,6 +258,34 @@ export default function PageNouvelleDemande() {
 
         {etape === 0 && (
           <section className="space-y-4">
+            {catalogue.length > 0 && (
+              <section className="card-glass rounded-3xl p-4">
+                <label className="block text-sm font-medium text-navex-ink">{t("catalogue_selectionner")}</label>
+                <select
+                  value=""
+                  onChange={(e) => {
+                    const entryId = e.target.value;
+                    const nextIndex = produits.length - 1;
+                    const last = produits[nextIndex];
+                    if (last && !produitComplet(last)) {
+                      appliquerCatalogue(nextIndex, entryId);
+                    } else {
+                      const idx = produits.length;
+                      setProduits((a) => [...a, { ...PRODUIT_VIDE }]);
+                      setTimeout(() => appliquerCatalogue(idx, entryId), 0);
+                    }
+                    setCatalogueSelection((a) => ({ ...a, [produits.length]: entryId }));
+                  }}
+                  className={champClasse}
+                >
+                  <option value="">{t("catalogue_selectionner")}…</option>
+                  {catalogue.map((e) => (
+                    <option key={e.id} value={e.id}>{e.sku_code} — {e.designation}</option>
+                  ))}
+                </select>
+              </section>
+            )}
+
             {produits.map((p, index) => (
               <article key={index} className="card-glass-solid rounded-3xl p-6 animate-slide-up">
                 <div className="flex items-center justify-between">
@@ -266,6 +334,14 @@ export default function PageNouvelleDemande() {
                     {erreursParProduit[index]?.quantite && <span className="mt-0.5 block text-xs text-navex-red">{t(erreursParProduit[index].quantite)}</span>}
                   </label>
                 </div>
+                <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <label className="block text-sm font-medium text-navex-ink">{t("volume_journalier")}
+                    <input type="number" min="0" step="1" dir="ltr" value={p.volume_expedition_journalier} onChange={(e) => majProduit(index, { volume_expedition_journalier: e.target.value })} className={champClasse} />
+                  </label>
+                  <label className="block text-sm font-medium text-navex-ink">{t("volume_mensuel")}
+                    <input type="number" min="0" step="1" dir="ltr" value={p.volume_expedition_mensuel} onChange={(e) => majProduit(index, { volume_expedition_mensuel: e.target.value })} className={champClasse} />
+                  </label>
+                </div>
                 <div className="mt-4 flex flex-wrap items-center gap-4">
                   <label className="flex items-center gap-2 text-sm font-medium text-navex-ink">
                     <input type="checkbox" checked={p.fragile} onChange={(e) => majProduit(index, { fragile: e.target.checked })} className="h-4 w-4 rounded border-neutral-300" />
@@ -278,7 +354,6 @@ export default function PageNouvelleDemande() {
                         onChange={(e) => { const f = e.target.files?.[0]; if (f) void televerserPhoto(index, f); }}
                         className="text-xs text-neutral-500 file:me-2 file:rounded-full file:border-0 file:bg-navex-red-soft file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-navex-red-dark hover:file:bg-navex-red/20" />
                     </label>
-                    {/* Miniature photo */}
                     {uploadEnCours[index] && (
                       <div className="h-16 w-16 animate-pulse rounded-xl bg-navex-stone" />
                     )}
@@ -309,19 +384,6 @@ export default function PageNouvelleDemande() {
                 {t("wizard.suivant")}
               </Bouton>
             </div>
-            <section className="card-glass rounded-3xl p-6 space-y-4">
-              <h3 className="text-sm font-semibold text-navex-ink">{t("wizard.activite_previsionnelle")}</h3>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <label className="block text-sm font-medium text-navex-ink">{t("volume_journalier")}
-                  <input type="number" min="0" step="1" dir="ltr" value={volumeExpeditionJournalier} onChange={(e) => setVolumeExpeditionJournalier(e.target.value)}
-                    className={champClasse} />
-                </label>
-                <label className="block text-sm font-medium text-navex-ink">{t("volume_mensuel")}
-                  <input type="number" min="0" step="1" dir="ltr" value={volumeExpeditionMensuel} onChange={(e) => setVolumeExpeditionMensuel(e.target.value)}
-                    className={champClasse} />
-                </label>
-              </div>
-            </section>
           </section>
         )}
 
@@ -336,18 +398,23 @@ export default function PageNouvelleDemande() {
                     <th className="py-2 text-end">{t("produit.dimensions_court")}</th>
                     <th className="py-2 text-end">{t("produit.poids")}</th>
                     <th className="py-2 text-end">{t("produit.quantite")}</th>
+                    <th className="py-2 text-end">{t("volume_col")}</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {produits.map((p, i) => (
-                    <tr key={i} className="border-b border-neutral-100/60">
-                      <td className="py-2 text-navex-ink" dir="ltr">{p.sku_code}</td>
-                      <td className="py-2 text-navex-ink">{p.designation} {p.fragile && "⚠"}</td>
-                      <td className="py-2 text-end text-navex-ink" dir="ltr">{Number(p.longueur_cm)}×{Number(p.largeur_cm)}×{Number(p.hauteur_cm)}</td>
-                      <td className="py-2 text-end text-navex-ink" dir="ltr">{Number(p.poids_kg)}</td>
-                      <td className="py-2 text-end text-navex-ink" dir="ltr">{Number(p.quantite)}</td>
-                    </tr>
-                  ))}
+                  {produits.map((p, i) => {
+                    const volM3 = (Number(p.longueur_cm) * Number(p.largeur_cm) * Number(p.hauteur_cm) * (Number(p.quantite) || 0)) / 1_000_000;
+                    return (
+                      <tr key={i} className="border-b border-neutral-100/60">
+                        <td className="py-2 text-navex-ink" dir="ltr">{p.sku_code}</td>
+                        <td className="py-2 text-navex-ink">{p.designation} {p.fragile && "⚠"}</td>
+                        <td className="py-2 text-end text-navex-ink" dir="ltr">{Number(p.longueur_cm)}×{Number(p.largeur_cm)}×{Number(p.hauteur_cm)}</td>
+                        <td className="py-2 text-end text-navex-ink" dir="ltr">{Number(p.poids_kg)}</td>
+                        <td className="py-2 text-end text-navex-ink" dir="ltr">{Number(p.quantite)}</td>
+                        <td className="py-2 text-end text-navex-ink" dir="ltr">{volM3.toFixed(2)} m³</td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -357,8 +424,6 @@ export default function PageNouvelleDemande() {
             <div className="card-glass rounded-3xl p-5 space-y-2">
               <h3 className="text-sm font-semibold text-navex-ink">{t("wizard.recap_volume_m3")}</h3>
               <p className="text-3xl font-extrabold text-navex-ink" dir="ltr">{totalVolumeM3.toFixed(2)} m³</p>
-              {volumeExpeditionJournalier && <p className="text-xs text-neutral-500">{t("volume_journalier")} : <span className="font-semibold text-navex-ink" dir="ltr">{volumeExpeditionJournalier}</span></p>}
-              {volumeExpeditionMensuel && <p className="text-xs text-neutral-500">{t("volume_mensuel")} : <span className="font-semibold text-navex-ink" dir="ltr">{volumeExpeditionMensuel}</span></p>}
             </div>
             <div className="flex items-center justify-between">
               <Bouton type="button" onClick={() => setEtape(0)} variante="secondaire">

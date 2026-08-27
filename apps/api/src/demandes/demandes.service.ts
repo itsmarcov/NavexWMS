@@ -51,8 +51,6 @@ export class DemandesService {
           expediteur_id: expediteurId,
           statut: StatutDemande.en_attente,
           conditions_acceptee: dto.conditions_acceptee ?? false,
-          volume_expedition_journalier: dto.volume_expedition_journalier ?? null,
-          volume_expedition_mensuel: dto.volume_expedition_mensuel ?? null,
           produits: {
             create: dto.produits.map((p) => ({
               sku_code: p.sku_code,
@@ -65,6 +63,8 @@ export class DemandesService {
               type_emballage: p.type_emballage,
               quantite: p.quantite,
               photo_url: p.photo_url ?? null,
+              volume_expedition_journalier: p.volume_expedition_journalier ?? null,
+              volume_expedition_mensuel: p.volume_expedition_mensuel ?? null,
             })),
           },
         },
@@ -115,6 +115,8 @@ export class DemandesService {
             largeur_cm: true,
             hauteur_cm: true,
             quantite: true,
+            volume_expedition_journalier: true,
+            volume_expedition_mensuel: true,
             ...(attente ? { statut_validation: true } : {}),
           },
         },

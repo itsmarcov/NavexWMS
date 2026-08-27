@@ -4,6 +4,7 @@ import { Public } from "./auth/decorators/public.decorator";
 import { AdminModule } from "./admin/admin.module";
 import { AuthModule } from "./auth/auth.module";
 import { AuditModule } from "./audit/audit.module";
+import { CatalogueModule } from "./catalogue/catalogue.module";
 import { DechargesModule } from "./decharges/decharges.module";
 import { DemandesModule } from "./demandes/demandes.module";
 import { EntrepotModule } from "./entrepot/entrepot.module";
@@ -20,7 +21,7 @@ export class AppController {
 }
 
 @Module({
-  imports: [PrismaModule, AuditModule, AuthModule, DemandesModule, UploadsModule, DechargesModule, EntrepotModule, AdminModule],
+  imports: [PrismaModule, AuditModule, AuthModule, DemandesModule, UploadsModule, DechargesModule, EntrepotModule, AdminModule, CatalogueModule],
   controllers: [AppController],
 })
 export class AppModule {}

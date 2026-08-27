@@ -68,6 +68,24 @@ model Expediteur {
 
   utilisateurs Utilisateur[]
   demandes     DemandeStockage[]
+  catalogue    CatalogueProduit[]
+}
+
+model CatalogueProduit {
+  id              String        @id @default(uuid())
+  expediteur_id   String
+  expediteur      Expediteur    @relation(fields: [expediteur_id], references: [id], onDelete: Cascade)
+  sku_code        String
+  designation     String
+  longueur_cm     Float
+  largeur_cm      Float
+  hauteur_cm      Float
+  poids_kg        Float
+  fragile         Boolean       @default(false)
+  type_emballage  TypeEmballage
+
+  @@unique([expediteur_id, sku_code])
+  @@index([expediteur_id])
 }
 
 model Utilisateur {
@@ -111,8 +129,6 @@ model DemandeStockage {
   date_reception_prevue DateTime?
   commentaire_agent     String?
   conditions_acceptee   Boolean       @default(false)
-  volume_expedition_journalier Int?
-  volume_expedition_mensuel    Int?
 
   produits Produit[]
   decharge Decharge?
@@ -138,6 +154,8 @@ model Produit {
   statut_validation StatutValidationProduit @default(en_attente)
   commentaire       String?
   date_validation   DateTime?
+  volume_expedition_journalier Int?
+  volume_expedition_mensuel    Int?
 
   @@index([demande_id])
 }

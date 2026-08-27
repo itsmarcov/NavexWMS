@@ -1,5 +1,7 @@
 import type {
   AdminStatsDTO,
+  AjouterCataloguePayload,
+  CatalogueProduitDTO,
   CreerExpediteurPayload,
   CreerUtilisateurPayload,
   DechargeEntrepotDetailDTO,
@@ -20,6 +22,8 @@ import type {
   UtilisateurDTO,
   ValidationProduitPayload,
 } from "@navex/contracts";
+
+export type { CatalogueProduitDTO };
 
 const BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001/api";
 const CLE_TOKEN = "navex_access_token";
@@ -129,12 +133,10 @@ export async function seDeconnecter() {
 export function creerDemande(
   produits: NouveauProduit[],
   conditions_acceptee = false,
-  volume_expedition_journalier?: number | null,
-  volume_expedition_mensuel?: number | null,
 ) {
   return requete<DemandeDetailDTO>("/demandes", {
     method: "POST",
-    body: JSON.stringify({ produits, conditions_acceptee, volume_expedition_journalier, volume_expedition_mensuel }),
+    body: JSON.stringify({ produits, conditions_acceptee }),
   });
 }
 
@@ -270,6 +272,8 @@ export function supprimerExpediteur(id: string) {
   });
 }
 
+// ── Catalogue produits ──────────────────────────────────────
+
 export function detailDemande(id: string) {
   return requete<DemandeDetailDTO>(`/demandes/${id}`);
 }
@@ -299,6 +303,23 @@ export async function telechargerDechargePdf(dechargeId: string, nomFichier: str
   lien.click();
   lien.remove();
   URL.revokeObjectURL(url);
+}
+
+// ── Catalogue produits ────────────────────────────────────────
+
+export function listerCatalogue() {
+  return requete<CatalogueProduitDTO[]>("/catalogue");
+}
+
+export function ajouterCatalogue(dto: AjouterCataloguePayload) {
+  return requete<CatalogueProduitDTO>("/catalogue", {
+    method: "POST",
+    body: JSON.stringify(dto),
+  });
+}
+
+export function supprimerCatalogue(id: string) {
+  return requete<{ ok: boolean }>(`/catalogue/${id}`, { method: "DELETE" });
 }
 
 /** Envoie une photo produit vers le stockage S3/MinIO, renvoie son URL publique. */

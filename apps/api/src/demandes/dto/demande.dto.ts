@@ -10,6 +10,7 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  Matches,
   MaxLength,
   Min,
   ValidateNested,
@@ -21,6 +22,7 @@ export class CreeProduitDto {
   @IsString()
   @IsNotEmpty()
   @MaxLength(50)
+  @Matches(/^SKU-\d+$/, { message: "erreurs.sku_format_invalide" })
   sku_code!: string;
 
   @IsString()
@@ -57,6 +59,16 @@ export class CreeProduitDto {
   @IsOptional()
   @IsString()
   photo_url?: string | null;
+
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  volume_expedition_journalier?: number;
+
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  volume_expedition_mensuel?: number;
 }
 
 export class CreeDemandeDto {
@@ -69,16 +81,6 @@ export class CreeDemandeDto {
   @IsOptional()
   @IsBoolean()
   conditions_acceptee?: boolean;
-
-  @IsOptional()
-  @IsInt()
-  @Min(0)
-  volume_expedition_journalier?: number;
-
-  @IsOptional()
-  @IsInt()
-  @Min(0)
-  volume_expedition_mensuel?: number;
 }
 
 const DECISIONS = ["approuve", "refuse"] as const;

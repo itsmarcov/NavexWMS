@@ -130,18 +130,6 @@ export default function PageDetailDemande() {
             <p className="text-xs uppercase text-neutral-400">{t("conditions_titre")}</p>
             <p className="mt-1 text-navex-ink">{demande.conditions_acceptee ? t("conditions_acceptee") : t("conditions_non_acceptee")}</p>
           </div>
-          {estAgent && (demande.volume_expedition_journalier != null || demande.volume_expedition_mensuel != null) && (
-            <>
-              {demande.volume_expedition_journalier != null && <div>
-                <p className="text-xs uppercase text-neutral-400">{t("volume_journalier")}</p>
-                <p className="mt-1 font-medium text-navex-ink" dir="ltr">{demande.volume_expedition_journalier}</p>
-              </div>}
-              {demande.volume_expedition_mensuel != null && <div>
-                <p className="text-xs uppercase text-neutral-400">{t("volume_mensuel")}</p>
-                <p className="mt-1 font-medium text-navex-ink" dir="ltr">{demande.volume_expedition_mensuel}</p>
-              </div>}
-            </>
-          )}
         </section>
 
         {estAgent && (
@@ -187,6 +175,12 @@ export default function PageDetailDemande() {
                         <div className="flex gap-1"><dt className="text-neutral-400">{t("produit.poids")} :</dt><dd dir="ltr">{p.poids_kg}</dd></div>
                         <div className="flex gap-1"><dt className="text-neutral-400">{t("produit.quantite")} :</dt><dd dir="ltr">{p.quantite}</dd></div>
                         <div className="flex gap-1"><dt className="text-neutral-400">{t("produit.type_emballage")} :</dt><dd>{t(`produit.emballage_${p.type_emballage}`)}</dd></div>
+                        {estAgent && ((p as any).volume_expedition_journalier != null || (p as any).volume_expedition_mensuel != null) && (
+                          <>
+                            {(p as any).volume_expedition_journalier != null && <div className="flex gap-1"><dt className="text-neutral-400">{t("volume_journalier")} :</dt><dd dir="ltr">{(p as any).volume_expedition_journalier}</dd></div>}
+                            {(p as any).volume_expedition_mensuel != null && <div className="flex gap-1"><dt className="text-neutral-400">{t("volume_mensuel")} :</dt><dd dir="ltr">{(p as any).volume_expedition_mensuel}</dd></div>}
+                          </>
+                        )}
                       </dl>
                     </div>
                   </div>

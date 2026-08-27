@@ -61,6 +61,8 @@ export interface ProduitDTO {
   statut_validation: StatutValidationProduit;
   commentaire?: string | null;
   date_validation?: string | null;
+  volume_expedition_journalier?: number | null;
+  volume_expedition_mensuel?: number | null;
 }
 
 export interface DechargeResumeDTO {
@@ -78,8 +80,6 @@ export interface DemandeListeDTO {
   _count?: { produits: number };
   decharge?: DechargeResumeDTO | null;
   compteurs?: { en_attente: number; approuve: number; refuse: number };
-  volume_expedition_journalier?: number | null;
-  volume_expedition_mensuel?: number | null;
   produits?: Array<{
     statut_validation: StatutValidationProduit;
     longueur_cm: number;
@@ -243,8 +243,6 @@ export interface DemandeDetailDTO extends Omit<DemandeListeDTO, "_count"> {
   date_reception_prevue?: string | null;
   date_traitement?: string | null;
   conditions_acceptee: boolean;
-  volume_expedition_journalier?: number | null;
-  volume_expedition_mensuel?: number | null;
   produits: ProduitDTO[];
   decharge?:
     | (DechargeResumeDTO & { date_generation: string; pdf_url?: string | null })
@@ -263,4 +261,29 @@ export interface NouveauProduit {
   type_emballage: TypeEmballageDTO;
   quantite: number;
   photo_url?: string | null;
+  volume_expedition_journalier?: number | null;
+  volume_expedition_mensuel?: number | null;
+}
+
+export interface CatalogueProduitDTO {
+  id: string;
+  sku_code: string;
+  designation: string;
+  longueur_cm: number;
+  largeur_cm: number;
+  hauteur_cm: number;
+  poids_kg: number;
+  fragile: boolean;
+  type_emballage: TypeEmballageDTO;
+}
+
+export interface AjouterCataloguePayload {
+  sku_code: string;
+  designation: string;
+  longueur_cm: number;
+  largeur_cm: number;
+  hauteur_cm: number;
+  poids_kg: number;
+  fragile?: boolean;
+  type_emballage: TypeEmballageDTO;
 }
