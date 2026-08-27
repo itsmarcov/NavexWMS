@@ -220,6 +220,7 @@ export default function PageNouvelleDemande() {
 
   const totalColis = produits.reduce((s, p) => s + (Number(p.quantite) || 0), 0);
   const totalPoids = produits.reduce((s, p) => s + (Number(p.poids_kg) || 0) * (Number(p.quantite) || 0), 0);
+  function fmtVol(v: number) { return v === 0 ? "0" : v < 0.01 ? v.toExponential(1) : v < 1 ? v.toFixed(4) : v.toFixed(2); }
   const totalVolumeM3 = produits.reduce((s, p) => s + (Number(p.longueur_cm) * Number(p.largeur_cm) * Number(p.hauteur_cm) * (Number(p.quantite) || 0)) / 1_000_000, 0);
 
   const champClasse =
@@ -411,7 +412,7 @@ export default function PageNouvelleDemande() {
                         <td className="py-2 text-end text-navex-ink" dir="ltr">{Number(p.longueur_cm)}×{Number(p.largeur_cm)}×{Number(p.hauteur_cm)}</td>
                         <td className="py-2 text-end text-navex-ink" dir="ltr">{Number(p.poids_kg)}</td>
                         <td className="py-2 text-end text-navex-ink" dir="ltr">{Number(p.quantite)}</td>
-                        <td className="py-2 text-end text-navex-ink" dir="ltr">{volM3.toFixed(2)} m³</td>
+                        <td className="py-2 text-end text-navex-ink" dir="ltr">{fmtVol(volM3)} m³</td>
                       </tr>
                     );
                   })}
@@ -419,11 +420,11 @@ export default function PageNouvelleDemande() {
               </table>
             </div>
             <p className="text-sm text-neutral-500">
-              {t("wizard.recap_total_colis", { total: totalColis })} · {t("wizard.recap_total_poids", { total: totalPoids.toFixed(2) })} · {t("volume_estime")} : {totalVolumeM3.toFixed(2)} m³
+              {t("wizard.recap_total_colis", { total: totalColis })} · {t("wizard.recap_total_poids", { total: totalPoids.toFixed(2) })} · {t("volume_estime")} : {fmtVol(totalVolumeM3)} m³
             </p>
             <div className="card-glass rounded-3xl p-5 space-y-2">
               <h3 className="text-sm font-semibold text-navex-ink">{t("wizard.recap_volume_m3")}</h3>
-              <p className="text-3xl font-extrabold text-navex-ink" dir="ltr">{totalVolumeM3.toFixed(2)} m³</p>
+              <p className="text-3xl font-extrabold text-navex-ink" dir="ltr">{fmtVol(totalVolumeM3)} m³</p>
             </div>
             <div className="flex items-center justify-between">
               <Bouton type="button" onClick={() => setEtape(0)} variante="secondaire">
@@ -450,7 +451,7 @@ export default function PageNouvelleDemande() {
               </div>
             ) : (
               <div className="space-y-4">
-                <p className="text-lg font-semibold text-navex-ink">{t("volume_estime")} : {totalVolumeM3.toFixed(2)} m³</p>
+                <p className="text-lg font-semibold text-navex-ink">{t("volume_estime")} : {fmtVol(totalVolumeM3)} m³</p>
                 <p className="text-sm text-navex-ink">{enEnvoi ? t("wizard.envoi_cours") : t("wizard.recap_vide")}</p>
                 <div className="mx-auto max-w-lg text-start space-y-3">
                   <h3 className="text-sm font-semibold text-navex-ink">{t("conditions_titre")}</h3>

@@ -172,7 +172,7 @@ export default function PageMesDemandes() {
                       {t("demandes.produits_col")}: {d._count?.produits ?? 0}
                       {utilisateur && (utilisateur.role === "admin" || utilisateur.role === "agent_commercial") && d.produits && d.produits.length > 0 && (
                         <span> · {t("volume_estime")}: <span className="font-semibold text-navex-ink" dir="ltr">
-                          {d.produits.reduce((s, p) => s + (p.longueur_cm * p.largeur_cm * p.hauteur_cm * p.quantite) / 1_000_000, 0).toFixed(2)} m³
+                          {(() => { const v = d.produits.reduce((s, p) => s + (p.longueur_cm * p.largeur_cm * p.hauteur_cm * p.quantite) / 1_000_000, 0); return v === 0 ? "0" : v < 0.01 ? v.toExponential(1) : v < 1 ? v.toFixed(4) : v.toFixed(2); })()} m³
                         </span></span>
                       )}
                     </p>
