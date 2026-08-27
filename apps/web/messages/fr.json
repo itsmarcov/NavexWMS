@@ -267,7 +267,7 @@
   "volume_journalier": "Volume expédition journalier",
   "volume_mensuel": "Volume expédition mensuel",
   "volume_estime": "Volume estimé",
-  "volume_col": "Vol. expédition",
+  "volume_col": "Volume occupé",
   "catalogue_selectionner": "Sélectionner un produit enregistré",
   "catalogue_ajouter": "Enregistrer ce produit",
   "sku_format": "Le SKU doit commencer par SKU- suivi de chiffres",

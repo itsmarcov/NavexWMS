@@ -267,7 +267,7 @@
   "volume_journalier": "حجم الشحن اليومي",
   "volume_mensuel": "حجم الشحن الشهري",
   "volume_estime": "الحجم المقدر",
-  "volume_col": "حجم الشحن",
+  "volume_col": "الحجم المشغّل",
   "catalogue_selectionner": "اختر منتجاً مسجلاً",
   "catalogue_ajouter": "حفظ هذا المنتج",
   "sku_format": "يجب أن يبدأ المرجع بـ SKU- متبوعاً بأرقام",
