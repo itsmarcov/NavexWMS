@@ -50,6 +50,7 @@ export class DemandesService {
           reference,
           expediteur_id: expediteurId,
           statut: StatutDemande.en_attente,
+          conditions_acceptee: dto.conditions_acceptee ?? false,
           produits: {
             create: dto.produits.map((p) => ({
               sku_code: p.sku_code,

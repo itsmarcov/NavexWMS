@@ -74,6 +74,7 @@ export default function PageNouvelleDemande() {
   const [uploadEnCours, setUploadEnCours] = useState<Record<number, boolean>>({});
   const [enEnvoi, setEnEnvoi] = useState(false);
   const [referenceCreee, setReferenceCreee] = useState<string | null>(null);
+  const [conditionsAcceptee, setConditionsAcceptee] = useState(false);
 
   const etapes = [t("wizard.etape_produits"), t("wizard.etape_recapitulatif"), t("wizard.etape_envoi")];
 
@@ -160,7 +161,7 @@ export default function PageNouvelleDemande() {
         fragile: p.fragile, type_emballage: p.type_emballage,
         quantite: Number(p.quantite), photo_url: p.photo_url,
       }));
-      const creee = await creerDemande(charge);
+      const creee = await creerDemande(charge, conditionsAcceptee);
       setReferenceCreee(creee.reference);
       setEtape(2);
     } catch (e) {
@@ -172,6 +173,7 @@ export default function PageNouvelleDemande() {
 
   const totalColis = produits.reduce((s, p) => s + (Number(p.quantite) || 0), 0);
   const totalPoids = produits.reduce((s, p) => s + (Number(p.poids_kg) || 0) * (Number(p.quantite) || 0), 0);
+  const totalVolumeM3 = produits.reduce((s, p) => s + (Number(p.longueur_cm) * Number(p.largeur_cm) * Number(p.hauteur_cm) * (Number(p.quantite) || 0)) / 1_000_000, 0);
 
   const champClasse =
     "mt-1 block w-full rounded-2xl border border-neutral-200/80 bg-white/60 px-4 py-2.5 text-sm shadow-soft transition-all placeholder:text-neutral-400 focus:border-navex-red/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-navex-red/10";
@@ -330,7 +332,7 @@ export default function PageNouvelleDemande() {
               </table>
             </div>
             <p className="text-sm text-neutral-500">
-              {t("wizard.recap_total_colis", { total: totalColis })} · {t("wizard.recap_total_poids", { total: totalPoids.toFixed(2) })}
+              {t("wizard.recap_total_colis", { total: totalColis })} · {t("wizard.recap_total_poids", { total: totalPoids.toFixed(2) })} · {t("volume_estime")} : {totalVolumeM3.toFixed(2)} m³
             </p>
             <div className="flex items-center justify-between">
               <Bouton type="button" onClick={() => setEtape(0)} variante="secondaire">
@@ -357,9 +359,23 @@ export default function PageNouvelleDemande() {
               </div>
             ) : (
               <div className="space-y-4">
+                <p className="text-lg font-semibold text-navex-ink">{t("volume_estime")} : {totalVolumeM3.toFixed(2)} m³</p>
                 <p className="text-sm text-navex-ink">{enEnvoi ? t("wizard.envoi_cours") : t("wizard.recap_vide")}</p>
+                <div className="mx-auto max-w-lg text-start space-y-3">
+                  <h3 className="text-sm font-semibold text-navex-ink">{t("conditions_titre")}</h3>
+                  <p className="text-xs text-neutral-500 leading-relaxed">{t("conditions_texte")}</p>
+                  <label className="flex items-start gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={conditionsAcceptee}
+                      onChange={(e) => setConditionsAcceptee(e.target.checked)}
+                      className="mt-0.5 h-4 w-4 rounded border-neutral-300"
+                    />
+                    <span className="text-sm font-medium text-navex-ink">{t("conditions_titre")}</span>
+                  </label>
+                </div>
                 {!enEnvoi && (
-                <Bouton type="button" onClick={envoyer} variante="primaire">
+                <Bouton type="button" onClick={envoyer} variante="primaire" disabled={!conditionsAcceptee}>
                   {t("wizard.envoyer")}
                 </Bouton>
                 )}

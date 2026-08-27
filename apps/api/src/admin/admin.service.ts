@@ -56,6 +56,8 @@ export class AdminService {
       adresse: e.adresse,
       statut: e.statut,
       date_creation: e.date_creation,
+      volume_expedition_journalier_m3: e.volume_expedition_journalier_m3,
+      volume_expedition_mensuel_m3: e.volume_expedition_mensuel_m3,
       nb_utilisateurs: e._count.utilisateurs,
       nb_demandes: e._count.demandes,
     }));
@@ -157,6 +159,8 @@ export class AdminService {
           adresse: dto.adresse,
           langue_preferee: dto.langue_preferee ?? "fr",
           statut: roleCreateur === "admin" ? "actif" : "en_attente",
+          volume_expedition_journalier_m3: dto.volume_expedition_journalier_m3 ?? null,
+          volume_expedition_mensuel_m3: dto.volume_expedition_mensuel_m3 ?? null,
         },
       });
 
@@ -287,6 +291,8 @@ export class AdminService {
     if (dto.telephone !== undefined) donnees.telephone = dto.telephone;
     if (dto.adresse !== undefined) donnees.adresse = dto.adresse;
     if (dto.langue_preferee !== undefined) donnees.langue_preferee = dto.langue_preferee;
+    if (dto.volume_expedition_journalier_m3 !== undefined) donnees.volume_expedition_journalier_m3 = dto.volume_expedition_journalier_m3;
+    if (dto.volume_expedition_mensuel_m3 !== undefined) donnees.volume_expedition_mensuel_m3 = dto.volume_expedition_mensuel_m3;
 
     if (Object.keys(donnees).length === 0) {
       throw new ConflictException({ code: "erreurs.aucune_modification" });

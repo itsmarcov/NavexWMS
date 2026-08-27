@@ -262,6 +262,13 @@
     "autosuppression_interdite": "Vous ne pouvez pas supprimer votre propre compte.",
     "expediteur_avec_demandes": "Impossible de supprimer cet expéditeur : des demandes lui sont rattachées."
   },
+  "volume_journalier": "Volume journalier prévisionnel (m³)",
+  "volume_mensuel": "Volume mensuel prévisionnel (m³)",
+  "volume_estime": "Volume estimé",
+  "conditions_titre": "Conditions d'utilisation",
+  "conditions_texte": "Je certifie que les informations communiquées sont exactes et reconnais que le volume des marchandises stockées doit être compatible avec mon volume d'expédition. J'accepte que NAVEX DELIVERY puisse appliquer les conditions de stockage prévues au contrat, notamment en cas de stock disproportionné, d'inactivité ou d'occupation excessive de l'espace de stockage.",
+  "conditions_acceptee": "Conditions acceptées",
+  "conditions_non_acceptee": "Conditions non acceptées",
   "filter": {
     "rechercher": "Rechercher par référence ou entreprise…",
     "tous": "Tous",

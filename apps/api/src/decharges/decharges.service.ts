@@ -248,6 +248,7 @@ export class DechargesService implements OnApplicationShutdown, OnModuleInit {
     demande: {
       reference: string;
       date_reception_prevue: Date | null;
+      conditions_acceptee: boolean;
       expediteur: { nom_entreprise: string; email: string; telephone: string; adresse: string; langue_preferee: string };
       produits: Array<{
         sku_code: string;
@@ -347,6 +348,15 @@ export class DechargesService implements OnApplicationShutdown, OnModuleInit {
     </tr></thead>
     <tbody>${lignes}</tbody>
   </table>
+
+  <div style="margin-top:18px;border:1px solid ${decharge.demande.conditions_acceptee ? "#d6d3d1" : "#fbbf24"};border-radius:6px;padding:12px 14px;background:${decharge.demande.conditions_acceptee ? "#f8fafc" : "#fffbeb"}">
+    ${decharge.demande.conditions_acceptee
+      ? `<div style="font-size:11px;color:#16a34a;font-weight:700;margin-bottom:6px">✔ Conditions acceptées</div>`
+      : `<div style="font-size:11px;color:#b45309;font-weight:700;margin-bottom:6px">⚠ Conditions non acceptées</div>`}
+    <p style="margin:0;font-size:10px;color:#44403c;line-height:1.5">
+      Je certifie que les informations communiquées sont exactes et reconnais que le volume des marchandises stockées doit être compatible avec mon volume d'expédition. J'accepte que NAVEX DELIVERY puisse appliquer les conditions de stockage prévues au contrat, notamment en cas de stock disproportionné, d'inactivité ou d'occupation excessive de l'espace de stockage.
+    </p>
+  </div>
 
   <div class="qr-zone">
     <img src="${qrDataUrl}" alt="QR" />

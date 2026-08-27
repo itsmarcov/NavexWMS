@@ -178,6 +178,8 @@ export interface ExpediteurAdminDTO {
   telephone: string;
   adresse: string;
   statut: StatutExpediteur;
+  volume_expedition_journalier_m3?: number | null;
+  volume_expedition_mensuel_m3?: number | null;
   date_creation: string;
   nb_utilisateurs: number;
   nb_demandes: number;
@@ -203,6 +205,8 @@ export interface CreerExpediteurPayload {
   telephone: string;
   adresse: string;
   langue_preferee?: string;
+  volume_expedition_journalier_m3?: number | null;
+  volume_expedition_mensuel_m3?: number | null;
 }
 
 /** Création d'un compte utilisateur (admin uniquement). */
@@ -229,12 +233,15 @@ export interface ModifierExpediteurPayload {
   telephone?: string;
   adresse?: string;
   langue_preferee?: string;
+  volume_expedition_journalier_m3?: number | null;
+  volume_expedition_mensuel_m3?: number | null;
 }
 
 export interface DemandeDetailDTO extends Omit<DemandeListeDTO, "_count"> {
   commentaire_agent?: string | null;
   date_reception_prevue?: string | null;
   date_traitement?: string | null;
+  conditions_acceptee: boolean;
   produits: ProduitDTO[];
   decharge?:
     | (DechargeResumeDTO & { date_generation: string; pdf_url?: string | null })

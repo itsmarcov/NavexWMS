@@ -65,6 +65,10 @@ export class CreeDemandeDto {
   @ValidateNested({ each: true })
   @Type(() => CreeProduitDto)
   produits!: CreeProduitDto[];
+
+  @IsOptional()
+  @IsBoolean()
+  conditions_acceptee?: boolean;
 }
 
 const DECISIONS = ["approuve", "refuse"] as const;

@@ -125,6 +125,10 @@ export default function PageDetailDemande() {
             <p className="text-xs uppercase text-neutral-400">{t("demandes.commentaire_agent")}</p>
             <p className="mt-1 text-navex-ink">{demande.commentaire_agent}</p>
           </div>}
+          <div>
+            <p className="text-xs uppercase text-neutral-400">{t("conditions_titre")}</p>
+            <p className="mt-1 text-navex-ink">{demande.conditions_acceptee ? t("conditions_acceptee") : t("conditions_non_acceptee")}</p>
+          </div>
         </section>
 
         {estAgent && (

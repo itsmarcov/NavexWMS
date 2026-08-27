@@ -126,10 +126,10 @@ export async function seDeconnecter() {
 
 // ── Demandes de stockage (Phase 2) ───────────────────────────
 
-export function creerDemande(produits: NouveauProduit[]) {
+export function creerDemande(produits: NouveauProduit[], conditions_acceptee = false) {
   return requete<DemandeDetailDTO>("/demandes", {
     method: "POST",
-    body: JSON.stringify({ produits }),
+    body: JSON.stringify({ produits, conditions_acceptee }),
   });
 }
 
