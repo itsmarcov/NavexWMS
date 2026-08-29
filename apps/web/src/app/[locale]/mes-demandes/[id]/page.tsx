@@ -233,7 +233,12 @@ export default function PageDetailDemande() {
           )}
         </section>
 
-        <Bouton href="/mes-demandes" variante="secondaire">← {t("commun.retour")}</Bouton>
+        <div className="flex flex-wrap gap-3">
+          <Bouton href={`/mes-demandes/${id}/historique`} variante="secondaire">
+            🕐 {t("historique.titre")}
+          </Bouton>
+          <Bouton href="/mes-demandes" variante="secondaire">← {t("commun.retour")}</Bouton>
+        </div>
       </main>
     </div>
   );

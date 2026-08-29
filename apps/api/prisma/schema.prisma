@@ -93,6 +93,9 @@ model Utilisateur {
   email         String   @unique
   password_hash String
   role          RoleUtilisateur
+  prenom        String?
+  nom           String?
+  telephone     String?
   expediteur_id String?
   expediteur    Expediteur? @relation(fields: [expediteur_id], references: [id])
   actif         Boolean  @default(true)

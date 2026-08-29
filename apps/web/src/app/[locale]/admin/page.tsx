@@ -64,7 +64,7 @@ export default function PageAdmin() {
 
   // ── États formulaires ──
   const [onglet, setOnglet] = useState<"stats" | "creer_compte" | "creer_expediteur">("stats");
-  const [formCompte, setFormCompte] = useState({ email: "", mot_de_passe: "", role: "agent_commercial" as Role });
+  const [formCompte, setFormCompte] = useState({ email: "", mot_de_passe: "", role: "agent_commercial" as Role, prenom: "", nom: "", telephone: "" });
   const [formExpediteur, setFormExpediteur] = useState({ nom_entreprise: "", email: "", telephone: "", adresse: "" });
   const [envoiEnCours, setEnvoiEnCours] = useState(false);
 
@@ -73,7 +73,7 @@ export default function PageAdmin() {
   const [expEditForm, setExpEditForm] = useState({ nom_entreprise: "", email: "", telephone: "", adresse: "" });
   const [expSupprId, setExpSupprId] = useState<string | null>(null);
   const [userEditId, setUserEditId] = useState<string | null>(null);
-  const [userEditForm, setUserEditForm] = useState({ email: "", role: "agent_commercial" as Role, actif: true });
+  const [userEditForm, setUserEditForm] = useState({ email: "", role: "agent_commercial" as Role, actif: true, prenom: "", nom: "", telephone: "" });
   const [userSupprId, setUserSupprId] = useState<string | null>(null);
 
   const charger = useCallback(() => {
@@ -97,7 +97,7 @@ export default function PageAdmin() {
     try {
       await creerUtilisateur(formCompte);
       setSucces(t("admin.compte_cree"));
-      setFormCompte({ email: "", mot_de_passe: "", role: "agent_commercial" });
+      setFormCompte({ email: "", mot_de_passe: "", role: "agent_commercial", prenom: "", nom: "", telephone: "" });
       charger();
     } catch (err) { setErreur(messageErreur(t, err)); }
     finally { setEnvoiEnCours(false); }
@@ -157,7 +157,7 @@ export default function PageAdmin() {
   // ── Utilisateur : modification ──
   function ouvrirEditUser(u: UtilisateurAdminDTO) {
     setUserEditId(u.id);
-    setUserEditForm({ email: u.email, role: u.role, actif: u.actif });
+    setUserEditForm({ email: u.email, role: u.role, actif: u.actif, prenom: u.prenom ?? "", nom: u.nom ?? "", telephone: u.telephone ?? "" });
     setUserSupprId(null);
   }
 
@@ -331,6 +331,20 @@ export default function PageAdmin() {
                 {t("login.email")}
                 <input type="email" required dir="ltr" value={formCompte.email} onChange={(e) => setFormCompte((f) => ({ ...f, email: e.target.value }))} className={CHAMP} />
               </label>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <label className="block text-sm font-medium text-navex-ink">
+                  {t("utilisateur.prenom")}
+                  <input value={formCompte.prenom} onChange={(e) => setFormCompte((f) => ({ ...f, prenom: e.target.value }))} className={CHAMP} />
+                </label>
+                <label className="block text-sm font-medium text-navex-ink">
+                  {t("utilisateur.nom")}
+                  <input value={formCompte.nom} onChange={(e) => setFormCompte((f) => ({ ...f, nom: e.target.value }))} className={CHAMP} />
+                </label>
+              </div>
+              <label className="block text-sm font-medium text-navex-ink">
+                {t("utilisateur.telephone")}
+                <input type="tel" dir="ltr" value={formCompte.telephone} onChange={(e) => setFormCompte((f) => ({ ...f, telephone: e.target.value }))} className={CHAMP} />
+              </label>
               <label className="block text-sm font-medium text-navex-ink">
                 {t("login.mot_de_passe")}
                 <input type="password" required minLength={8} value={formCompte.mot_de_passe} onChange={(e) => setFormCompte((f) => ({ ...f, mot_de_passe: e.target.value }))} className={CHAMP} />
@@ -385,6 +399,7 @@ export default function PageAdmin() {
             <thead>
               <tr className="border-b border-neutral-200/60 text-xs uppercase text-neutral-400">
                 <th className="py-2 text-start">{t("login.email")}</th>
+                <th className="py-2 text-start">{t("utilisateur.prenom_nom")}</th>
                 <th className="py-2 text-start">{t("admin.role")}</th>
                 <th className="py-2 text-start">{t("demandes.expediteur_col")}</th>
                 <th className="py-2 text-start">{t("admin.compte")}</th>
@@ -396,6 +411,7 @@ export default function PageAdmin() {
               {(utilisateurs ?? []).map((u) => (
                 <tr key={u.id} className="border-b border-neutral-100/60">
                   <td className="py-2 text-navex-ink" dir="ltr">{u.email}</td>
+                  <td className="py-2 text-navex-ink">{[u.prenom, u.nom].filter(Boolean).join(" ") || "—"}</td>
                   <td className="py-2 text-navex-ink">{t(`roles.${u.role}`)}</td>
                   <td className="py-2 text-navex-ink">{u.expediteur_nom ?? "—"}</td>
                   <td className="py-2"><StatusBadge statut={u.actif ? "actif_compte" : "inactif"} /></td>
@@ -438,6 +454,18 @@ export default function PageAdmin() {
                 <label className="block text-xs font-medium text-navex-ink">
                   {t("login.email")}
                   <input type="email" required dir="ltr" value={userEditForm.email} onChange={(ev) => setUserEditForm((f) => ({ ...f, email: ev.target.value }))} className={CHAMP} />
+                </label>
+                <label className="block text-xs font-medium text-navex-ink">
+                  {t("utilisateur.prenom")}
+                  <input value={userEditForm.prenom} onChange={(ev) => setUserEditForm((f) => ({ ...f, prenom: ev.target.value }))} className={CHAMP} />
+                </label>
+                <label className="block text-xs font-medium text-navex-ink">
+                  {t("utilisateur.nom")}
+                  <input value={userEditForm.nom} onChange={(ev) => setUserEditForm((f) => ({ ...f, nom: ev.target.value }))} className={CHAMP} />
+                </label>
+                <label className="block text-xs font-medium text-navex-ink">
+                  {t("utilisateur.telephone")}
+                  <input type="tel" dir="ltr" value={userEditForm.telephone} onChange={(ev) => setUserEditForm((f) => ({ ...f, telephone: ev.target.value }))} className={CHAMP} />
                 </label>
                 <label className="block text-xs font-medium text-navex-ink">
                   {t("admin.role")}

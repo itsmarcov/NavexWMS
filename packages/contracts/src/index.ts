@@ -35,6 +35,9 @@ export interface UtilisateurDTO {
   email: string;
   role: Role;
   expediteur_id?: string | null;
+  prenom?: string | null;
+  nom?: string | null;
+  telephone?: string | null;
 }
 
 export interface LoginResponse {
@@ -198,6 +201,9 @@ export interface UtilisateurAdminDTO {
   actif: boolean;
   date_creation: string;
   expediteur_nom?: string | null;
+  prenom?: string | null;
+  nom?: string | null;
+  telephone?: string | null;
 }
 
 export interface StatutExpediteurPayload {
@@ -219,6 +225,9 @@ export interface CreerUtilisateurPayload {
   mot_de_passe: string;
   role: Role;
   expediteur_id?: string;
+  prenom?: string | null;
+  nom?: string | null;
+  telephone?: string | null;
 }
 
 /** Modification d'un compte utilisateur (admin uniquement). */
@@ -228,6 +237,9 @@ export interface ModifierUtilisateurPayload {
   expediteur_id?: string | null;
   actif?: boolean;
   mot_de_passe?: string;
+  prenom?: string | null;
+  nom?: string | null;
+  telephone?: string | null;
 }
 
 /** Modification d'un expéditeur (admin uniquement). */
@@ -287,4 +299,13 @@ export interface AjouterCataloguePayload {
   poids_kg: number;
   fragile?: boolean;
   type_emballage: TypeEmballageDTO;
+}
+
+export interface HistoriqueEntreeDTO {
+  id: string;
+  action: string;
+  date: string;
+  utilisateur?: { email: string; prenom?: string | null; nom?: string | null } | null;
+  donnees_avant?: Record<string, unknown> | null;
+  donnees_apres?: Record<string, unknown> | null;
 }

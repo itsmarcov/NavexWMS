@@ -98,6 +98,9 @@ export class AdminService {
       actif: u.actif,
       date_creation: u.date_creation,
       expediteur_nom: u.expediteur?.nom_entreprise ?? null,
+      prenom: u.prenom ?? null,
+      nom: u.nom ?? null,
+      telephone: u.telephone ?? null,
     }));
   }
 
@@ -123,6 +126,9 @@ export class AdminService {
         password_hash: passwordHash,
         role: dto.role,
         expediteur_id: dto.expediteur_id ?? null,
+        prenom: dto.prenom ?? null,
+        nom: dto.nom ?? null,
+        telephone: dto.telephone ?? null,
       },
     });
 
@@ -131,11 +137,11 @@ export class AdminService {
       entite_id: utilisateur.id,
       action: "ADMIN_UTILISATEUR_CREE",
       utilisateur_id: utilisateurId,
-      donnees_apres: { email: dto.email, role: dto.role },
+      donnees_apres: { email: dto.email, role: dto.role, prenom: dto.prenom, nom: dto.nom, telephone: dto.telephone },
       ip_adresse: ip,
     });
 
-    return { id: utilisateur.id, email: utilisateur.email, role: utilisateur.role };
+    return { id: utilisateur.id, email: utilisateur.email, role: utilisateur.role, prenom: utilisateur.prenom, nom: utilisateur.nom, telephone: utilisateur.telephone };
   }
 
   /** Crée un expéditeur + son premier compte utilisateur. */
@@ -207,6 +213,9 @@ export class AdminService {
     if (dto.expediteur_id !== undefined) donnees.expediteur_id = dto.expediteur_id;
     if (dto.actif !== undefined) donnees.actif = dto.actif;
     if (dto.mot_de_passe) donnees.password_hash = await hash(dto.mot_de_passe, 12);
+    if (dto.prenom !== undefined) donnees.prenom = dto.prenom;
+    if (dto.nom !== undefined) donnees.nom = dto.nom;
+    if (dto.telephone !== undefined) donnees.telephone = dto.telephone;
 
     if (Object.keys(donnees).length === 0) {
       throw new ConflictException({ code: "erreurs.aucune_modification" });
@@ -219,12 +228,12 @@ export class AdminService {
       entite_id: id,
       action: "ADMIN_UTILISATEUR_MODIFIE",
       utilisateur_id: utilisateurId,
-      donnees_avant: { email: utilisateur.email, role: utilisateur.role, actif: utilisateur.actif },
-      donnees_apres: { email: modifie.email, role: modifie.role, actif: modifie.actif },
+      donnees_avant: { email: utilisateur.email, role: utilisateur.role, actif: utilisateur.actif, prenom: utilisateur.prenom, nom: utilisateur.nom, telephone: utilisateur.telephone },
+      donnees_apres: { email: modifie.email, role: modifie.role, actif: modifie.actif, prenom: modifie.prenom, nom: modifie.nom, telephone: modifie.telephone },
       ip_adresse: ip,
     });
 
-    return { id: modifie.id, email: modifie.email, role: modifie.role, actif: modifie.actif };
+    return { id: modifie.id, email: modifie.email, role: modifie.role, actif: modifie.actif, prenom: modifie.prenom, nom: modifie.nom, telephone: modifie.telephone };
   }
 
   /** Supprime un compte utilisateur. Empêche la suppression de son propre compte. */

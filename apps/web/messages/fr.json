@@ -275,6 +275,29 @@
   "conditions_texte": "Je certifie que les informations communiquées sont exactes et reconnais que le volume des marchandises stockées doit être compatible avec mon volume d'expédition. J'accepte que NAVEX DELIVERY puisse appliquer les conditions de stockage prévues au contrat, notamment en cas de stock disproportionné, d'inactivité ou d'occupation excessive de l'espace de stockage.",
   "conditions_acceptee": "Conditions acceptées",
   "conditions_non_acceptee": "Conditions non acceptées",
+  "utilisateur": {
+    "prenom": "Prénom",
+    "nom": "Nom",
+    "telephone": "Téléphone",
+    "prenom_nom": "Prénom & Nom"
+  },
+  "historique": {
+    "titre": "Historique de la demande",
+    "action": "Action",
+    "date": "Date",
+    "utilisateur": "Utilisateur",
+    "details": "Détails",
+    "retour": "Retour à la demande",
+    "action_create": "Création de la demande",
+    "action_validation_approve": "Produit approuvé",
+    "action_validation_refuse": "Produit rejeté",
+    "action_planification": "Planification réception",
+    "action_scan": "Scan QR arrivée",
+    "action_reception": "Réception confirmée",
+    "action_positionnement": "Positionnement",
+    "action_decharge_generate": "Génération décharge",
+    "action_decharge_download": "Téléchargement PDF"
+  },
   "filter": {
     "rechercher": "Rechercher par référence ou entreprise…",
     "tous": "Tous",
@@ -282,5 +305,29 @@
     "filtrer_expediteur": "Filtrer par expéditeur",
     "aucun_resultat": "Aucun résultat ne correspond à votre recherche.",
     "effacer": "Effacer le filtre"
+  },
+  "historique": {
+    "titre": "Historique de la demande",
+    "action": "Action",
+    "date": "Date",
+    "utilisateur": "Utilisateur",
+    "details": "Détails",
+    "retour": "Retour à la demande",
+    "aucun_evenement": "Aucun événement enregistré.",
+    "action_create": "Création de la demande",
+    "action_validation_approve": "Produit approuvé",
+    "action_validation_refuse": "Produit rejeté",
+    "action_planification": "Planification réception",
+    "action_scan": "Scan QR arrivée",
+    "action_reception": "Réception confirmée",
+    "action_positionnement": "Positionnement",
+    "action_decharge_generate": "Génération décharge",
+    "action_decharge_download": "Téléchargement PDF"
+  },
+  "utilisateur": {
+    "prenom": "Prénom",
+    "nom": "Nom",
+    "telephone": "Téléphone",
+    "prenom_nom": "Prénom & Nom"
   }
 }

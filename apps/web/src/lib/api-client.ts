@@ -11,6 +11,7 @@ import type {
   DechargeResumeDTO,
   EmplacementDTO,
   ExpediteurAdminDTO,
+  HistoriqueEntreeDTO,
   LoginResponse,
   ModifierExpediteurPayload,
   ModifierUtilisateurPayload,
@@ -276,6 +277,11 @@ export function supprimerExpediteur(id: string) {
 
 export function detailDemande(id: string) {
   return requete<DemandeDetailDTO>(`/demandes/${id}`);
+}
+
+/** Historique d'une demande (timeline d'actions). */
+export function historiqueDemande(id: string) {
+  return requete<HistoriqueEntreeDTO[]>(`/demandes/${id}/historique`);
 }
 
 export function genererDecharge(demandeId: string) {

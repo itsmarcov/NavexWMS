@@ -254,4 +254,63 @@ export class DemandesService {
     }
     return demande;
   }
+
+  async historique(demandeId: string, role: RoleUtilisateur, expediteurId?: string | null) {
+    const demande = await this.prisma.demandeStockage.findUnique({
+      where: { id: demandeId },
+      select: { id: true, expediteur_id: true },
+    });
+    if (!demande) throw new NotFoundException({ code: "erreurs.introuvable" });
+    if (role === "expediteur" && demande.expediteur_id !== expediteurId) {
+      throw new NotFoundException({ code: "erreurs.introuvable" });
+    }
+
+    const produitIds = await this.prisma.produit.findMany({
+      where: { demande_id: demandeId },
+      select: { id: true },
+    }).then((ps) => ps.map((p) => p.id));
+
+    const decharges = await this.prisma.decharge.findMany({
+      where: { demande_id: demandeId },
+      select: { id: true },
+    });
+    const dechargeIds = decharges.map((d) => d.id);
+
+    const auditLogs = await this.prisma.auditLog.findMany({
+      where: {
+        OR: [
+          { entite_type: "DemandeStockage", entite_id: demandeId },
+          { entite_type: "Produit", entite_id: { in: produitIds } },
+          { entite_type: "Decharge", entite_id: { in: dechargeIds } },
+        ],
+      },
+      include: { utilisateur: { select: { email: true, prenom: true, nom: true } } },
+      orderBy: { timestamp: "desc" },
+    });
+
+    const mouvements = await this.prisma.mouvementEntrepot.findMany({
+      where: { decharge_id: { in: dechargeIds.length > 0 ? dechargeIds : ["__none__"] } },
+      include: { agent: { select: { email: true, prenom: true, nom: true } } },
+      orderBy: { date_evenement: "desc" },
+    });
+
+    return [
+      ...auditLogs.map((l) => ({
+        id: l.id,
+        action: l.action,
+        date: l.timestamp.toISOString(),
+        utilisateur: l.utilisateur,
+        donnees_avant: l.donnees_avant,
+        donnees_apres: l.donnees_apres,
+      })),
+      ...mouvements.map((m) => ({
+        id: m.id,
+        action: m.type_evenement,
+        date: m.date_evenement.toISOString(),
+        utilisateur: m.agent,
+        donnees_avant: null,
+        donnees_apres: { notes: m.notes },
+      })),
+    ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  }
 }

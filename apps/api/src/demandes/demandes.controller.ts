@@ -68,4 +68,10 @@ export class DemandesController {
   ) {
     return this.demandesService.planifierReception(id, user.sub, dto, req.ip);
   }
+
+  @Roles("expediteur", "agent_commercial", "admin")
+  @Get(":id/historique")
+  historique(@Param("id") id: string, @CurrentUser() user: UtilisateurCourant) {
+    return this.demandesService.historique(id, user.role as never, user.expediteur_id);
+  }
 }

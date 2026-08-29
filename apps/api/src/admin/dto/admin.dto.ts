@@ -23,6 +23,18 @@ export class CreerUtilisateurDto {
   @IsOptional()
   @IsString()
   expediteur_id?: string;
+
+  @IsOptional()
+  @IsString()
+  prenom?: string;
+
+  @IsOptional()
+  @IsString()
+  nom?: string;
+
+  @IsOptional()
+  @IsString()
+  telephone?: string;
 }
 
 export class CreerExpediteurDto {
@@ -64,6 +76,18 @@ export class ModifierUtilisateurDto {
   @IsString()
   @MinLength(8, { message: "erreurs.mot_de_passe_court" })
   mot_de_passe?: string;
+
+  @IsOptional()
+  @IsString()
+  prenom?: string;
+
+  @IsOptional()
+  @IsString()
+  nom?: string;
+
+  @IsOptional()
+  @IsString()
+  telephone?: string;
 }
 
 export class ModifierExpediteurDto {

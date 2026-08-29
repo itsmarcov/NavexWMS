@@ -275,6 +275,29 @@
   "conditions_texte": "أصرح بأن المعلومات المقدمة دقيقة وأقر بأن حجم البضائع المخزنة يجب أن يكون متوافقاً مع حجم شحنياتي. أقبل أن تطبق NAVEX DELIVERY شروخ التخزين المنصوص عليها في العقد، خاصة في حالة التخزين غير المتوازن أو عدم النشاط أو الإشغال المفرض للمساحة.",
   "conditions_acceptee": "تم قبول الشروط",
   "conditions_non_acceptee": "لم يتم قبول الشروط",
+  "utilisateur": {
+    "prenom": "الاسم",
+    "nom": "اللقب",
+    "telephone": "الهاتف",
+    "prenom_nom": "الاسم واللقب"
+  },
+  "historique": {
+    "titre": "سجل الطلب",
+    "action": "الإجراء",
+    "date": "التاريخ",
+    "utilisateur": "المستخدم",
+    "details": "التفاصيل",
+    "retour": "العودة إلى الطلب",
+    "action_create": "إنشاء الطلب",
+    "action_validation_approve": "تمت الموافقة على المنتج",
+    "action_validation_refuse": "تم رفض المنتج",
+    "action_planification": "جدولة الاستلام",
+    "action_scan": "مسح وصول رمز QR",
+    "action_reception": "تأكيد الاستلام",
+    "action_positionnement": "التعبئة",
+    "action_decharge_generate": "إنشاء إيصال",
+    "action_decharge_download": "تحميل PDF"
+  },
   "filter": {
     "rechercher": "بحث بالمرجع أو اسم الشركة…",
     "tous": "الكل",
@@ -282,5 +305,29 @@
     "filtrer_expediteur": "تصفية حسب المورد",
     "aucun_resultat": "لا توجد نتائج تطابق بحثك.",
     "effacer": "مسح الفلتر"
+  },
+  "historique": {
+    "titre": "سجل الطلب",
+    "action": "الإجراء",
+    "date": "التاريخ",
+    "utilisateur": "المستخدم",
+    "details": "التفاصيل",
+    "retour": "العودة إلى الطلب",
+    "aucun_evenement": "لم يتم تسجيل أي حدث.",
+    "action_create": "إنشاء الطلب",
+    "action_validation_approve": "تمت الموافقة على المنتج",
+    "action_validation_refuse": "تم رفض المنتج",
+    "action_planification": "جدولة الاستلام",
+    "action_scan": "مسح وصول رمز QR",
+    "action_reception": "تأكيد الاستلام",
+    "action_positionnement": "التعبئة",
+    "action_decharge_generate": "إنشاء إيصال",
+    "action_decharge_download": "تحميل PDF"
+  },
+  "utilisateur": {
+    "prenom": "الاسم",
+    "nom": "اللقب",
+    "telephone": "الهاتف",
+    "prenom_nom": "الاسم واللقب"
   }
 }
