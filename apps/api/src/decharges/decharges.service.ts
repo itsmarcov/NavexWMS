@@ -273,7 +273,7 @@ export class DechargesService implements OnApplicationShutdown, OnModuleInit {
     // Jeton en query string : un JWT contient des points, invisibles au
     // middleware i18n s'ils figurent dans le chemin.
     const urlQr = `${env.appPublicUrl}/fr/scan?t=${encodeURIComponent(decharge.qr_token)}`;
-    const qrDataUrl = await QRCode.toDataURL(urlQr, { margin: 1, width: 240 });
+    const qrDataUrl = await QRCode.toDataURL(urlQr, { margin: 3, width: 400, errorCorrectionLevel: "M" });
 
     const lignes = decharge.demande.produits
       .map(
@@ -310,7 +310,7 @@ export class DechargesService implements OnApplicationShutdown, OnModuleInit {
   .num { direction: ltr; text-align: end; }
   .fragile { color: #b45309; font-size: 10px; }
   .qr-zone { margin-top: 22px; display: flex; gap: 18px; align-items: center; background: #f8fafc; border: 1px dashed #a8a29e; border-radius: 6px; padding: 14px; }
-  .qr-zone img { width: 130px; height: 130px; }
+  .qr-zone img { width: 160px; height: 160px; }
   .consigne { max-width: 60%; font-size: 11px; color: #44403c; }
   footer { margin-top: 26px; font-size: 10px; color: #a8a29e; text-align: center; border-top: 1px solid #e7e5e4; padding-top: 8px; }
 </style></head>
