@@ -28,12 +28,28 @@ export class EntrepotService {
    * le nonce lié à la décharge, puis enregistre l'arrivée au quai.
    */
   async scanner(dto: ScanQrDto, user: ContexteUtilisateur, ip?: string) {
+    const token = dto.qr_token;
     let charge: { decharge_id: string; nonce: string };
-    try {
-      charge = jwt.verify(dto.qr_token, env.publicKey(), { algorithms: ["RS256"] }) as never;
-    } catch (erreur) {
-      const expire = erreur instanceof jwt.TokenExpiredError;
-      throw new UnauthorizedException({ code: expire ? "erreurs.qr_expire" : "erreurs.qr_invalide" });
+
+    if (token.length <= 20) {
+      const decharge = await this.prisma.decharge.findUnique({
+        where: { qr_code: token },
+        select: { qr_token: true },
+      });
+      if (!decharge) throw new UnauthorizedException({ code: "erreurs.qr_invalide" });
+      try {
+        charge = jwt.verify(decharge.qr_token, env.publicKey(), { algorithms: ["RS256"] }) as never;
+      } catch (erreur) {
+        const expire = erreur instanceof jwt.TokenExpiredError;
+        throw new UnauthorizedException({ code: expire ? "erreurs.qr_expire" : "erreurs.qr_invalide" });
+      }
+    } else {
+      try {
+        charge = jwt.verify(token, env.publicKey(), { algorithms: ["RS256"] }) as never;
+      } catch (erreur) {
+        const expire = erreur instanceof jwt.TokenExpiredError;
+        throw new UnauthorizedException({ code: expire ? "erreurs.qr_expire" : "erreurs.qr_invalide" });
+      }
     }
 
     const decharge = await this.prisma.decharge.findUnique({

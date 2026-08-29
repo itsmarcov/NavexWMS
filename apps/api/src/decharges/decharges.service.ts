@@ -76,6 +76,7 @@ export class DechargesService implements OnApplicationShutdown, OnModuleInit {
     // Contenu du QR strictement limité à {decharge_id, exp, nonce} — jamais de données produit.
     const nonce = randomUUID();
     const expiration = Math.floor(Date.now() / 1000) + env.dechargeTtlHeures * 3600;
+    const qrCode = await this.genererQrCode(this.prisma);
 
     const decharge = await this.prisma.$transaction(async (tx) => {
       let id = existante?.id;
@@ -87,6 +88,7 @@ export class DechargesService implements OnApplicationShutdown, OnModuleInit {
             demande_id: demande.id,
             numero_decharge: "__en_cours__",
             qr_token: "",
+            qr_code: qrCode,
             nonce,
           },
         });
@@ -101,6 +103,7 @@ export class DechargesService implements OnApplicationShutdown, OnModuleInit {
           qr_token: jwt.sign({ decharge_id: id, exp: expiration, nonce }, env.privateKey(), {
             algorithm: "RS256",
           }),
+          qr_code: qrCode,
           date_generation: new Date(),
           pdf_url: null,
         },
@@ -206,6 +209,17 @@ export class DechargesService implements OnApplicationShutdown, OnModuleInit {
     return `DEC-${annee}-${Date.now()}`;
   }
 
+  private async genererQrCode(tx: Prisma.TransactionClient) {
+    const CARACT = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    for (let tentative = 0; tentative < 10; tentative++) {
+      let code = "";
+      for (let i = 0; i < 8; i++) code += CARACT[Math.floor(Math.random() * CARACT.length)];
+      const existe = await tx.decharge.findUnique({ where: { qr_code: code }, select: { id: true } });
+      if (!existe) return code;
+    }
+    return `QR${Date.now()}`.slice(0, 8);
+  }
+
   // ── PDF ──────────────────────────────────────────────────────
 
   private async obtenirNavigateur(): Promise<Browser> {
@@ -272,7 +286,7 @@ export class DechargesService implements OnApplicationShutdown, OnModuleInit {
     const logoBase64 = fs.readFileSync(path.join(__dirname, "..", "assets", "logo.png")).toString("base64");
     // Jeton en query string : un JWT contient des points, invisibles au
     // middleware i18n s'ils figurent dans le chemin.
-    const urlQr = `${env.appPublicUrl}/fr/scan?t=${encodeURIComponent(decharge.qr_token)}`;
+    const urlQr = `${env.appPublicUrl}/fr/scan?t=${decharge.qr_code}`;
     const qrDataUrl = await QRCode.toDataURL(urlQr, { margin: 3, width: 400, errorCorrectionLevel: "M" });
 
     const lignes = decharge.demande.produits

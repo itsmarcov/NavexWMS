@@ -1,0 +1,1 @@
+UPDATE "Decharge" SET qr_code = UPPER(SUBSTRING(MD5(RANDOM()::text) FROM 1 FOR 8)) WHERE qr_code IS NULL;

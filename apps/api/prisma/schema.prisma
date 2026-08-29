@@ -169,6 +169,7 @@ model Decharge {
   demande         DemandeStockage @relation(fields: [demande_id], references: [id])
   numero_decharge String         @unique
   qr_token        String         @unique
+  qr_code         String         @unique
   nonce           String         @unique
   date_generation DateTime       @default(now())
   pdf_url         String?
