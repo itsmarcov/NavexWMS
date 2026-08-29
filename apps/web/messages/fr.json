@@ -63,7 +63,7 @@
     "valider": "Se connecter"
   },
   "accueil": {
-    "titre": "Espace {role}",
+    "titre": "Bonjour {prenom}",
     "session": "Connecté en tant que",
     "phase_en_cours": "Phase 1 : infrastructure, authentification et internationalisation opérationnelles.",
     "stats_demandes": "Demandes totales",

@@ -89,7 +89,7 @@ export default function PageAccueil() {
         <main className="mx-auto max-w-4xl px-4 py-8 space-y-8">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h1 className="text-2xl font-extrabold text-navex-ink">
-              {t("accueil.titre", { role: t("roles.expediteur") })}
+              {t("accueil.titre", { prenom: utilisateur.prenom ?? utilisateur.email.split("@")[0] })}
             </h1>
             <Bouton href="/mes-demandes/nouvelle" variante="primaire">
               + {t("demandes.nouvelle")}
@@ -158,7 +158,7 @@ export default function PageAccueil() {
         <AppHeader />
         <main className="mx-auto max-w-4xl px-4 py-8 space-y-8">
           <h1 className="text-2xl font-extrabold text-navex-ink">
-            {t("accueil.titre", { role: t("roles.agent_entrepot") })}
+            {t("accueil.titre", { prenom: utilisateur.prenom ?? utilisateur.email.split("@")[0] })}
           </h1>
 
           <section className="grid grid-cols-2 gap-4">
@@ -229,7 +229,7 @@ export default function PageAccueil() {
         <AppHeader />
         <main className="mx-auto max-w-4xl px-4 py-8 space-y-8">
           <h1 className="text-2xl font-extrabold text-navex-ink">
-            {t("accueil.titre", { role: t(`roles.${utilisateur.role}`) })}
+            {t("accueil.titre", { prenom: utilisateur.prenom ?? utilisateur.email.split("@")[0] })}
           </h1>
 
           <section className="grid grid-cols-2 gap-4 sm:grid-cols-3">
@@ -387,7 +387,7 @@ export default function PageAccueil() {
           </p>
 
           <h2 className="mt-4 text-lg font-bold text-navex-ink">
-            {t("accueil.titre", { role: t(`roles.${utilisateur.role}`) })}
+            {t("accueil.titre", { prenom: utilisateur.prenom ?? utilisateur.email.split("@")[0] })}
           </h2>
 
           <div className="mt-6 flex flex-wrap items-center gap-2">
