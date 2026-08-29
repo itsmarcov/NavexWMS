@@ -290,7 +290,7 @@ export class DemandesService {
 
     const mouvements = await this.prisma.mouvementEntrepot.findMany({
       where: { decharge_id: { in: dechargeIds.length > 0 ? dechargeIds : ["__none__"] } },
-      include: { agent: { select: { email: true, prenom: true, nom: true } } },
+      include: { agent_entrepot: { select: { email: true, prenom: true, nom: true } } },
       orderBy: { date_evenement: "desc" },
     });
 
@@ -307,7 +307,7 @@ export class DemandesService {
         id: m.id,
         action: m.type_evenement,
         date: m.date_evenement.toISOString(),
-        utilisateur: m.agent,
+        utilisateur: m.agent_entrepot,
         donnees_avant: null,
         donnees_apres: { notes: m.notes },
       })),
