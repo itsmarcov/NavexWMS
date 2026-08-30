@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException, TooManyRequestsException } from "@nestjs/common";
+import { Injectable, UnauthorizedException, HttpException, HttpStatus } from "@nestjs/common";
 import { Utilisateur } from "@prisma/client";
 import * as bcrypt from "bcryptjs";
 import { createHash, randomUUID } from "node:crypto";
@@ -41,7 +41,7 @@ export class AuthService {
           ip_adresse: ip,
           donnees_apres: { reason: "rate_limited" },
         });
-        throw new TooManyRequestsException({ code: "erreurs.trop_de_tentatives" });
+        throw new HttpException({ code: "erreurs.trop_de_tentatives" }, HttpStatus.TOO_MANY_REQUESTS);
       }
     } else if (entry) {
       this.failedAttempts.delete(key);

@@ -168,15 +168,18 @@ export class DemandesService {
         },
       }),
       // Recalcul du statut global quand tous les produits sont tranchés :
-      // tous refusés → rejetée ; tous approuvés → approuvée ;
-      // mixte (au moins un approuvé + au moins un refusé) → partiellement_approuvee.
+      // 1) tous refusés → rejetée
+      // 2) tous approuvés → approuvée
+      // 3) mixte → partiellement_approuvee
+      // Les updateMany sont séquentiels dans la transaction : chaque update
+      // modifie le statut, donc les updateMany suivants ne re-matchent pas
+      // les lignes déjà traitées.
       this.prisma.demandeStockage.updateMany({
         where: {
           id: demandeId,
           statut: "en_attente",
           produits: {
             none: { statut_validation: "en_attente" },
-            some: { statut_validation: "refuse" },
             every: { statut_validation: "refuse" },
           },
         },
@@ -192,7 +195,6 @@ export class DemandesService {
           statut: "en_attente",
           produits: {
             none: { statut_validation: "en_attente" },
-            some: { statut_validation: "approuve" },
             every: { statut_validation: "approuve" },
           },
         },
@@ -208,8 +210,6 @@ export class DemandesService {
           statut: "en_attente",
           produits: {
             none: { statut_validation: "en_attente" },
-            some: { statut_validation: "approuve" },
-            some: { statut_validation: "refuse" },
           },
         },
         data: {
