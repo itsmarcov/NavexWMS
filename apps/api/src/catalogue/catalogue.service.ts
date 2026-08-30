@@ -10,16 +10,28 @@ interface AjouterCatalogueDto {
   poids_kg: number;
   fragile?: boolean;
   type_emballage: "carton" | "palette" | "sac" | "autre";
+  photo_url?: string | null;
+  categorie?: string | null;
 }
 
 @Injectable()
 export class CatalogueService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async lister(expediteurId: string) {
+  async lister(expediteurId: string, q?: string, categorie?: string) {
+    const where: Record<string, unknown> = { expediteur_id: expediteurId };
+    if (q) {
+      where.OR = [
+        { sku_code: { contains: q, mode: "insensitive" } },
+        { designation: { contains: q, mode: "insensitive" } },
+      ];
+    }
+    if (categorie) {
+      where.categorie = categorie;
+    }
     return this.prisma.catalogueProduit.findMany({
-      where: { expediteur_id: expediteurId },
-      orderBy: { sku_code: "asc" },
+      where,
+      orderBy: [{ compteur_usage: "desc" }, { sku_code: "asc" }],
     });
   }
 
@@ -31,10 +43,27 @@ export class CatalogueService {
     });
   }
 
+  async modifier(id: string, expediteurId: string, dto: Partial<AjouterCatalogueDto>) {
+    const existe = await this.prisma.catalogueProduit.findFirst({
+      where: { id, expediteur_id: expediteurId },
+    });
+    if (!existe) throw new NotFoundException({ code: "erreurs.introuvable" });
+    return this.prisma.catalogueProduit.update({ where: { id }, data: dto });
+  }
+
   async supprimer(id: string, expediteurId: string) {
     const resultat = await this.prisma.catalogueProduit.deleteMany({
       where: { id, expediteur_id: expediteurId },
     });
     if (resultat.count === 0) throw new NotFoundException({ code: "erreurs.introuvable" });
+  }
+
+  async incrementerUsage(skuCodes: string[], expediteurId: string) {
+    for (const sku of skuCodes) {
+      await this.prisma.catalogueProduit.updateMany({
+        where: { expediteur_id: expediteurId, sku_code: sku },
+        data: { compteur_usage: { increment: 1 } },
+      });
+    }
   }
 }

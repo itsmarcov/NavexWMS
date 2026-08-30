@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Delete, Body, Param, ForbiddenException } from "@nestjs/common";
+import { Controller, Get, Post, Patch, Delete, Body, Param, Query, ForbiddenException } from "@nestjs/common";
 import { Roles } from "../auth/decorators/roles.decorator";
 import { CurrentUser } from "../auth/decorators/current-user.decorator";
 import { CatalogueService } from "./catalogue.service";
@@ -12,6 +12,8 @@ interface AjouterCatalogueDto {
   poids_kg: number;
   fragile?: boolean;
   type_emballage: "carton" | "palette" | "sac" | "autre";
+  photo_url?: string | null;
+  categorie?: string | null;
 }
 
 @Controller("catalogue")
@@ -20,9 +22,13 @@ export class CatalogueController {
 
   @Get()
   @Roles("expediteur", "admin", "agent_commercial")
-  lister(@CurrentUser() user: { expediteur_id?: string }) {
+  lister(
+    @CurrentUser() user: { expediteur_id?: string },
+    @Query("q") q?: string,
+    @Query("categorie") categorie?: string,
+  ) {
     if (!user.expediteur_id) return [];
-    return this.catalogueService.lister(user.expediteur_id);
+    return this.catalogueService.lister(user.expediteur_id, q, categorie);
   }
 
   @Post()
@@ -30,6 +36,17 @@ export class CatalogueController {
   ajouter(@CurrentUser() user: { expediteur_id?: string }, @Body() dto: AjouterCatalogueDto) {
     if (!user.expediteur_id) throw new ForbiddenException();
     return this.catalogueService.ajouter(user.expediteur_id, dto);
+  }
+
+  @Patch(":id")
+  @Roles("expediteur")
+  modifier(
+    @Param("id") id: string,
+    @CurrentUser() user: { expediteur_id?: string },
+    @Body() dto: Partial<AjouterCatalogueDto>,
+  ) {
+    if (!user.expediteur_id) throw new ForbiddenException();
+    return this.catalogueService.modifier(id, user.expediteur_id, dto);
   }
 
   @Delete(":id")

@@ -288,6 +288,9 @@ export interface CatalogueProduitDTO {
   poids_kg: number;
   fragile: boolean;
   type_emballage: TypeEmballageDTO;
+  photo_url?: string | null;
+  categorie?: string | null;
+  compteur_usage: number;
 }
 
 export interface AjouterCataloguePayload {
@@ -299,6 +302,8 @@ export interface AjouterCataloguePayload {
   poids_kg: number;
   fragile?: boolean;
   type_emballage: TypeEmballageDTO;
+  photo_url?: string | null;
+  categorie?: string | null;
 }
 
 export interface HistoriqueEntreeDTO {

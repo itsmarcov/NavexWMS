@@ -83,6 +83,9 @@ model CatalogueProduit {
   poids_kg        Float
   fragile         Boolean       @default(false)
   type_emballage  TypeEmballage
+  photo_url       String?
+  categorie       String?
+  compteur_usage  Int           @default(0)
 
   @@unique([expediteur_id, sku_code])
   @@index([expediteur_id])

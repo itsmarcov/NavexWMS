@@ -1,6 +1,7 @@
 import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { Prisma, RoleUtilisateur, StatutDemande } from "@prisma/client";
 import { AuditService } from "../audit/audit.service";
+import { CatalogueService } from "../catalogue/catalogue.service";
 import { PrismaService } from "../prisma/prisma.service";
 import { CreeDemandeDto } from "./dto/demande.dto";
 
@@ -11,6 +12,7 @@ export class DemandesService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly audit: AuditService,
+    private readonly catalogueService: CatalogueService,
   ) {}
 
   /** DEM-2026-00001 — séquence par année, avec reprise en cas de collision. */
@@ -84,6 +86,11 @@ export class DemandesService {
       },
       ip_adresse: ip,
     });
+
+    const skus = dto.produits.map((p) => p.sku_code);
+    if (skus.length > 0) {
+      await this.catalogueService.incrementerUsage(skus, expediteurId).catch(() => undefined);
+    }
 
     return demande;
   }

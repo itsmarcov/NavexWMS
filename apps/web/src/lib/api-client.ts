@@ -24,7 +24,7 @@ import type {
   ValidationProduitPayload,
 } from "@navex/contracts";
 
-export type { CatalogueProduitDTO };
+export type { AjouterCataloguePayload, CatalogueProduitDTO };
 
 const BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001/api";
 const CLE_TOKEN = "navex_access_token";
@@ -313,13 +313,24 @@ export async function telechargerDechargePdf(dechargeId: string, nomFichier: str
 
 // ── Catalogue produits ────────────────────────────────────────
 
-export function listerCatalogue() {
-  return requete<CatalogueProduitDTO[]>("/catalogue");
+export function listerCatalogue(q?: string, categorie?: string) {
+  const params = new URLSearchParams();
+  if (q) params.set("q", q);
+  if (categorie) params.set("categorie", categorie);
+  const qs = params.toString();
+  return requete<CatalogueProduitDTO[]>(`/catalogue${qs ? `?${qs}` : ""}`);
 }
 
 export function ajouterCatalogue(dto: AjouterCataloguePayload) {
   return requete<CatalogueProduitDTO>("/catalogue", {
     method: "POST",
+    body: JSON.stringify(dto),
+  });
+}
+
+export function modifierCatalogue(id: string, dto: Partial<AjouterCataloguePayload>) {
+  return requete<CatalogueProduitDTO>(`/catalogue/${id}`, {
+    method: "PATCH",
     body: JSON.stringify(dto),
   });
 }

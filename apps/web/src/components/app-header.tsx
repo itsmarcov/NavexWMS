@@ -26,6 +26,9 @@ export function AppHeader() {
       : t("nav.mes_demandes");
     liens.push({ href: "/mes-demandes", label });
   }
+  if (utilisateur && utilisateur.role === "expediteur") {
+    liens.push({ href: "/catalogue", label: t("nav.catalogue") });
+  }
   if (utilisateur && (utilisateur.role === "agent_commercial" || utilisateur.role === "admin")) {
     liens.push({ href: "/file-attente", label: t("nav.file_attente") });
   }
