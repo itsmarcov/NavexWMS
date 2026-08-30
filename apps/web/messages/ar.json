@@ -14,7 +14,8 @@
     "file_attente": "قائمة الانتظار",
     "entrepot": "المستودع",
     "admin": "الإدارة",
-    "catalogue": "الكتالوج"
+    "catalogue": "الكتالوج",
+    "principal": "التنقل الرئيسي"
   },
   "admin": {
     "titre": "الإدارة",

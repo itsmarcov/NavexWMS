@@ -14,7 +14,8 @@
     "file_attente": "File d'attente",
     "entrepot": "Entrepôt",
     "admin": "Administration",
-    "catalogue": "Catalogue"
+    "catalogue": "Catalogue",
+    "principal": "Navigation principale"
   },
   "admin": {
     "titre": "Administration",

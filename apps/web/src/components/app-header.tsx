@@ -14,6 +14,7 @@ export function AppHeader() {
   const locale = useLocale();
   const pathname = usePathname();
   const [utilisateur, setUtilisateur] = useState<UtilisateurDTO | null>(null);
+  const [menuOuvert, setMenuOuvert] = useState(false);
 
   useEffect(() => {
     utilisateurCourant().then(setUtilisateur).catch(() => undefined);
@@ -46,15 +47,15 @@ export function AppHeader() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-white/40 bg-white/60 backdrop-blur-xl backdrop-saturate-180 supports-[backdrop-filter]:bg-white/50">
-      <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-4 py-3">
+      <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
         <div className="flex items-center gap-5">
           <Link href="/" className="flex shrink-0 items-center">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/navex-logo.png" alt="Navex" className="h-8 w-auto" />
           </Link>
-          <nav className="flex items-center gap-1">
+          <nav className="hidden items-center gap-1 md:flex" aria-label={t("nav.principal")}>
             {liens.map((lien) => {
-              const actif = pathname === lien.href;
+              const actif = lien.href === "/" ? pathname === "/" : pathname.startsWith(lien.href);
               return (
                 <Link
                   key={lien.href}
@@ -73,11 +74,52 @@ export function AppHeader() {
         </div>
         <div className="flex items-center gap-3">
           <LanguageSwitcher />
-          <Bouton variante="secondaire" onClick={deconnexion} aria-label={t("commun.se_deconnecter")}>
+          <Bouton variante="secondaire" onClick={deconnexion} aria-label={t("commun.se_deconnecter")} className="hidden md:inline-flex">
             {t("commun.se_deconnecter")}
           </Bouton>
+          <button
+            className="inline-flex items-center justify-center rounded-lg p-2 text-navex-ink/70 hover:bg-navex-red-soft/60 hover:text-navex-red md:hidden"
+            onClick={() => setMenuOuvert(!menuOuvert)}
+            aria-label={menuOuvert ? "Fermer le menu" : "Ouvrir le menu"}
+            aria-expanded={menuOuvert}
+          >
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+              {menuOuvert
+                ? <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                : <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" />}
+            </svg>
+          </button>
         </div>
       </div>
+      {menuOuvert && (
+        <nav className="border-t border-white/40 px-4 py-3 md:hidden" aria-label={t("nav.principal")}>
+          <ul className="flex flex-col gap-1">
+            {liens.map((lien) => {
+              const actif = lien.href === "/" ? pathname === "/" : pathname.startsWith(lien.href);
+              return (
+                <li key={lien.href}>
+                  <Link
+                    href={lien.href}
+                    onClick={() => setMenuOuvert(false)}
+                    className={`block rounded-xl px-3 py-2 text-sm font-medium transition-colors ${
+                      actif
+                        ? "bg-navex-red text-white"
+                        : "text-navex-ink/70 hover:bg-navex-red-soft/60 hover:text-navex-red"
+                    }`}
+                  >
+                    {lien.label}
+                  </Link>
+                </li>
+              );
+            })}
+            <li>
+              <button onClick={deconnexion} className="block w-full rounded-xl px-3 py-2 text-left text-sm font-medium text-navex-red hover:bg-navex-red-soft/60">
+                {t("commun.se_deconnecter")}
+              </button>
+            </li>
+          </ul>
+        </nav>
+      )}
     </header>
   );
 }
