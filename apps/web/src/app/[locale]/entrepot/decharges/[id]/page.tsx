@@ -61,7 +61,7 @@ export default function PageDechargeEntrepot() {
     <div className="min-h-dvh">
       <AppHeader />
       <main className="mx-auto max-w-4xl px-4 py-8 space-y-6">
-        {!decharge && !erreur && <div className="flex justify-center py-12"><div className="h-8 w-8 animate-spin rounded-full border-2 border-navex-red border-t-transparent" /></div>}
+        {!decharge && !erreur && <div className="flex justify-center py-12"><div className="h-8 w-8 animate-spin rounded-full border-2 border-navex-red border-t-transparent"><span className="sr-only">{t("commun.chargement")}</span></div></div>}
         {erreur && <p role="alert" className="rounded-2xl bg-navex-red-soft/80 px-4 py-2.5 text-sm text-navex-red-dark backdrop-blur-sm">{erreur}</p>}
         {succes && <p role="status" className="rounded-2xl bg-navex-stone/80 px-4 py-2.5 text-sm text-navex-ink backdrop-blur-sm">{succes}</p>}
 

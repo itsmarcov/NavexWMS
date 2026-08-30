@@ -66,7 +66,9 @@ export default function PageFileAttente() {
 
         {!demandes && !erreur && (
           <div className="flex justify-center py-12">
-            <div className="h-8 w-8 animate-spin rounded-full border-2 border-navex-red border-t-transparent" />
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-navex-red border-t-transparent">
+              <span className="sr-only">{t("commun.chargement")}</span>
+            </div>
           </div>
         )}
 

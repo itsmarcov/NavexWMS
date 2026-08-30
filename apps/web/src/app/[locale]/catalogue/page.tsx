@@ -234,7 +234,9 @@ export default function PageCatalogue() {
           {/* ── Grid ── */}
           {loading ? (
             <div className="flex justify-center py-16">
-              <div className="h-8 w-8 animate-spin rounded-full border-2 border-navex-red border-t-transparent" />
+              <div className="h-8 w-8 animate-spin rounded-full border-2 border-navex-red border-t-transparent">
+                <span className="sr-only">{t("commun.chargement")}</span>
+              </div>
             </div>
           ) : produits.length === 0 ? (
             <div className="card-glass rounded-3xl p-16 text-center space-y-4">
@@ -284,6 +286,7 @@ export default function PageCatalogue() {
                           ✏️
                         </Bouton>
                         <button onClick={() => handleDelete(p.id)}
+                          aria-label={t("catalogue.supprimer")}
                           className="flex h-8 w-8 items-center justify-center rounded-xl text-neutral-400 transition-colors hover:bg-navex-red-soft hover:text-navex-red"
                           title={t("catalogue.supprimer")}>
                           🗑
@@ -303,7 +306,7 @@ export default function PageCatalogue() {
             <div className="h-full w-full max-w-md bg-white shadow-2xl animate-slide-up flex flex-col">
               <div className="flex items-center justify-between border-b border-neutral-100 px-6 py-4">
                 <h2 className="text-lg font-extrabold text-navex-ink">📋 {t("catalogue.demande")}</h2>
-                <button onClick={() => setShowPanier(false)} className="flex h-8 w-8 items-center justify-center rounded-full bg-navex-stone text-sm text-neutral-500 hover:bg-navex-red-soft hover:text-navex-red transition-colors">✕</button>
+                <button onClick={() => setShowPanier(false)} aria-label={t("commun.fermer")} className="flex h-8 w-8 items-center justify-center rounded-full bg-navex-stone text-sm text-neutral-500 hover:bg-navex-red-soft hover:text-navex-red transition-colors">✕</button>
               </div>
 
               <div className="flex-1 overflow-y-auto px-6 py-4 space-y-3">

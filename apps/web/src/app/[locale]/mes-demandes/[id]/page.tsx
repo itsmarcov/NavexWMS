@@ -87,7 +87,7 @@ export default function PageDetailDemande() {
 
   if (!demande) return (
     <div className="min-h-dvh"><AppHeader /><main className="mx-auto max-w-3xl px-4 py-8">
-      <div className="flex justify-center py-12"><div className="h-8 w-8 animate-spin rounded-full border-2 border-navex-red border-t-transparent" /></div>
+      <div className="flex justify-center py-12"><div className="h-8 w-8 animate-spin rounded-full border-2 border-navex-red border-t-transparent"><span className="sr-only">{t("commun.chargement")}</span></div></div>
     </main></div>
   );
 
