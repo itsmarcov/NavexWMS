@@ -197,7 +197,7 @@ export default function PageDetailDemande() {
                       aria-label={t("validation.commentaire_placeholder")}
                       className="w-full rounded-2xl border border-neutral-200/80 bg-white/60 px-4 py-2.5 text-sm shadow-soft focus:border-navex-red/40 focus:outline-none focus:ring-2 focus:ring-navex-red/10" />
                     <div className="flex flex-wrap gap-2">
-                      <button onClick={() => decider(p, "approuve")} disabled={!!decisionsEnCours[p.id]}
+                      <button data-tour="demande-approve-btn" onClick={() => decider(p, "approuve")} disabled={!!decisionsEnCours[p.id]}
                         className={classesBouton("primaire", "bg-navex-ink hover:bg-navex-ink/80")}>
                         ✓ {t("validation.approuver")}
                       </button>
@@ -225,9 +225,11 @@ export default function PageDetailDemande() {
               </Bouton>
             </div>
           ) : auMoinsUnApprouve ? (
-            <Bouton onClick={generer} disabled={enCoursGeneration} variante="primaire">
-              {enCoursGeneration ? t("demandes.generation_cours") : t("demandes.generer_decharge")}
-            </Bouton>
+            <div data-tour="demande-generate-decharge">
+              <Bouton onClick={generer} disabled={enCoursGeneration} variante="primaire">
+                {enCoursGeneration ? t("demandes.generation_cours") : t("demandes.generer_decharge")}
+              </Bouton>
+            </div>
           ) : (
             <p className="text-xs text-neutral-400">{t("erreurs.aucun_produit_approuve")}</p>
           )}

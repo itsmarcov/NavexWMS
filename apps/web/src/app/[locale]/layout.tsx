@@ -3,6 +3,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
+import { TourLauncher } from "@/components/tour-launcher";
 import "../globals.css";
 
 const inter = Inter({
@@ -37,6 +38,7 @@ export default async function LocaleLayout({
     <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"} className={inter.variable}>
       <body className="min-h-dvh bg-ambient text-navex-ink antialiased" style={{ fontFamily: "var(--font-inter), system-ui, sans-serif" }}>
         <NextIntlClientProvider locale={locale} messages={messages}>
+          <TourLauncher />
           {children}
         </NextIntlClientProvider>
       </body>

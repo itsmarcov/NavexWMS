@@ -103,6 +103,7 @@ model Utilisateur {
   expediteur_id String?
   expediteur    Expediteur? @relation(fields: [expediteur_id], references: [id])
   actif         Boolean  @default(true)
+  tour_termine  Boolean  @default(false)
   date_creation DateTime @default(now())
 
   refresh_tokens     RefreshToken[]

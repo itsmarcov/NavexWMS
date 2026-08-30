@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req, Res } from "@nestjs/common";
+import { Body, Controller, Get, Patch, Post, Req, Res } from "@nestjs/common";
 import { Request, Response } from "express";
 import { AuditService } from "../audit/audit.service";
 import { env } from "../env";
@@ -50,6 +50,11 @@ export class AuthController {
   @Get("me")
   async me(@CurrentUser("sub") userId: string) {
     return this.authService.me(userId);
+  }
+
+  @Patch("marquer-tour-termine")
+  async marquerTourTermine(@CurrentUser("sub") userId: string) {
+    return this.authService.marquerTourTermine(userId);
   }
 
   /** Journalise chaque appel à /me — utile pour tracer les accès en phase de recette. */

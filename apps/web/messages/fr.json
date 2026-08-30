@@ -363,5 +363,68 @@
     "champ_quantite": "Quantité",
     "champ_date": "Date",
     "champ_motif": "Motif"
+  },
+  "tour": {
+    "suivant": "Suivant",
+    "passer": "Passer",
+    "terminer": "Terminer",
+    "etape": "Étape {current} sur {total}",
+    "relancer": "Revoir le tutoriel",
+    "expediteur": {
+      "step1": {
+        "title": "Vos demandes",
+        "desc": "Accédez à la liste de toutes vos demandes de stockage depuis ce lien."
+      },
+      "step2": {
+        "title": "Créer une demande",
+        "desc": "Cliquez ici pour créer une nouvelle demande de stockage avec vos produits."
+      },
+      "step3": {
+        "title": "Suivre vos demandes",
+        "desc": "Chaque carte montre le statut de votre demande en temps réel."
+      }
+    },
+    "agent_commercial": {
+      "step1": {
+        "title": "File d'attente",
+        "desc": "Les demandes en attente de validation s'affichent ici, triées par priorité."
+      },
+      "step2": {
+        "title": "Valider un produit",
+        "desc": "Approuvez ou rejetez chaque produit individuellement avec un commentaire."
+      },
+      "step3": {
+        "title": "Générer la décharge",
+        "desc": "Une fois au moins un produit approuvé, générez la décharge pour l'entrepôt."
+      }
+    },
+    "agent_entrepot": {
+      "step1": {
+        "title": "Scanner le QR code",
+        "desc": "Scannez ou saisissez le code QR de la décharge pour confirmer l'arrivée."
+      },
+      "step2": {
+        "title": "Confirmer la réception",
+        "desc": "Vérifiez le contenu et confirmez la réception physique de la marchandise."
+      },
+      "step3": {
+        "title": "Choisir l'emplacement",
+        "desc": "Sélectionnez un emplacement libre pour positionner la marchandise."
+      }
+    },
+    "admin": {
+      "step1": {
+        "title": "Tableau de bord",
+        "desc": "Visualisez les statistiques globales : demandes, expéditeurs, décharges."
+      },
+      "step2": {
+        "title": "Gestion des expéditeurs",
+        "desc": "Activez, suspendez ou modifiez les comptes expéditeurs depuis cette liste."
+      },
+      "step3": {
+        "title": "Comptes utilisateurs",
+        "desc": "Gérez les comptes agents et admin, consultez les rôles et statuts."
+      }
+    }
   }
 }

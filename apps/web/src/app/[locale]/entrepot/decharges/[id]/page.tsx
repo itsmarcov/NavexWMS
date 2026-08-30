@@ -104,15 +104,17 @@ export default function PageDechargeEntrepot() {
                    <textarea value={notesReception} onChange={(e) => setNotesReception(e.target.value)} rows={2} maxLength={500} placeholder={t("entrepot.notes_placeholder")}
                     aria-label={t("entrepot.notes_label")}
                     className="w-full rounded-2xl border border-neutral-200/80 bg-white/60 px-4 py-2.5 text-sm shadow-soft focus:border-navex-red/40 focus:outline-none focus:ring-2 focus:ring-navex-red/10" />
-                  <Bouton variante="primaire" onClick={confirmerReception} disabled={enCours || decharge.statut !== "scannee"}>
-                    ✓ {t("entrepot.confirmer_reception")}
-                  </Bouton>
+                  <div data-tour="decharge-confirm-reception-btn">
+                    <Bouton variante="primaire" onClick={confirmerReception} disabled={enCours || decharge.statut !== "scannee"}>
+                      ✓ {t("entrepot.confirmer_reception")}
+                    </Bouton>
+                  </div>
                 </div>
               )}
               {recue && !positionnee && (
                 <div className="flex flex-wrap items-center gap-3">
                   <label htmlFor="emplacement-select" className="sr-only">{t("entrepot.choisir_emplacement")}</label>
-                  <select id="emplacement-select" value={emplacementChoisi} onChange={(e) => setEmplacementChoisi(e.target.value)} aria-label={t("entrepot.choisir_emplacement")}
+                  <select id="emplacement-select" data-tour="decharge-emplacement-select" value={emplacementChoisi} onChange={(e) => setEmplacementChoisi(e.target.value)} aria-label={t("entrepot.choisir_emplacement")}
                     className="rounded-2xl border border-neutral-200/80 bg-white/60 px-3 py-2 text-sm shadow-soft focus:border-navex-red/40 focus:outline-none focus:ring-2 focus:ring-navex-red/10">
                     <option value="">{t("entrepot.choisir_emplacement")}</option>
                     {Object.entries(emplacements.reduce<Record<string, EmplacementDTO[]>>((g, e) => { (g[e.zone] ??= []).push(e); return g; }, {}))

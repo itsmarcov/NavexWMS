@@ -120,6 +120,10 @@ export async function utilisateurCourant() {
   }
 }
 
+export async function marquerTourTermine() {
+  return requete<{ ok: boolean }>("/auth/marquer-tour-termine", { method: "PATCH" });
+}
+
 export async function seDeconnecter() {
   try {
     await requete<{ ok: boolean }>("/auth/logout", { method: "POST" }, false);

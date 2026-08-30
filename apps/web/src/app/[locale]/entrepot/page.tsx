@@ -73,7 +73,7 @@ export default function PageEntrepot() {
         <section className="rounded-3xl border-2 border-navex-red/40 bg-navex-ink/95 p-6 shadow-glass-lg backdrop-blur-sm">
           <h2 className="mb-3 text-sm font-semibold text-white">{t("scan.titre")}</h2>
           <div className="flex flex-wrap gap-2">
-            <input ref={champScan} value={token} onChange={(e) => setToken(e.target.value)} onKeyDown={(e) => e.key === "Enter" && traiterScan()}
+            <input ref={champScan} data-tour="entrepot-scan-input" value={token} onChange={(e) => setToken(e.target.value)} onKeyDown={(e) => e.key === "Enter" && traiterScan()}
               aria-label={t("entrepot.scan_label")} placeholder={t("entrepot.token_placeholder")} dir="ltr" autoComplete="off"
               className="min-w-60 flex-1 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 font-mono text-xs text-white placeholder:text-neutral-500 focus:border-navex-red/60 focus:outline-none focus:ring-2 focus:ring-navex-red/20" />
             <Bouton variante="primaire" onClick={traiterScan} disabled={scanEnCours}

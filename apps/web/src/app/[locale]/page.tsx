@@ -91,9 +91,11 @@ export default function PageAccueil() {
             <h1 className="text-2xl font-extrabold text-navex-ink">
               {t("accueil.titre", { prenom: utilisateur.prenom ?? utilisateur.email.split("@")[0] })}
             </h1>
-            <Bouton href="/mes-demandes/nouvelle" variante="primaire">
-              + {t("demandes.nouvelle")}
-            </Bouton>
+            <div data-tour="exp-new-demand">
+              <Bouton href="/mes-demandes/nouvelle" variante="primaire">
+                + {t("demandes.nouvelle")}
+              </Bouton>
+            </div>
           </div>
 
           <section className="grid grid-cols-2 gap-4 sm:grid-cols-4">
@@ -118,7 +120,7 @@ export default function PageAccueil() {
             ) : (
               <ul className="divide-y divide-neutral-100/60">
                 {demandes?.slice(0, 3).map((d) => (
-                  <li key={d.id} className="flex flex-wrap items-center justify-between gap-2 px-6 py-4 transition-colors hover:bg-white/40">
+                  <li key={d.id} data-tour="exp-demand-row" className="flex flex-wrap items-center justify-between gap-2 px-6 py-4 transition-colors hover:bg-white/40">
                     <div>
                       <span className="text-sm font-semibold text-navex-ink" dir="ltr">
                         {d.reference}
@@ -271,7 +273,7 @@ export default function PageAccueil() {
             )}
           </section>
 
-          <section className="card-glass-solid rounded-3xl animate-slide-up">
+          <section data-tour="ac-queue-section" className="card-glass-solid rounded-3xl animate-slide-up">
             <div className="flex items-center justify-between border-b border-neutral-100/60 px-6 py-4">
               <h2 className="text-sm font-semibold text-navex-ink">{t("file_attente.titre")}</h2>
               <Bouton href="/file-attente" variante="secondaire">

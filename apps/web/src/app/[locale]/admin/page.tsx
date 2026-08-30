@@ -198,7 +198,7 @@ export default function PageAdmin() {
         {succes && <p role="status" className="rounded-2xl bg-navex-stone/80 px-4 py-2.5 text-sm text-navex-ink backdrop-blur-sm">{succes}</p>}
 
         {/* Onglets */}
-        <nav role="tablist" className="flex gap-1 rounded-full bg-navex-stone/80 p-1 backdrop-blur-sm">
+        <nav role="tablist" data-tour="admin-tabs" className="flex gap-1 rounded-full bg-navex-stone/80 p-1 backdrop-blur-sm">
           {([
             ["stats", "admin.tab_stats"],
             ["creer_compte", "admin.tab_compte"],
@@ -235,7 +235,7 @@ export default function PageAdmin() {
               </>
             )}
 
-            <section className="card-glass-solid rounded-3xl">
+            <section data-tour="admin-expediteurs-list" className="card-glass-solid rounded-3xl">
               <div className="border-b border-neutral-100/60 px-6 py-4">
                 <h2 className="text-sm font-semibold text-navex-ink">{t("admin.expediteurs_titre")}</h2>
               </div>
@@ -394,7 +394,7 @@ export default function PageAdmin() {
         )}
 
         {/* Comptes utilisateurs (toujours visible) */}
-        <section className="overflow-x-auto card-glass-solid rounded-3xl p-6">
+        <section data-tour="admin-users-table" className="overflow-x-auto card-glass-solid rounded-3xl p-6">
           <h2 className="mb-3 text-sm font-semibold text-navex-ink">{t("admin.utilisateurs_titre")}</h2>
           <table className="w-full text-sm">
             <thead>

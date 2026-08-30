@@ -171,6 +171,14 @@ export class AuthService {
     return this.exposerUtilisateur(utilisateur);
   }
 
+  async marquerTourTermine(userId: string) {
+    await this.prisma.utilisateur.update({
+      where: { id: userId },
+      data: { tour_termine: true },
+    });
+    return { ok: true };
+  }
+
   private signerTokens(utilisateur: Utilisateur): Tokens {
     const base = {
       sub: utilisateur.id,
@@ -210,6 +218,10 @@ export class AuthService {
       email: utilisateur.email,
       role: utilisateur.role,
       expediteur_id: utilisateur.expediteur_id,
+      prenom: utilisateur.prenom,
+      nom: utilisateur.nom,
+      telephone: utilisateur.telephone,
+      tour_termine: utilisateur.tour_termine,
     };
   }
 }

@@ -39,6 +39,7 @@ export interface UtilisateurDTO {
   prenom?: string | null;
   nom?: string | null;
   telephone?: string | null;
+  tour_termine?: boolean;
 }
 
 export interface LoginResponse {

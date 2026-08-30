@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import type { UtilisateurDTO } from "@navex/contracts";
+import type { Role, UtilisateurDTO } from "@navex/contracts";
 import { Link, usePathname } from "@/i18n/navigation";
 import { seDeconnecter, utilisateurCourant } from "@/lib/api-client";
 import { Bouton } from "@/components/bouton";
@@ -11,6 +11,7 @@ import { LanguageSwitcher } from "@/components/language-switcher";
 
 export function AppHeader() {
   const t = useTranslations();
+  const tTour = useTranslations("tour");
   const locale = useLocale();
   const pathname = usePathname();
   const [utilisateur, setUtilisateur] = useState<UtilisateurDTO | null>(null);
@@ -60,6 +61,7 @@ export function AppHeader() {
                 <Link
                   key={lien.href}
                   href={lien.href}
+                  data-tour={lien.href === "/mes-demandes" ? "nav-mes-demandes" : lien.href === "/admin" ? "nav-admin" : undefined}
                   className={`rounded-full px-3 py-1.5 text-sm font-medium transition-all duration-200 ${
                     actif
                       ? "bg-navex-red text-white shadow-glow-red"
@@ -74,6 +76,14 @@ export function AppHeader() {
         </div>
         <div className="flex items-center gap-3">
           <LanguageSwitcher />
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent("navex:relancer-tour"))}
+            className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-navex-red-soft text-sm font-bold text-navex-red-dark hover:bg-navex-red hover:text-white transition-colors"
+            aria-label={tTour("relancer")}
+            title={tTour("relancer")}
+          >
+            ?
+          </button>
           <Bouton variante="secondaire" onClick={deconnexion} aria-label={t("commun.se_deconnecter")} className="hidden md:inline-flex">
             {t("commun.se_deconnecter")}
           </Bouton>
