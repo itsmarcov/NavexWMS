@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Delete, Body, Param } from "@nestjs/common";
+import { Controller, Get, Post, Delete, Body, Param, ForbiddenException } from "@nestjs/common";
 import { Roles } from "../auth/decorators/roles.decorator";
 import { CurrentUser } from "../auth/decorators/current-user.decorator";
 import { CatalogueService } from "./catalogue.service";
@@ -28,13 +28,14 @@ export class CatalogueController {
   @Post()
   @Roles("expediteur")
   ajouter(@CurrentUser() user: { expediteur_id?: string }, @Body() dto: AjouterCatalogueDto) {
-    if (!user.expediteur_id) throw new Error("Non autorise");
+    if (!user.expediteur_id) throw new ForbiddenException();
     return this.catalogueService.ajouter(user.expediteur_id, dto);
   }
 
   @Delete(":id")
   @Roles("expediteur")
-  supprimer(@Param("id") id: string) {
-    return this.catalogueService.supprimer(id);
+  supprimer(@Param("id") id: string, @CurrentUser() user: { expediteur_id?: string }) {
+    if (!user.expediteur_id) throw new ForbiddenException();
+    return this.catalogueService.supprimer(id, user.expediteur_id);
   }
 }

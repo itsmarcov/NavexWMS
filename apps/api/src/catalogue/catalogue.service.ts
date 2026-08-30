@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
 
 interface AjouterCatalogueDto {
@@ -31,7 +31,10 @@ export class CatalogueService {
     });
   }
 
-  async supprimer(id: string) {
-    return this.prisma.catalogueProduit.delete({ where: { id } });
+  async supprimer(id: string, expediteurId: string) {
+    const resultat = await this.prisma.catalogueProduit.deleteMany({
+      where: { id, expediteur_id: expediteurId },
+    });
+    if (resultat.count === 0) throw new NotFoundException({ code: "erreurs.introuvable" });
   }
 }
