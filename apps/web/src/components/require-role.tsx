@@ -6,6 +6,11 @@ import { useTranslations } from "next-intl";
 import type { Role, UtilisateurDTO } from "@navex/contracts";
 import { utilisateurCourant } from "@/lib/api-client";
 
+function extractLocale(pathname: string): string {
+  const seg = pathname.split("/").filter(Boolean)[0];
+  return seg === "ar" || seg === "fr" ? seg : "fr";
+}
+
 export function RequireRole({
   roles,
   children,
@@ -16,6 +21,7 @@ export function RequireRole({
   const t = useTranslations();
   const router = useRouter();
   const pathname = usePathname();
+  const locale = extractLocale(pathname);
   const [utilisateur, setUtilisateur] = useState<UtilisateurDTO | null>(null);
   const [pret, setPret] = useState(false);
 
@@ -26,11 +32,11 @@ export function RequireRole({
           setUtilisateur(u);
           setPret(true);
         } else {
-          router.replace("/");
+          router.replace(`/${locale}`);
         }
       })
       .catch(() => {
-        router.replace("/login");
+        router.replace(`/${locale}/login`);
       });
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 

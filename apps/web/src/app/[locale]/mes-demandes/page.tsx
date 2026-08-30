@@ -14,6 +14,7 @@ const STATUTS_FILTRABLES: Array<{ value: StatutDemande | ""; label: string }> = 
   { value: "", label: "filter.tous" },
   { value: "en_attente", label: "statuts.en_attente" },
   { value: "approuvee", label: "statuts.approuvee" },
+  { value: "partiellement_approuvee", label: "statuts.partiellement_approuvee" },
   { value: "rejetee", label: "statuts.rejetee" },
 ];
 

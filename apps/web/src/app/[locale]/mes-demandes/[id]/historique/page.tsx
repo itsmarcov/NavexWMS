@@ -71,8 +71,22 @@ export default function PageHistorique() {
     return entries;
   }
 
+  const FIELD_LABELS: Record<string, string> = {
+    statut: "historique.champ_statut",
+    date_reception_prevue: "historique.champ_date_reception",
+    date_validation: "historique.champ_date_validation",
+    commentaire: "historique.champ_commentaire",
+    sku_code: "historique.champ_sku",
+    designation: "historique.champ_designation",
+    type_emballage: "historique.champ_emballage",
+    statut_validation: "historique.champ_statut_validation",
+    quantite: "historique.champ_quantite",
+    date: "historique.champ_date",
+    motif: "historique.champ_motif",
+  };
+
   return (
-    <RequireRole roles={["expediteur", "agent_commercial", "admin"]}>
+    <RequireRole roles={["expediteur", "agent_commercial", "agent_entrepot", "admin"]}>
       <div className="min-h-dvh">
         <AppHeader />
         <main className="mx-auto max-w-3xl px-4 py-8 space-y-6">
@@ -97,8 +111,8 @@ export default function PageHistorique() {
           )}
 
           {entrees && entrees.length > 0 && (
-            <div className="relative space-y-4 pl-6">
-              <div className="absolute left-2 top-0 bottom-0 w-0.5 bg-navex-stone" />
+            <div className="relative space-y-4 ps-6">
+              <div className="absolute end-2 top-0 bottom-0 w-0.5 bg-navex-stone" />
               {entrees.map((e) => {
                 const actionKey = ACTION_KEYS[e.action];
                 const icon = ACTION_ICONS[e.action] || "🔹";
@@ -106,7 +120,7 @@ export default function PageHistorique() {
                 const apres = formatDonnees(e.donnees_apres);
                 return (
                   <div key={e.id} className="relative card-glass rounded-2xl p-4 animate-slide-up">
-                    <div className="absolute -left-4 top-4 flex h-6 w-6 items-center justify-center rounded-full bg-white text-sm shadow-soft ring-1 ring-neutral-200/60">
+                    <div className="absolute -end-4 top-4 flex h-6 w-6 items-center justify-center rounded-full bg-white text-sm shadow-soft ring-1 ring-neutral-200/60">
                       {icon}
                     </div>
                     <div className="flex flex-wrap items-start justify-between gap-2">
@@ -124,12 +138,15 @@ export default function PageHistorique() {
                     </div>
                     {(avant || apres) && (
                       <div className="mt-3 space-y-1 rounded-xl bg-navex-stone/50 p-3 text-xs">
-                        {apres && apres.map(([k, v]) => (
-                          <div key={k} className="flex gap-2">
-                            <span className="font-medium text-navex-ink">{k}:</span>
-                            <span className="text-neutral-500" dir="ltr">{String(v)}</span>
-                          </div>
-                        ))}
+                        {apres && apres.map(([k, v]) => {
+                          const labelKey = FIELD_LABELS[k];
+                          return (
+                            <div key={k} className="flex gap-2">
+                              <span className="font-medium text-navex-ink">{labelKey ? t(labelKey) : k}:</span>
+                              <span className="text-neutral-500" dir="ltr">{String(v)}</span>
+                            </div>
+                          );
+                        })}
                       </div>
                     )}
                   </div>
@@ -139,7 +156,7 @@ export default function PageHistorique() {
           )}
 
           <Bouton href={`/mes-demandes/${id}`} variante="secondaire">
-            ← {t("historique.retour")}
+            {locale === "ar" ? "→" : "←"} {t("historique.retour")}
           </Bouton>
         </main>
       </div>

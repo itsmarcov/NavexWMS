@@ -47,8 +47,8 @@ export default function PageCatalogue() {
     try {
       const data = await listerCatalogue(search || undefined, cat || undefined);
       setProduits(data);
-    } catch {
-      setErreur(messageErreur(t, { message: "network" }));
+    } catch (err) {
+      setErreur(messageErreur(t, err));
     } finally {
       setLoading(false);
     }
@@ -299,7 +299,7 @@ export default function PageCatalogue() {
 
         {/* ── Panier drawer ── */}
         {showPanier && (
-          <div className="fixed inset-0 z-50 flex justify-end bg-black/40" onClick={(e) => { if (e.target === e.currentTarget) setShowPanier(false); }}>
+          <div className={`fixed inset-0 z-50 flex ${locale === "ar" ? "justify-start" : "justify-end"} bg-black/40`} onClick={(e) => { if (e.target === e.currentTarget) setShowPanier(false); }}>
             <div className="h-full w-full max-w-md bg-white shadow-2xl animate-slide-up flex flex-col">
               <div className="flex items-center justify-between border-b border-neutral-100 px-6 py-4">
                 <h2 className="text-lg font-extrabold text-navex-ink">📋 {t("catalogue.demande")}</h2>
@@ -344,7 +344,7 @@ export default function PageCatalogue() {
               {panier.length > 0 && (
                 <div className="border-t border-neutral-100 px-6 py-4 space-y-3">
                   <div className="flex items-center justify-between text-sm text-neutral-500">
-                    <span>{nbPanier} article{nbPanier > 1 ? "s" : ""}</span>
+                    <span>{t("catalogue.articles_count", { count: nbPanier })}</span>
                     <span className="font-semibold text-navex-ink">{panier.length} produit{panier.length > 1 ? "s" : ""}</span>
                   </div>
                   <Bouton variante="primaire" onClick={envoyerDemande} disabled={enCoursEnvoyer} className="w-full">

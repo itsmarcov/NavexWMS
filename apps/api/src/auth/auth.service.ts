@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { Injectable, UnauthorizedException, TooManyRequestsException } from "@nestjs/common";
 import { Utilisateur } from "@prisma/client";
 import * as bcrypt from "bcryptjs";
 import { createHash, randomUUID } from "node:crypto";
@@ -10,6 +10,9 @@ import { JwtPayload } from "./jwt-payload.interface";
 
 export const REFRESH_COOKIE = "navex_refresh";
 
+const MAX_FAILED = 5;
+const WINDOW_MS = 15 * 60 * 1000;
+
 interface Tokens {
   access_token: string;
   refresh_token: string;
@@ -17,12 +20,32 @@ interface Tokens {
 
 @Injectable()
 export class AuthService {
+  private readonly failedAttempts = new Map<string, { count: number; resetAt: number }>();
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly audit: AuditService,
   ) {}
 
   async login(email: string, password: string, ip?: string) {
+    const key = email.toLowerCase().trim();
+
+    const entry = this.failedAttempts.get(key);
+    if (entry && entry.resetAt > Date.now()) {
+      if (entry.count >= MAX_FAILED) {
+        await this.audit.log({
+          entite_type: "Utilisateur",
+          entite_id: email,
+          action: "LOGIN_ECHEC",
+          utilisateur_id: null,
+          ip_adresse: ip,
+          donnees_apres: { reason: "rate_limited" },
+        });
+        throw new TooManyRequestsException({ code: "erreurs.trop_de_tentatives" });
+      }
+    } else if (entry) {
+      this.failedAttempts.delete(key);
+    }
     const utilisateur = await this.prisma.utilisateur.findUnique({
       where: { email },
       include: { expediteur: true },
@@ -32,6 +55,12 @@ export class AuthService {
       utilisateur && utilisateur.actif && (await bcrypt.compare(password, utilisateur.password_hash));
 
     if (!utilisateur || !motDePasseValide) {
+      const cur = this.failedAttempts.get(key);
+      this.failedAttempts.set(key, {
+        count: (cur?.count ?? 0) + 1,
+        resetAt: Date.now() + WINDOW_MS,
+      });
+
       await this.audit.log({
         entite_type: "Utilisateur",
         entite_id: utilisateur?.id ?? email,
@@ -44,6 +73,8 @@ export class AuthService {
 
     const tokens = this.signerTokens(utilisateur);
     await this.stockerRefreshToken(tokens.refresh_token, utilisateur.id, ip);
+
+    this.failedAttempts.delete(key);
 
     await this.audit.log({
       entite_type: "Utilisateur",

@@ -25,6 +25,7 @@ enum StatutExpediteur {
 enum StatutDemande {
   en_attente
   approuvee
+  partiellement_approuvee
   rejetee
   annulee
 }

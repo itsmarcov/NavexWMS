@@ -223,6 +223,7 @@ export default function PageAdmin() {
                   <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
                     <CarteKpi label={t("statuts.en_attente")} valeur={stats.demandes_par_statut.en_attente} hero />
                     <CarteKpi label={t("statuts.approuvee")} valeur={stats.demandes_par_statut.approuvee} />
+                    <CarteKpi label={t("statuts.partiellement_approuvee")} valeur={stats.demandes_par_statut.partiellement_approuvee} />
                     <CarteKpi label={t("statuts.rejetee")} valeur={stats.demandes_par_statut.rejetee} />
                     <CarteKpi label={t("admin.produits_a_decider")} valeur={stats.produits_en_attente} />
                   </div>
@@ -252,7 +253,7 @@ export default function PageAdmin() {
                       <div className="flex flex-wrap items-center gap-2">
                         <StatusBadge statut={e.statut} />
                         {ACTIONS_STATUT.filter((a) => a.vers !== e.statut).map((a) => (
-                          <Bouton key={a.vers} variante={a.variante} onClick={() => appliquerStatut(e.id, a.vers)} disabled={actionEnCours !== null}
+                          <Bouton key={a.vers} variante={a.variante} onClick={() => appliquerStatut(e.id, a.vers)} disabled={actionEnCours !== null && actionEnCours !== `${e.id}:${a.vers}`}
                             className={`!px-3 !py-1.5 !text-xs ${a.classe}`}>
                             {t(a.cle)}
                           </Bouton>

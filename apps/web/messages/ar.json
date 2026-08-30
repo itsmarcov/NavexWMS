@@ -148,6 +148,7 @@
   "statuts": {
     "en_attente": "قيد الانتظار",
     "approuvee": "تمت الموافقة",
+    "partiellement_approuvee": "موافقة جزئية",
     "approuve": "موافق عليه",
     "rejetee": "مرفوضة",
     "refuse": "مرفوض",
@@ -263,7 +264,9 @@
     "role_invalide": "دور غير صالح.",
     "aucune_modification": "لم يتم اكتشاف أي تعديل.",
     "autosuppression_interdite": "لا يمكنك حذف حسابك الخاص.",
-    "expediteur_avec_demandes": "لا يمكن حذف هذا المُرسِل: توجد طلبات مرتبطة به."
+    "expediteur_avec_demandes": "لا يمكن حذف هذا المُرسِل: توجد طلبات مرتبطة به.",
+    "trop_de_tentatives": "محاولات كثيرة جداً. يُرجى المحاولة بعد 15 دقيقة.",
+    "sku_doublon": "توجد منتجات بنفس الرمز في هذه الطلبية."
   },
   "volume_journalier": "حجم الشحن اليومي",
   "volume_mensuel": "حجم الشحن الشهري",
@@ -308,35 +311,14 @@
     "ajouter_demande": "إضافة",
     "envoyer_demande": "إرسال طلب التخزين",
     "demande_creee": "تم إنشاء الطلب! جارٍ التحويل…",
-    "quantite": "الكمية"
+    "quantite": "الكمية",
+    "articles_count": "{count} منتج | {count} منتجات",
+    "photo_upload_error": "خطأ في التحميل"
   },
   "conditions_titre": "شروط الاستخدام",
   "conditions_texte": "أصرح بأن المعلومات المقدمة دقيقة وأقر بأن حجم البضائع المخزنة يجب أن يكون متوافقاً مع حجم شحنياتي. أقبل أن تطبق NAVEX DELIVERY شروخ التخزين المنصوص عليها في العقد، خاصة في حالة التخزين غير المتوازن أو عدم النشاط أو الإشغال المفرض للمساحة.",
   "conditions_acceptee": "تم قبول الشروط",
   "conditions_non_acceptee": "لم يتم قبول الشروط",
-  "utilisateur": {
-    "prenom": "الاسم",
-    "nom": "اللقب",
-    "telephone": "الهاتف",
-    "prenom_nom": "الاسم واللقب"
-  },
-  "historique": {
-    "titre": "سجل الطلب",
-    "action": "الإجراء",
-    "date": "التاريخ",
-    "utilisateur": "المستخدم",
-    "details": "التفاصيل",
-    "retour": "العودة إلى الطلب",
-    "action_create": "إنشاء الطلب",
-    "action_validation_approve": "تمت الموافقة على المنتج",
-    "action_validation_refuse": "تم رفض المنتج",
-    "action_planification": "جدولة الاستلام",
-    "action_scan": "مسح وصول رمز QR",
-    "action_reception": "تأكيد الاستلام",
-    "action_positionnement": "التعبئة",
-    "action_decharge_generate": "إنشاء إيصال",
-    "action_decharge_download": "تحميل PDF"
-  },
   "filter": {
     "rechercher": "بحث بالمرجع أو اسم الشركة…",
     "tous": "الكل",
@@ -344,6 +326,12 @@
     "filtrer_expediteur": "تصفية حسب المورد",
     "aucun_resultat": "لا توجد نتائج تطابق بحثك.",
     "effacer": "مسح الفلتر"
+  },
+  "utilisateur": {
+    "prenom": "الاسم",
+    "nom": "اللقب",
+    "telephone": "الهاتف",
+    "prenom_nom": "الاسم واللقب"
   },
   "historique": {
     "titre": "سجل الطلب",
@@ -361,12 +349,17 @@
     "action_reception": "تأكيد الاستلام",
     "action_positionnement": "التعبئة",
     "action_decharge_generate": "إنشاء إيصال",
-    "action_decharge_download": "تحميل PDF"
-  },
-  "utilisateur": {
-    "prenom": "الاسم",
-    "nom": "اللقب",
-    "telephone": "الهاتف",
-    "prenom_nom": "الاسم واللقب"
+    "action_decharge_download": "تحميل PDF",
+    "champ_statut": "الحالة",
+    "champ_date_reception": "تاريخ الاستلام المتوقع",
+    "champ_date_validation": "تاريخ التحقق",
+    "champ_commentaire": "ملاحظة",
+    "champ_sku": "رمز المنتج",
+    "champ_designation": "الوصف",
+    "champ_emballage": "نوع التعبئة",
+    "champ_statut_validation": "حالة التحقق",
+    "champ_quantite": "الكمية",
+    "champ_date": "التاريخ",
+    "champ_motif": "السبب"
   }
 }

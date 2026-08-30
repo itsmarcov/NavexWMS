@@ -26,6 +26,10 @@ export function messageErreur(t: (cle: string) => string, erreur: unknown): stri
         return t("erreurs.fichier_manquant");
       case "erreurs.type_fichier_refuse":
         return t("erreurs.type_fichier_refuse");
+      case "erreurs.trop_de_tentatives":
+        return t("erreurs.trop_de_tentatives");
+      case "erreurs.sku_doublon":
+        return t("erreurs.sku_doublon");
       default:
         return t("erreurs.generique");
     }

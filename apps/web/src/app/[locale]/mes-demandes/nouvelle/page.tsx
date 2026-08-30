@@ -478,7 +478,7 @@ export default function PageNouvelleDemande() {
 
         <p className="text-start">
           <Bouton href="/mes-demandes" variante="secondaire">
-            ← {t("commun.retour")}
+            {locale === "ar" ? "→" : "←"} {t("commun.retour")}
           </Bouton>
         </p>
       </main>

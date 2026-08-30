@@ -105,7 +105,7 @@ export function ProduitForm({ initialValues, onSubmit, submitLabel, onCancel }: 
       const { url } = await uploaderPhoto(fichier);
       maj("photo_url", url);
     } catch {
-      setErreurs((e) => ({ ...e, photo_url: "Erreur upload" }));
+      setErreurs((e) => ({ ...e, photo_url: t("catalogue.photo_upload_error") }));
     } finally {
       setUploading(false);
     }
@@ -209,9 +209,9 @@ export function ProduitForm({ initialValues, onSubmit, submitLabel, onCancel }: 
         {form.photo_url ? (
           <div className="mt-2 relative inline-block">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={form.photo_url} alt="Aperçu" className="h-28 w-28 rounded-xl object-cover ring-1 ring-neutral-200" />
+            <img src={form.photo_url} alt={t("catalogue.photo")} className="h-28 w-28 rounded-xl object-cover ring-1 ring-neutral-200" />
             <button type="button" onClick={supprimerPhoto}
-              className="absolute -top-2 -right-2 flex h-6 w-6 items-center justify-center rounded-full bg-navex-red text-white text-xs shadow-lg hover:bg-navex-red-dark transition-colors">
+              className="absolute -top-2 -end-2 flex h-6 w-6 items-center justify-center rounded-full bg-navex-red text-white text-xs shadow-lg hover:bg-navex-red-dark transition-colors">
               ✕
             </button>
           </div>

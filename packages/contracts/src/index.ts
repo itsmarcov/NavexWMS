@@ -1,7 +1,7 @@
 export const ROLES = ["expediteur", "agent_commercial", "agent_entrepot", "admin"] as const;
 export type Role = (typeof ROLES)[number];
 
-export const STATUTS_DEMANDE = ["en_attente", "approuvee", "rejetee", "annulee"] as const;
+export const STATUTS_DEMANDE = ["en_attente", "approuvee", "partiellement_approuvee", "rejetee", "annulee"] as const;
 export type StatutDemande = (typeof STATUTS_DEMANDE)[number];
 
 export const STATUTS_VALIDATION_PRODUIT = ["en_attente", "approuve", "refuse"] as const;
@@ -20,6 +20,7 @@ export const BADGE_STATUT: Record<string, { couleur: string }> = {
   en_attente: { couleur: "rouge_soft" },
   emise: { couleur: "rouge_soft" },
   approuvee: { couleur: "noir" },
+  partiellement_approuvee: { couleur: "noir" },
   approuve: { couleur: "noir" },
   scannee: { couleur: "noir" },
   refuse: { couleur: "rouge_plein" },

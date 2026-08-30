@@ -148,6 +148,7 @@
   "statuts": {
     "en_attente": "En attente",
     "approuvee": "Approuvée",
+    "partiellement_approuvee": "Partiellement approuvée",
     "approuve": "Approuvé",
     "rejetee": "Rejetée",
     "refuse": "Refusé",
@@ -263,7 +264,9 @@
     "role_invalide": "Rôle invalide.",
     "aucune_modification": "Aucune modification détectée.",
     "autosuppression_interdite": "Vous ne pouvez pas supprimer votre propre compte.",
-    "expediteur_avec_demandes": "Impossible de supprimer cet expéditeur : des demandes lui sont rattachées."
+    "expediteur_avec_demandes": "Impossible de supprimer cet expéditeur : des demandes lui sont rattachées.",
+    "trop_de_tentatives": "Trop de tentatives. Veuillez réessayer dans 15 minutes.",
+    "sku_doublon": "Des produits avec le même SKU existent déjà dans cette demande."
   },
   "volume_journalier": "Volume expédition journalier",
   "volume_mensuel": "Volume expédition mensuel",
@@ -308,35 +311,14 @@
     "ajouter_demande": "Ajouter",
     "envoyer_demande": "Envoyer la demande de stockage",
     "demande_creee": "Demande créée ! Redirection…",
-    "quantite": "Qté"
+    "quantite": "Qté",
+    "articles_count": "{count} article | {count} articles",
+    "photo_upload_error": "Erreur lors de l'upload"
   },
   "conditions_titre": "Conditions d'utilisation",
   "conditions_texte": "Je certifie que les informations communiquées sont exactes et reconnais que le volume des marchandises stockées doit être compatible avec mon volume d'expédition. J'accepte que NAVEX DELIVERY puisse appliquer les conditions de stockage prévues au contrat, notamment en cas de stock disproportionné, d'inactivité ou d'occupation excessive de l'espace de stockage.",
   "conditions_acceptee": "Conditions acceptées",
   "conditions_non_acceptee": "Conditions non acceptées",
-  "utilisateur": {
-    "prenom": "Prénom",
-    "nom": "Nom",
-    "telephone": "Téléphone",
-    "prenom_nom": "Prénom & Nom"
-  },
-  "historique": {
-    "titre": "Historique de la demande",
-    "action": "Action",
-    "date": "Date",
-    "utilisateur": "Utilisateur",
-    "details": "Détails",
-    "retour": "Retour à la demande",
-    "action_create": "Création de la demande",
-    "action_validation_approve": "Produit approuvé",
-    "action_validation_refuse": "Produit rejeté",
-    "action_planification": "Planification réception",
-    "action_scan": "Scan QR arrivée",
-    "action_reception": "Réception confirmée",
-    "action_positionnement": "Positionnement",
-    "action_decharge_generate": "Génération décharge",
-    "action_decharge_download": "Téléchargement PDF"
-  },
   "filter": {
     "rechercher": "Rechercher par référence ou entreprise…",
     "tous": "Tous",
@@ -344,6 +326,12 @@
     "filtrer_expediteur": "Filtrer par expéditeur",
     "aucun_resultat": "Aucun résultat ne correspond à votre recherche.",
     "effacer": "Effacer le filtre"
+  },
+  "utilisateur": {
+    "prenom": "Prénom",
+    "nom": "Nom",
+    "telephone": "Téléphone",
+    "prenom_nom": "Prénom & Nom"
   },
   "historique": {
     "titre": "Historique de la demande",
@@ -361,12 +349,17 @@
     "action_reception": "Réception confirmée",
     "action_positionnement": "Positionnement",
     "action_decharge_generate": "Génération décharge",
-    "action_decharge_download": "Téléchargement PDF"
-  },
-  "utilisateur": {
-    "prenom": "Prénom",
-    "nom": "Nom",
-    "telephone": "Téléphone",
-    "prenom_nom": "Prénom & Nom"
+    "action_decharge_download": "Téléchargement PDF",
+    "champ_statut": "Statut",
+    "champ_date_reception": "Date de réception prévue",
+    "champ_date_validation": "Date de validation",
+    "champ_commentaire": "Commentaire",
+    "champ_sku": "SKU",
+    "champ_designation": "Désignation",
+    "champ_emballage": "Type d'emballage",
+    "champ_statut_validation": "Statut validation",
+    "champ_quantite": "Quantité",
+    "champ_date": "Date",
+    "champ_motif": "Motif"
   }
 }

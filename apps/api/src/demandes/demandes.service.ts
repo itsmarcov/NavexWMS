@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
+import { ConflictException, ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { Prisma, RoleUtilisateur, StatutDemande } from "@prisma/client";
 import { AuditService } from "../audit/audit.service";
 import { CatalogueService } from "../catalogue/catalogue.service";
@@ -43,6 +43,12 @@ export class DemandesService {
             ? "erreurs.expediteur_suspendu"
             : "erreurs.expediteur_en_attente",
       });
+    }
+
+    const skusEntrants = dto.produits.map((p) => p.sku_code);
+    const skusUniques = new Set(skusEntrants);
+    if (skusUniques.size !== skusEntrants.length) {
+      throw new ConflictException({ code: "erreurs.sku_doublon" });
     }
 
     const demande = await this.prisma.$transaction(async (tx) => {
@@ -162,9 +168,8 @@ export class DemandesService {
         },
       }),
       // Recalcul du statut global quand tous les produits sont tranchés :
-      // au moins un refusé → rejetée ; tous approuvés → approuvée.
-      // Les deux conditions sont mutuellement exclusives et partent du
-      // statut « en_attente », donc l'ordre d'exécution est sans importance.
+      // tous refusés → rejetée ; tous approuvés → approuvée ;
+      // mixte (au moins un approuvé + au moins un refusé) → partiellement_approuvee.
       this.prisma.demandeStockage.updateMany({
         where: {
           id: demandeId,
@@ -172,6 +177,7 @@ export class DemandesService {
           produits: {
             none: { statut_validation: "en_attente" },
             some: { statut_validation: "refuse" },
+            every: { statut_validation: "refuse" },
           },
         },
         data: {
@@ -184,10 +190,30 @@ export class DemandesService {
         where: {
           id: demandeId,
           statut: "en_attente",
-          produits: { none: { statut_validation: { not: "approuve" } } },
+          produits: {
+            none: { statut_validation: "en_attente" },
+            some: { statut_validation: "approuve" },
+            every: { statut_validation: "approuve" },
+          },
         },
         data: {
           statut: "approuvee",
+          date_traitement: new Date(),
+          agent_commercial_id: utilisateurId,
+        },
+      }),
+      this.prisma.demandeStockage.updateMany({
+        where: {
+          id: demandeId,
+          statut: "en_attente",
+          produits: {
+            none: { statut_validation: "en_attente" },
+            some: { statut_validation: "approuve" },
+            some: { statut_validation: "refuse" },
+          },
+        },
+        data: {
+          statut: "partiellement_approuvee",
           date_traitement: new Date(),
           agent_commercial_id: utilisateurId,
         },
