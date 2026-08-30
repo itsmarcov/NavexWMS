@@ -47,8 +47,9 @@ export function Bouton(props: PropsBouton | PropsLien) {
   const classes = classesBouton(variante, className);
 
   if (href !== undefined) {
+    const { popover: _popover, ...resteSansPopover } = reste as Record<string, unknown>;
     return (
-      <Link href={href} className={classes} {...(reste as Omit<PropsLien, "href">)}>
+      <Link href={href} className={classes} {...(resteSansPopover as Omit<PropsLien, "href" | "popover">)}>
         {children}
       </Link>
     );
