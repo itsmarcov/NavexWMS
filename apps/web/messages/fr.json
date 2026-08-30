@@ -303,11 +303,12 @@
     "ajout_ok": "Produit ajouté",
     "modif_ok": "Produit modifié",
     "suppr_ok": "Produit supprimé",
-    "panier": "Panier",
-    "panier_vide": "Votre panier est vide. Ajoutez des produits depuis le catalogue.",
-    "ajouter_au_panier": "Ajouter",
+    "demande": "Demande",
+    "demande_vide": "Aucun produit sélectionné. Ajoutez des produits depuis le catalogue.",
+    "ajouter_demande": "Ajouter",
     "envoyer_demande": "Envoyer la demande de stockage",
-    "demande_creee": "Demande créée ! Redirection…"
+    "demande_creee": "Demande créée ! Redirection…",
+    "quantite": "Qté"
   },
   "conditions_titre": "Conditions d'utilisation",
   "conditions_texte": "Je certifie que les informations communiquées sont exactes et reconnais que le volume des marchandises stockées doit être compatible avec mon volume d'expédition. J'accepte que NAVEX DELIVERY puisse appliquer les conditions de stockage prévues au contrat, notamment en cas de stock disproportionné, d'inactivité ou d'occupation excessive de l'espace de stockage.",

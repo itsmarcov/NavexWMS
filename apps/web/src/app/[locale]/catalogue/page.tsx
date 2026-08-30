@@ -180,7 +180,7 @@ export default function PageCatalogue() {
                 onClick={() => setShowPanier(!showPanier)}
                 className="relative flex items-center gap-2 rounded-full bg-navex-ink px-4 py-2.5 text-sm font-semibold text-white shadow-soft transition-all hover:bg-navex-ink/80 hover:shadow-md active:scale-95"
               >
-                🛒 {t("catalogue.panier")}
+                📋 {t("catalogue.demande")}
                 {nbPanier > 0 && (
                   <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-navex-red px-1.5 text-[10px] font-bold text-white animate-fade-in">
                     {nbPanier}
@@ -278,7 +278,7 @@ export default function PageCatalogue() {
                       </p>
                       <div className="flex gap-2 pt-1">
                         <Bouton variante="primaire" onClick={() => ajouterAuPanier(p)} className="flex-1 text-xs">
-                          🛒 {t("catalogue.ajouter_au_panier")}
+                          + {t("catalogue.ajouter_demande")}
                         </Bouton>
                         <Bouton variante="secondaire" onClick={() => setShowForm({ mode: "modifier", produit: p })} className="text-xs px-2">
                           ✏️
@@ -299,18 +299,18 @@ export default function PageCatalogue() {
 
         {/* ── Panier drawer ── */}
         {showPanier && (
-          <div className="fixed inset-0 z-50 flex justify-end bg-black/40 backdrop-blur-sm" onClick={(e) => { if (e.target === e.currentTarget) setShowPanier(false); }}>
+          <div className="fixed inset-0 z-50 flex justify-end bg-black/40" onClick={(e) => { if (e.target === e.currentTarget) setShowPanier(false); }}>
             <div className="h-full w-full max-w-md bg-white shadow-2xl animate-slide-up flex flex-col">
               <div className="flex items-center justify-between border-b border-neutral-100 px-6 py-4">
-                <h2 className="text-lg font-extrabold text-navex-ink">🛒 {t("catalogue.panier")}</h2>
+                <h2 className="text-lg font-extrabold text-navex-ink">📋 {t("catalogue.demande")}</h2>
                 <button onClick={() => setShowPanier(false)} className="flex h-8 w-8 items-center justify-center rounded-full bg-navex-stone text-sm text-neutral-500 hover:bg-navex-red-soft hover:text-navex-red transition-colors">✕</button>
               </div>
 
               <div className="flex-1 overflow-y-auto px-6 py-4 space-y-3">
                 {panier.length === 0 ? (
                   <div className="py-16 text-center text-sm text-neutral-400">
-                    <div className="mb-3 text-4xl">🛒</div>
-                    {t("catalogue.panier_vide")}
+                    <div className="mb-3 text-4xl">📋</div>
+                    {t("catalogue.demande_vide")}
                   </div>
                 ) : panier.map((item) => (
                   <div key={item.produit.id} className="flex gap-3 rounded-2xl bg-navex-stone/40 p-3 animate-fade-in">
@@ -324,15 +324,13 @@ export default function PageCatalogue() {
                       <div dir="ltr" className="truncate font-mono text-xs font-bold text-navex-ink">{item.produit.sku_code}</div>
                       <p className="truncate text-xs text-neutral-500">{item.produit.designation}</p>
                       <div className="mt-1.5 flex items-center gap-2">
-                        <button onClick={() => modifierQuantite(item.produit.id, item.quantite - 1)}
-                          className="flex h-6 w-6 items-center justify-center rounded-lg bg-white text-sm font-bold text-navex-ink shadow-sm hover:bg-navex-red-soft transition-colors">
-                          −
-                        </button>
-                        <span dir="ltr" className="min-w-[24px] text-center text-sm font-bold text-navex-ink">{item.quantite}</span>
-                        <button onClick={() => modifierQuantite(item.produit.id, item.quantite + 1)}
-                          className="flex h-6 w-6 items-center justify-center rounded-lg bg-white text-sm font-bold text-navex-ink shadow-sm hover:bg-navex-red-soft transition-colors">
-                          +
-                        </button>
+                        <span className="text-[10px] text-neutral-400">{t("catalogue.quantite")}</span>
+                        <input
+                          type="number" min="1" dir="ltr"
+                          value={item.quantite}
+                          onChange={(e) => modifierQuantite(item.produit.id, Math.max(1, Number(e.target.value) || 1))}
+                          className="h-7 w-16 rounded-lg border border-neutral-200 bg-white px-2 text-center text-xs font-bold text-navex-ink shadow-sm focus:border-navex-red/40 focus:outline-none focus:ring-1 focus:ring-navex-red/10"
+                        />
                       </div>
                     </div>
                     <button onClick={() => retirerDuPanier(item.produit.id)}
