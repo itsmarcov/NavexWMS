@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import type { AjouterCataloguePayload, CatalogueProduitDTO } from "@/lib/api-client";
+import { uploaderPhoto } from "@/lib/api-client";
 import { Bouton } from "@/components/bouton";
 
 const SKU_PATTERN = /^SKU-\d+$/;
@@ -89,6 +90,8 @@ export function ProduitForm({ initialValues, onSubmit, submitLabel, onCancel }: 
   const [form, setForm] = useState<FormChamp>(() => deDtoVersForm(initialValues ?? {}));
   const [erreurs, setErreurs] = useState<ErreurChamp>({});
   const [enCours, setEnCours] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   function maj<K extends keyof FormChamp>(cle: K, valeur: FormChamp[K]) {
     setForm((f) => ({ ...f, [cle]: valeur }));
@@ -96,13 +99,26 @@ export function ProduitForm({ initialValues, onSubmit, submitLabel, onCancel }: 
     if (!err) setErreurs((e) => { const c = { ...e }; delete c[cle]; return c; });
   }
 
+  async function handlePhoto(fichier: File) {
+    setUploading(true);
+    try {
+      const { url } = await uploaderPhoto(fichier);
+      maj("photo_url", url);
+    } catch {
+      setErreurs((e) => ({ ...e, photo_url: "Erreur upload" }));
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  function supprimerPhoto() {
+    maj("photo_url", "");
+    if (fileRef.current) fileRef.current.value = "";
+  }
+
   async function soumettre() {
     const errs = valider(form, t);
-    const nbErreurs = Object.keys(errs).length;
-    if (nbErreurs > 0) {
-      setErreurs(errs);
-      return;
-    }
+    if (Object.keys(errs).length > 0) { setErreurs(errs); return; }
     setEnCours(true);
     try {
       await onSubmit({
@@ -123,66 +139,48 @@ export function ProduitForm({ initialValues, onSubmit, submitLabel, onCancel }: 
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <label className="block text-sm font-medium text-navex-ink">
           {t("catalogue.sku")}
-          <input
-            dir="ltr"
-            readOnly={estEdition}
-            value={form.sku_code}
+          <input dir="ltr" readOnly={estEdition} value={form.sku_code}
             onChange={(e) => maj("sku_code", e.target.value)}
-            className={erreurs.sku_code ? CHAMP_CLASSE_ERREUR : CHAMP_CLASSE}
-          />
+            className={erreurs.sku_code ? CHAMP_CLASSE_ERREUR : CHAMP_CLASSE} />
           {erreurs.sku_code && <span className="mt-0.5 block text-xs text-navex-red">{erreurs.sku_code}</span>}
         </label>
         <label className="block text-sm font-medium text-navex-ink">
           {t("catalogue.designation")}
-          <input
-            value={form.designation}
+          <input value={form.designation}
             onChange={(e) => maj("designation", e.target.value)}
-            className={erreurs.designation ? CHAMP_CLASSE_ERREUR : CHAMP_CLASSE}
-          />
+            className={erreurs.designation ? CHAMP_CLASSE_ERREUR : CHAMP_CLASSE} />
           {erreurs.designation && <span className="mt-0.5 block text-xs text-navex-red">{erreurs.designation}</span>}
         </label>
         <label className="block text-sm font-medium text-navex-ink">
           {t("catalogue.longueur")}
-          <input
-            type="number" min="0.1" step="0.1" dir="ltr"
-            value={form.longueur_cm}
+          <input type="number" min="0.1" step="0.1" dir="ltr" value={form.longueur_cm}
             onChange={(e) => maj("longueur_cm", e.target.value)}
-            className={erreurs.longueur_cm ? CHAMP_CLASSE_ERREUR : CHAMP_CLASSE}
-          />
+            className={erreurs.longueur_cm ? CHAMP_CLASSE_ERREUR : CHAMP_CLASSE} />
           {erreurs.longueur_cm && <span className="mt-0.5 block text-xs text-navex-red">{erreurs.longueur_cm}</span>}
         </label>
         <label className="block text-sm font-medium text-navex-ink">
           {t("catalogue.largeur")}
-          <input
-            type="number" min="0.1" step="0.1" dir="ltr"
-            value={form.largeur_cm}
+          <input type="number" min="0.1" step="0.1" dir="ltr" value={form.largeur_cm}
             onChange={(e) => maj("largeur_cm", e.target.value)}
-            className={erreurs.largeur_cm ? CHAMP_CLASSE_ERREUR : CHAMP_CLASSE}
-          />
+            className={erreurs.largeur_cm ? CHAMP_CLASSE_ERREUR : CHAMP_CLASSE} />
           {erreurs.largeur_cm && <span className="mt-0.5 block text-xs text-navex-red">{erreurs.largeur_cm}</span>}
         </label>
         <label className="block text-sm font-medium text-navex-ink">
           {t("catalogue.hauteur")}
-          <input
-            type="number" min="0.1" step="0.1" dir="ltr"
-            value={form.hauteur_cm}
+          <input type="number" min="0.1" step="0.1" dir="ltr" value={form.hauteur_cm}
             onChange={(e) => maj("hauteur_cm", e.target.value)}
-            className={erreurs.hauteur_cm ? CHAMP_CLASSE_ERREUR : CHAMP_CLASSE}
-          />
+            className={erreurs.hauteur_cm ? CHAMP_CLASSE_ERREUR : CHAMP_CLASSE} />
           {erreurs.hauteur_cm && <span className="mt-0.5 block text-xs text-navex-red">{erreurs.hauteur_cm}</span>}
         </label>
         <label className="block text-sm font-medium text-navex-ink">
           {t("catalogue.poids_kg")}
-          <input
-            type="number" min="0.01" step="0.01" dir="ltr"
-            value={form.poids_kg}
+          <input type="number" min="0.01" step="0.01" dir="ltr" value={form.poids_kg}
             onChange={(e) => maj("poids_kg", e.target.value)}
-            className={erreurs.poids_kg ? CHAMP_CLASSE_ERREUR : CHAMP_CLASSE}
-          />
+            className={erreurs.poids_kg ? CHAMP_CLASSE_ERREUR : CHAMP_CLASSE} />
           {erreurs.poids_kg && <span className="mt-0.5 block text-xs text-navex-red">{erreurs.poids_kg}</span>}
         </label>
         <label className="block text-sm font-medium text-navex-ink">
@@ -195,36 +193,43 @@ export function ProduitForm({ initialValues, onSubmit, submitLabel, onCancel }: 
           </select>
         </label>
         <label className="block text-sm font-medium text-navex-ink">
-          {t("catalogue.photo_url")}
-          <input
-            value={form.photo_url}
-            onChange={(e) => maj("photo_url", e.target.value)}
-            className={CHAMP_CLASSE}
-          />
-        </label>
-        <label className="block text-sm font-medium text-navex-ink">
           {t("catalogue.categorie_label")}
-          <input
-            value={form.categorie}
-            onChange={(e) => maj("categorie", e.target.value)}
-            className={CHAMP_CLASSE}
-          />
+          <input value={form.categorie} onChange={(e) => maj("categorie", e.target.value)} className={CHAMP_CLASSE} />
         </label>
       </div>
+
       <label className="flex items-center gap-2 text-sm font-medium text-navex-ink">
-        <input
-          type="checkbox"
-          checked={form.fragile}
-          onChange={(e) => maj("fragile", e.target.checked)}
-          className="h-4 w-4 rounded border-neutral-300"
-        />
+        <input type="checkbox" checked={form.fragile}
+          onChange={(e) => maj("fragile", e.target.checked)} className="h-4 w-4 rounded border-neutral-300" />
         {t("catalogue.fragile")}
       </label>
+
+      <div>
+        <span className="text-sm font-medium text-navex-ink">{t("catalogue.photo")}</span>
+        {form.photo_url ? (
+          <div className="mt-2 relative inline-block">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={form.photo_url} alt="Aperçu" className="h-28 w-28 rounded-xl object-cover ring-1 ring-neutral-200" />
+            <button type="button" onClick={supprimerPhoto}
+              className="absolute -top-2 -right-2 flex h-6 w-6 items-center justify-center rounded-full bg-navex-red text-white text-xs shadow-lg hover:bg-navex-red-dark transition-colors">
+              ✕
+            </button>
+          </div>
+        ) : (
+          <label className="mt-2 flex cursor-pointer flex-col items-center gap-2 rounded-2xl border-2 border-dashed border-neutral-300 bg-navex-stone/30 px-6 py-6 text-center transition-colors hover:border-navex-red/40 hover:bg-navex-red-soft/20">
+            <span className="text-3xl text-neutral-400">📷</span>
+            <span className="text-xs text-neutral-500">
+              {uploading ? t("commun.chargement") : t("catalogue.photo_upload")}
+            </span>
+            <input ref={fileRef} type="file" accept="image/*" className="hidden"
+              onChange={(e) => { const f = e.target.files?.[0]; if (f) handlePhoto(f); }} />
+          </label>
+        )}
+      </div>
+
       <div className="flex justify-end gap-3 pt-2">
-        <Bouton variante="secondaire" onClick={onCancel}>
-          {t("catalogue.annuler")}
-        </Bouton>
-        <Bouton variante="primaire" onClick={soumettre} disabled={enCours}>
+        <Bouton variante="secondaire" onClick={onCancel}>{t("catalogue.annuler")}</Bouton>
+        <Bouton variante="primaire" onClick={soumettre} disabled={enCours || uploading}>
           {enCours ? "…" : submitLabel}
         </Bouton>
       </div>
