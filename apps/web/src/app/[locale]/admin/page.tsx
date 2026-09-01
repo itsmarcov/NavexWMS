@@ -52,6 +52,7 @@ const ROLES_CREABLES: Array<{ value: Role; label: string }> = [
   { value: "expediteur", label: "roles.expediteur" },
   { value: "agent_commercial", label: "roles.agent_commercial" },
   { value: "agent_entrepot", label: "roles.agent_entrepot" },
+  { value: "agent_station", label: "roles.agent_station" },
 ];
 
 const CHAMP = "mt-1 block w-full rounded-2xl border border-neutral-200/80 bg-white/60 px-4 py-2.5 text-sm shadow-soft transition-all placeholder:text-neutral-400 focus:border-navex-red/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-navex-red/10";
@@ -68,7 +69,7 @@ export default function PageAdmin() {
 
   // ── États formulaires ──
   const [onglet, setOnglet] = useState<"stats" | "creer_compte" | "creer_expediteur" | "stations">("stats");
-  const [formCompte, setFormCompte] = useState({ email: "", mot_de_passe: "", role: "agent_commercial" as Role, prenom: "", nom: "", telephone: "" });
+  const [formCompte, setFormCompte] = useState({ email: "", mot_de_passe: "", role: "agent_commercial" as Role, prenom: "", nom: "", telephone: "", station_id: "" });
   const [formExpediteur, setFormExpediteur] = useState({ nom_entreprise: "", email: "", telephone: "", adresse: "" });
   const [envoiEnCours, setEnvoiEnCours] = useState(false);
 
@@ -77,7 +78,7 @@ export default function PageAdmin() {
   const [expEditForm, setExpEditForm] = useState({ nom_entreprise: "", email: "", telephone: "", adresse: "" });
   const [expSupprId, setExpSupprId] = useState<string | null>(null);
   const [userEditId, setUserEditId] = useState<string | null>(null);
-  const [userEditForm, setUserEditForm] = useState({ email: "", role: "agent_commercial" as Role, actif: true, prenom: "", nom: "", telephone: "" });
+  const [userEditForm, setUserEditForm] = useState({ email: "", role: "agent_commercial" as Role, actif: true, prenom: "", nom: "", telephone: "", station_id: "" as string | null });
   const [userSupprId, setUserSupprId] = useState<string | null>(null);
 
   // ── États stations ──
@@ -108,7 +109,7 @@ export default function PageAdmin() {
     try {
       await creerUtilisateur(formCompte);
       setSucces(t("admin.compte_cree"));
-      setFormCompte({ email: "", mot_de_passe: "", role: "agent_commercial", prenom: "", nom: "", telephone: "" });
+      setFormCompte({ email: "", mot_de_passe: "", role: "agent_commercial", prenom: "", nom: "", telephone: "", station_id: "" });
       charger();
     } catch (err) { setErreur(messageErreur(t, err)); }
     finally { setEnvoiEnCours(false); }
@@ -168,7 +169,7 @@ export default function PageAdmin() {
   // ── Utilisateur : modification ──
   function ouvrirEditUser(u: UtilisateurAdminDTO) {
     setUserEditId(u.id);
-    setUserEditForm({ email: u.email, role: u.role, actif: u.actif, prenom: u.prenom ?? "", nom: u.nom ?? "", telephone: u.telephone ?? "" });
+    setUserEditForm({ email: u.email, role: u.role, actif: u.actif, prenom: u.prenom ?? "", nom: u.nom ?? "", telephone: u.telephone ?? "", station_id: u.station_id ?? null });
     setUserSupprId(null);
   }
 
@@ -415,6 +416,15 @@ export default function PageAdmin() {
                   {ROLES_CREABLES.map((r) => <option key={r.value} value={r.value}>{t(r.label)}</option>)}
                 </select>
               </label>
+              {formCompte.role === "agent_station" && (
+                <label className="block text-sm font-medium text-navex-ink">
+                  {t("admin.station")}
+                  <select value={formCompte.station_id} onChange={(e) => setFormCompte((f) => ({ ...f, station_id: e.target.value }))} className={CHAMP}>
+                    <option value="">{t("station.station_choisir")}</option>
+                    {(stations ?? []).filter((s) => s.actif).map((s) => <option key={s.id} value={s.id}>{s.nom}</option>)}
+                  </select>
+                </label>
+              )}
               <Bouton type="submit" variante="primaire" disabled={envoiEnCours}
                 className="!px-6 !py-2.5 shadow-glow-red">
                 {envoiEnCours ? t("commun.chargement") : t("admin.creer_compte")}
@@ -640,6 +650,15 @@ export default function PageAdmin() {
                     <option value="false">{t("statuts.inactif")}</option>
                   </select>
                 </label>
+                {userEditForm.role === "agent_station" && (
+                  <label className="block text-xs font-medium text-navex-ink">
+                    {t("admin.station")}
+                    <select value={userEditForm.station_id ?? ""} onChange={(ev) => setUserEditForm((f) => ({ ...f, station_id: ev.target.value || null }))} className={CHAMP}>
+                      <option value="">{t("station.station_choisir")}</option>
+                      {(stations ?? []).filter((s) => s.actif).map((s) => <option key={s.id} value={s.id}>{s.nom}</option>)}
+                    </select>
+                  </label>
+                )}
               </div>
               <div className="flex gap-2">
                 <Bouton type="submit" variante="primaire" disabled={actionEnCours !== null}

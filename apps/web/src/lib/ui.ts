@@ -30,6 +30,14 @@ export function messageErreur(t: (cle: string) => string, erreur: unknown): stri
         return t("erreurs.trop_de_tentatives");
       case "erreurs.sku_doublon":
         return t("erreurs.sku_doublon");
+      case "erreurs.aucune_station_assignee":
+        return t("erreurs.aucune_station_assignee");
+      case "erreurs.decharge_deja_en_transit":
+        return t("erreurs.decharge_deja_en_transit");
+      case "erreurs.decharge_non_transit":
+        return t("erreurs.decharge_non_transit");
+      case "erreurs.aucune_modification":
+        return t("erreurs.aucune_modification");
       default:
         return t("erreurs.generique");
     }

@@ -101,6 +101,7 @@ export class AdminService {
       actif: u.actif,
       date_creation: u.date_creation,
       expediteur_nom: u.expediteur?.nom_entreprise ?? null,
+      station_id: u.station_id ?? null,
       station_nom: u.station?.nom ?? null,
       prenom: u.prenom ?? null,
       nom: u.nom ?? null,

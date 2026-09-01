@@ -71,7 +71,8 @@
     "station_modifiee": "تم تعديل المحطة بنجاح.",
     "station_supprimee": "تم حذف المحطة.",
     "nb_utilisateurs_st": "{count} مستخدم(ين)",
-    "nb_demandes_st": "{count} طلب(ات)"
+    "nb_demandes_st": "{count} طلب(ات)",
+    "station": "محطة العبور"
   },
   "login": {
     "titre": "تسجيل الدخول",
@@ -203,6 +204,7 @@
     "expediteur": "مُرسِل",
     "agent_commercial": "عون تجاري",
     "agent_entrepot": "عون مستودع",
+    "agent_station": "عون محطة",
     "admin": "مدير"
   },
   "statuts": {
@@ -328,7 +330,10 @@
     "autosuppression_interdite": "لا يمكنك حذف حسابك الخاص.",
     "expediteur_avec_demandes": "لا يمكن حذف هذا المُرسِل: توجد طلبات مرتبطة به.",
     "trop_de_tentatives": "محاولات كثيرة جداً. يُرجى المحاولة بعد 15 دقيقة.",
-    "sku_doublon": "توجد منتجات بنفس الرمز في هذه الطلبية."
+    "sku_doublon": "توجد منتجات بنفس الرمز في هذه الطلبية.",
+    "aucune_station_assignee": "لم يتم تعيين محطة عبور لحسابك. اتصل بالمشرف.",
+    "decharge_deja_en_transit": "هذا الإيصال في العبور بالفعل في محطة.",
+    "decharge_non_transit": "هذا الإيصال ليس في حالة عبور."
   },
   "volume_journalier": "حجم الشحن اليومي",
   "volume_mensuel": "حجم الشحن الشهري",

@@ -288,6 +288,7 @@ export interface UtilisateurAdminDTO {
   actif: boolean;
   date_creation: string;
   expediteur_nom?: string | null;
+  station_id?: string | null;
   station_nom?: string | null;
   prenom?: string | null;
   nom?: string | null;

@@ -71,7 +71,8 @@
     "station_modifiee": "Station modifiée avec succès.",
     "station_supprimee": "Station supprimée.",
     "nb_utilisateurs_st": "{count} utilisateur(s)",
-    "nb_demandes_st": "{count} demande(s)"
+    "nb_demandes_st": "{count} demande(s)",
+    "station": "Station de transit"
   },
   "login": {
     "titre": "Connexion",
@@ -203,6 +204,7 @@
     "expediteur": "Expéditeur",
     "agent_commercial": "Agent commercial",
     "agent_entrepot": "Agent entrepôt",
+    "agent_station": "Agent station",
     "admin": "Administrateur"
   },
   "statuts": {
@@ -328,7 +330,10 @@
     "autosuppression_interdite": "Vous ne pouvez pas supprimer votre propre compte.",
     "expediteur_avec_demandes": "Impossible de supprimer cet expéditeur : des demandes lui sont rattachées.",
     "trop_de_tentatives": "Trop de tentatives. Veuillez réessayer dans 15 minutes.",
-    "sku_doublon": "Des produits avec le même SKU existent déjà dans cette demande."
+    "sku_doublon": "Des produits avec le même SKU existent déjà dans cette demande.",
+    "aucune_station_assignee": "Aucune station de transit n'est assignée à votre compte. Contactez l'administrateur.",
+    "decharge_deja_en_transit": "Cette décharge est déjà en transit dans une station.",
+    "decharge_non_transit": "Cette décharge n'est pas en statut transit."
   },
   "volume_journalier": "Volume expédition journalier",
   "volume_mensuel": "Volume expédition mensuel",
