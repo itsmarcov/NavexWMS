@@ -445,6 +445,10 @@ export default function PageNouvelleDemande() {
                   ✓
                 </div>
                 <p className="text-sm font-medium text-navex-ink">{t("wizard.succes", { reference: referenceCreee })}</p>
+                <div className="rounded-2xl bg-navex-red-soft/50 border border-navex-red/20 px-4 py-3">
+                  <p className="text-xs font-medium text-navex-red-dark">{t("wizard.succes_contact")}</p>
+                  <p className="mt-1 text-sm font-bold text-navex-red tracking-wide" dir="ltr">{t("wizard.succes_numeros")}</p>
+                </div>
                 <Bouton href="/mes-demandes" variante="primaire">
                   {t("nav.mes_demandes")}
                 </Bouton>

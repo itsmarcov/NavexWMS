@@ -143,6 +143,13 @@ export default function PageAccueil() {
             )}
           </section>
         </main>
+
+        <footer className="border-t border-navex-red/10 bg-navex-red-soft/30 backdrop-blur-sm">
+          <div className="mx-auto max-w-4xl px-4 py-6 text-center space-y-1">
+            <p className="text-xs font-semibold text-navex-red-dark">{t("accueil.footer_contact")}</p>
+            <p className="text-sm font-bold text-navex-red tracking-wide" dir="ltr">{t("accueil.footer_numeros")}</p>
+          </div>
+        </footer>
       </div>
     );
   }

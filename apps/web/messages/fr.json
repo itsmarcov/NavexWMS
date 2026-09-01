@@ -77,7 +77,9 @@
     "voir_toutes": "Voir toutes les demandes →",
     "stats_file": "Demandes en file",
     "stats_produits_a_decider": "Produits à décider",
-    "stats_total_demandes": "Demandes totales"
+    "stats_total_demandes": "Demandes totales",
+    "footer_contact": "Besoin d'aide ? Contactez-nous",
+    "footer_numeros": "0770 376 011 / 0770 376 010"
   },
   "file_attente": {
     "titre": "File d'attente des demandes",
@@ -198,6 +200,8 @@
     "envoyer": "Envoyer la demande",
     "envoi_cours": "Envoi en cours…",
     "succes": "Demande {reference} créée. Elle est maintenant en attente de validation par un agent commercial.",
+    "succes_contact": "Si votre demande prend du temps à être traitée, contactez-nous au",
+    "succes_numeros": "0770 376 011 / 0770 376 010",
     "recap_total_colis": "{total} colis au total",
     "recap_total_poids": "{total} kg au total",
     "recap_vide": "Ajoutez au moins un produit.",

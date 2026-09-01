@@ -77,7 +77,9 @@
     "voir_toutes": "عرض جميع الطلبات ←",
     "stats_file": "طلبات في الانتظار",
     "stats_produits_a_decider": "منتجات تنتظر القرار",
-    "stats_total_demandes": "إجمالي الطلبات"
+    "stats_total_demandes": "إجمالي الطلبات",
+    "footer_contact": "تحتاج مساعدة؟ تواصل معنا",
+    "footer_numeros": "0770 376 011 / 0770 376 010"
   },
   "file_attente": {
     "titre": "قائمة انتظار الطلبات",
@@ -198,6 +200,8 @@
     "envoyer": "إرسال الطلب",
     "envoi_cours": "جارٍ الإرسال…",
     "succes": "تم إنشاء الطلب {reference}. وهو الآن في انتظار المصادقة من عون تجاري.",
+    "succes_contact": "إذا استغرق طلبك وقتاً، يرجى التواصل معنا على",
+    "succes_numeros": "0770 376 011 / 0770 376 010",
     "recap_total_colis": "{total} طرداً في المجموع",
     "recap_total_poids": "{total} كغ في المجموع",
     "recap_vide": "أضف منتجاً واحداً على الأقل.",
