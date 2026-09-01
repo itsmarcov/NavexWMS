@@ -37,6 +37,9 @@ export function AppHeader() {
   if (utilisateur && (utilisateur.role === "agent_entrepot" || utilisateur.role === "admin")) {
     liens.push({ href: "/entrepot", label: t("nav.entrepot") });
   }
+  if (utilisateur && (utilisateur.role === "agent_station" || utilisateur.role === "admin")) {
+    liens.push({ href: "/station", label: t("nav.station") });
+  }
   if (utilisateur && utilisateur.role === "admin") {
     liens.push({ href: "/admin", label: t("nav.admin") });
   }

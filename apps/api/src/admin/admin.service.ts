@@ -2,7 +2,7 @@ import { ConflictException, ForbiddenException, Injectable, NotFoundException } 
 import { hash } from "bcryptjs";
 import { AuditService } from "../audit/audit.service";
 import { PrismaService } from "../prisma/prisma.service";
-import { CreerExpediteurDto, CreerUtilisateurDto, ModifierExpediteurDto, ModifierUtilisateurDto, StatutExpediteurDto } from "./dto/admin.dto";
+import { CreerExpediteurDto, CreerStationDto, CreerUtilisateurDto, ModifierExpediteurDto, ModifierStationDto, ModifierUtilisateurDto, StatutExpediteurDto } from "./dto/admin.dto";
 
 @Injectable()
 export class AdminService {
@@ -88,7 +88,10 @@ export class AdminService {
   async listerUtilisateurs() {
     const utilisateurs = await this.prisma.utilisateur.findMany({
       orderBy: [{ role: "asc" }, { email: "asc" }],
-      include: { expediteur: { select: { nom_entreprise: true } } },
+      include: {
+        expediteur: { select: { nom_entreprise: true } },
+        station: { select: { nom: true } },
+      },
     });
 
     return utilisateurs.map((u) => ({
@@ -98,6 +101,7 @@ export class AdminService {
       actif: u.actif,
       date_creation: u.date_creation,
       expediteur_nom: u.expediteur?.nom_entreprise ?? null,
+      station_nom: u.station?.nom ?? null,
       prenom: u.prenom ?? null,
       nom: u.nom ?? null,
       telephone: u.telephone ?? null,
@@ -126,6 +130,7 @@ export class AdminService {
         password_hash: passwordHash,
         role: dto.role,
         expediteur_id: dto.expediteur_id ?? null,
+        station_id: dto.station_id ?? null,
         prenom: dto.prenom ?? null,
         nom: dto.nom ?? null,
         telephone: dto.telephone ?? null,
@@ -137,7 +142,7 @@ export class AdminService {
       entite_id: utilisateur.id,
       action: "ADMIN_UTILISATEUR_CREE",
       utilisateur_id: utilisateurId,
-      donnees_apres: { email: dto.email, role: dto.role, prenom: dto.prenom, nom: dto.nom, telephone: dto.telephone },
+      donnees_apres: { email: dto.email, role: dto.role, prenom: dto.prenom, nom: dto.nom, telephone: dto.telephone, station_id: dto.station_id },
       ip_adresse: ip,
     });
 
@@ -211,6 +216,7 @@ export class AdminService {
     if (dto.email !== undefined) donnees.email = dto.email;
     if (dto.role !== undefined) donnees.role = dto.role;
     if (dto.expediteur_id !== undefined) donnees.expediteur_id = dto.expediteur_id;
+    if (dto.station_id !== undefined) donnees.station_id = dto.station_id;
     if (dto.actif !== undefined) donnees.actif = dto.actif;
     if (dto.mot_de_passe) donnees.password_hash = await hash(dto.mot_de_passe, 12);
     if (dto.prenom !== undefined) donnees.prenom = dto.prenom;
@@ -338,6 +344,91 @@ export class AdminService {
       action: "ADMIN_EXPEDITEUR_SUPPRIME",
       utilisateur_id: utilisateurId,
       donnees_avant: { nom_entreprise: expediteur.nom_entreprise, email: expediteur.email },
+      ip_adresse: ip,
+    });
+
+    return { ok: true };
+  }
+
+  // ── Stations ───────────────────────────────────────────────
+
+  async listerStations() {
+    return this.prisma.station.findMany({
+      orderBy: { nom: "asc" },
+      include: { _count: { select: { utilisateurs: true, demandes: true } } },
+    });
+  }
+
+  async creerStation(dto: CreerStationDto, utilisateurId: string, ip?: string) {
+    const existant = await this.prisma.station.findUnique({ where: { nom: dto.nom } });
+    if (existant) throw new ConflictException({ code: "erreurs.station_deja_existante" });
+
+    const station = await this.prisma.station.create({ data: { nom: dto.nom, adresse: dto.adresse } });
+
+    await this.audit.log({
+      entite_type: "Station",
+      entite_id: station.id,
+      action: "ADMIN_STATION_CREEE",
+      utilisateur_id: utilisateurId,
+      donnees_apres: { nom: station.nom, adresse: station.adresse },
+      ip_adresse: ip,
+    });
+
+    return { id: station.id, nom: station.nom, adresse: station.adresse, actif: station.actif };
+  }
+
+  async modifierStation(id: string, dto: ModifierStationDto, utilisateurId: string, ip?: string) {
+    const station = await this.prisma.station.findUnique({ where: { id } });
+    if (!station) throw new NotFoundException({ code: "erreurs.introuvable" });
+
+    if (dto.nom && dto.nom !== station.nom) {
+      const existant = await this.prisma.station.findUnique({ where: { nom: dto.nom } });
+      if (existant) throw new ConflictException({ code: "erreurs.station_deja_existante" });
+    }
+
+    const donnees: Record<string, unknown> = {};
+    if (dto.nom !== undefined) donnees.nom = dto.nom;
+    if (dto.adresse !== undefined) donnees.adresse = dto.adresse;
+    if (dto.actif !== undefined) donnees.actif = dto.actif;
+
+    if (Object.keys(donnees).length === 0) {
+      throw new ConflictException({ code: "erreurs.aucune_modification" });
+    }
+
+    const modifie = await this.prisma.station.update({ where: { id }, data: donnees });
+
+    await this.audit.log({
+      entite_type: "Station",
+      entite_id: id,
+      action: "ADMIN_STATION_MODIFIEE",
+      utilisateur_id: utilisateurId,
+      donnees_avant: { nom: station.nom, adresse: station.adresse, actif: station.actif },
+      donnees_apres: { nom: modifie.nom, adresse: modifie.adresse, actif: modifie.actif },
+      ip_adresse: ip,
+    });
+
+    return { id: modifie.id, nom: modifie.nom, adresse: modifie.adresse, actif: modifie.actif };
+  }
+
+  async supprimerStation(id: string, utilisateurId: string, ip?: string) {
+    const station = await this.prisma.station.findUnique({
+      where: { id },
+      include: { _count: { select: { utilisateurs: true, demandes: true } } },
+    });
+    if (!station) throw new NotFoundException({ code: "erreurs.introuvable" });
+
+    if (station._count.utilisateurs > 0 || station._count.demandes > 0) {
+      throw new ForbiddenException({ code: "erreurs.station_avec_liens" });
+    }
+
+    await this.prisma.station.delete({ where: { id } });
+
+    await this.audit.log({
+      entite_type: "Station",
+      entite_id: id,
+      action: "ADMIN_STATION_SUPPRIMEE",
+      utilisateur_id: utilisateurId,
+      donnees_avant: { nom: station.nom },
       ip_adresse: ip,
     });
 

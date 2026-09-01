@@ -178,12 +178,12 @@ export class DechargesService implements OnApplicationShutdown, OnModuleInit {
       include: {
         produits: { where: { statut_validation: "approuve" } },
         expediteur: true,
-        decharge: true,
+        decharges: { orderBy: { date_generation: "desc" }, take: 1 },
       },
     });
     if (!demande) throw new NotFoundException({ code: "erreurs.introuvable" });
     this.verifierAcces(demande.expediteur_id, user);
-    return demande;
+    return { ...demande, decharge: demande.decharges[0] ?? null, decharges: undefined };
   }
 
   private verifierAcces(expediteurId: string, user: ContexteUtilisateur) {

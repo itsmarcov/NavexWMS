@@ -1,4 +1,4 @@
-export const ROLES = ["expediteur", "agent_commercial", "agent_entrepot", "admin"] as const;
+export const ROLES = ["expediteur", "agent_commercial", "agent_entrepot", "agent_station", "admin"] as const;
 export type Role = (typeof ROLES)[number];
 
 export const STATUTS_DEMANDE = ["en_attente", "approuvee", "partiellement_approuvee", "rejetee", "annulee"] as const;
@@ -7,22 +7,21 @@ export type StatutDemande = (typeof STATUTS_DEMANDE)[number];
 export const STATUTS_VALIDATION_PRODUIT = ["en_attente", "approuve", "refuse"] as const;
 export type StatutValidationProduit = (typeof STATUTS_VALIDATION_PRODUIT)[number];
 
-export const STATUTS_DECHARGE = ["emise", "scannee", "expiree"] as const;
+export const STATUTS_DECHARGE = ["emise", "scannee", "transit", "expiree"] as const;
 export type StatutDecharge = (typeof STATUTS_DECHARGE)[number];
 
 export const TYPES_EMBALLAGE = ["carton", "palette", "sac", "autre"] as const;
 export type TypeEmballage = (typeof TYPES_EMBALLAGE)[number];
 
-/** Badges statut cohérents : en_attente=orange, approuvé=vert, refusé=rouge */
+/** Badges statut cohérents */
 export const BADGE_STATUT: Record<string, { couleur: string }> = {
-  // Charte Navex : une seule teinte rouge par intensité (soft / plein),
-  // le reste en neutres (encre noire / gris pierre).
   en_attente: { couleur: "rouge_soft" },
   emise: { couleur: "rouge_soft" },
   approuvee: { couleur: "noir" },
   partiellement_approuvee: { couleur: "noir" },
   approuve: { couleur: "noir" },
   scannee: { couleur: "noir" },
+  transit: { couleur: "noir" },
   refuse: { couleur: "rouge_plein" },
   rejetee: { couleur: "rouge_plein" },
   suspendu: { couleur: "rouge_plein" },
@@ -36,6 +35,7 @@ export interface UtilisateurDTO {
   email: string;
   role: Role;
   expediteur_id?: string | null;
+  station_id?: string | null;
   prenom?: string | null;
   nom?: string | null;
   telephone?: string | null;
@@ -95,20 +95,26 @@ export interface DemandeListeDTO {
   }>;
 }
 
-/** Décision de l'agent commercial sur un produit. */
 export interface ValidationProduitPayload {
   statut_validation: Exclude<StatutValidationProduit, "en_attente">;
   commentaire?: string;
 }
 
-/** Planification de la réception physique par l'agent commercial. */
 export interface PlanificationPayload {
-  date_reception_prevue: string; // ISO 8601
+  date_reception_prevue: string;
 }
 
-// ── Module entrepôt (Phase 4) ────────────────────────────────
+// ── Module entrepôt ──────────────────────────────────────────
 
-export const TYPES_EVENEMENT = ["arrivee_scannee", "reception_confirmee", "repositionnement"] as const;
+export const TYPES_EVENEMENT = [
+  "arrivee_scannee",
+  "reception_confirmee",
+  "repositionnement",
+  "arrivee_station",
+  "controle_station",
+  "decharge_transit_generee",
+  "etiquette_imprimee",
+] as const;
 export type TypeEvenement = (typeof TYPES_EVENEMENT)[number];
 
 export interface ScanQrPayload {
@@ -140,7 +146,6 @@ export interface DechargeEntrepotListeDTO {
   demande: { reference: string };
   expediteur_nom: string;
   nb_produits: number;
-  /** Types d'événements déjà enregistrés — permet de déduire l'étape suivante. */
   evenements: TypeEvenement[];
 }
 
@@ -171,7 +176,87 @@ export interface EmplacementDTO {
   occupee: boolean;
 }
 
-// ── Module admin (Phase 5) ───────────────────────────────────
+// ── Module station ────────────────────────────────────────────
+
+export interface StationDTO {
+  id: string;
+  nom: string;
+  adresse: string;
+  actif: boolean;
+}
+
+export interface CreerStationPayload {
+  nom: string;
+  adresse: string;
+}
+
+export interface ModifierStationPayload {
+  nom?: string;
+  adresse?: string;
+  actif?: boolean;
+}
+
+export interface DechargeStationListeDTO {
+  id: string;
+  numero_decharge: string;
+  statut: StatutDecharge;
+  date_generation: string;
+  demande: { reference: string };
+  expediteur_nom: string;
+  nb_produits: number;
+  station_nom?: string | null;
+}
+
+export interface ProduitStationDTO {
+  id: string;
+  sku_code: string;
+  designation: string;
+  quantite: number;
+  longueur_cm: number;
+  largeur_cm: number;
+  hauteur_cm: number;
+  poids_kg: number;
+  fragile: boolean;
+  type_emballage: TypeEmballageDTO;
+}
+
+export interface DechargeStationDetailDTO {
+  id: string;
+  numero_decharge: string;
+  statut: StatutDecharge;
+  date_generation: string;
+  demande: { reference: string };
+  expediteur_nom: string;
+  station_nom?: string | null;
+  parent_decharge?: { numero_decharge: string } | null;
+  produits: ProduitStationDTO[];
+  mouvements: MouvementDTO[];
+}
+
+export interface ModifierProduitStationPayload {
+  quantite?: number;
+  longueur_cm?: number;
+  largeur_cm?: number;
+  hauteur_cm?: number;
+  poids_kg?: number;
+  fragile?: boolean;
+  type_emballage?: TypeEmballageDTO;
+  designation?: string;
+}
+
+export interface EtiquetteDTO {
+  id: string;
+  sac_numero: number;
+  sac_total: number;
+  sku_code: string;
+  designation: string;
+  quantite: number;
+  decharge_numero: string;
+  demande_reference: string;
+  station_nom: string;
+}
+
+// ── Module admin ─────────────────────────────────────────────
 
 export const STATUTS_EXPEDITEUR = ["en_attente", "actif", "suspendu"] as const;
 export type StatutExpediteur = (typeof STATUTS_EXPEDITEUR)[number];
@@ -203,6 +288,7 @@ export interface UtilisateurAdminDTO {
   actif: boolean;
   date_creation: string;
   expediteur_nom?: string | null;
+  station_nom?: string | null;
   prenom?: string | null;
   nom?: string | null;
   telephone?: string | null;
@@ -212,7 +298,6 @@ export interface StatutExpediteurPayload {
   statut: Exclude<StatutExpediteur, never>;
 }
 
-/** Création d'un expéditeur (admin ou agent commercial). */
 export interface CreerExpediteurPayload {
   nom_entreprise: string;
   email: string;
@@ -221,22 +306,22 @@ export interface CreerExpediteurPayload {
   langue_preferee?: string;
 }
 
-/** Création d'un compte utilisateur (admin uniquement). */
 export interface CreerUtilisateurPayload {
   email: string;
   mot_de_passe: string;
   role: Role;
   expediteur_id?: string;
+  station_id?: string;
   prenom?: string | null;
   nom?: string | null;
   telephone?: string | null;
 }
 
-/** Modification d'un compte utilisateur (admin uniquement). */
 export interface ModifierUtilisateurPayload {
   email?: string;
   role?: Role;
   expediteur_id?: string | null;
+  station_id?: string | null;
   actif?: boolean;
   mot_de_passe?: string;
   prenom?: string | null;
@@ -244,7 +329,6 @@ export interface ModifierUtilisateurPayload {
   telephone?: string | null;
 }
 
-/** Modification d'un expéditeur (admin uniquement). */
 export interface ModifierExpediteurPayload {
   nom_entreprise?: string;
   email?: string;
@@ -258,13 +342,14 @@ export interface DemandeDetailDTO extends Omit<DemandeListeDTO, "_count"> {
   date_reception_prevue?: string | null;
   date_traitement?: string | null;
   conditions_acceptee: boolean;
+  station_service_id?: string | null;
+  station_service_nom?: string | null;
   produits: ProduitDTO[];
   decharge?:
     | (DechargeResumeDTO & { date_generation: string; pdf_url?: string | null })
     | null;
 }
 
-/** Charge utile de création : le backend génère référence et statuts. */
 export interface NouveauProduit {
   sku_code: string;
   designation: string;

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import type { AdminStatsDTO, ExpediteurAdminDTO, Role, StatutExpediteur, UtilisateurAdminDTO } from "@navex/contracts";
+import type { AdminStatsDTO, CreerStationPayload, ExpediteurAdminDTO, ModifierStationPayload, Role, StationDTO, StatutExpediteur, UtilisateurAdminDTO } from "@navex/contracts";
 import {
   changerStatutExpediteur,
   creerExpediteur,
@@ -12,7 +12,11 @@ import {
   modifierExpediteur,
   modifierUtilisateur,
   statsAdmin,
+  creerStation,
+  listerStations,
+  modifierStation,
   supprimerExpediteur,
+  supprimerStation,
   supprimerUtilisateur,
 } from "@/lib/api-client";
 import { formaterDate, messageErreur } from "@/lib/ui";
@@ -63,7 +67,7 @@ export default function PageAdmin() {
   const [actionEnCours, setActionEnCours] = useState<string | null>(null);
 
   // ── États formulaires ──
-  const [onglet, setOnglet] = useState<"stats" | "creer_compte" | "creer_expediteur">("stats");
+  const [onglet, setOnglet] = useState<"stats" | "creer_compte" | "creer_expediteur" | "stations">("stats");
   const [formCompte, setFormCompte] = useState({ email: "", mot_de_passe: "", role: "agent_commercial" as Role, prenom: "", nom: "", telephone: "" });
   const [formExpediteur, setFormExpediteur] = useState({ nom_entreprise: "", email: "", telephone: "", adresse: "" });
   const [envoiEnCours, setEnvoiEnCours] = useState(false);
@@ -76,9 +80,16 @@ export default function PageAdmin() {
   const [userEditForm, setUserEditForm] = useState({ email: "", role: "agent_commercial" as Role, actif: true, prenom: "", nom: "", telephone: "" });
   const [userSupprId, setUserSupprId] = useState<string | null>(null);
 
+  // ── États stations ──
+  const [stations, setStations] = useState<StationDTO[] | null>(null);
+  const [stationEditId, setStationEditId] = useState<string | null>(null);
+  const [stationEditForm, setStationEditForm] = useState({ nom: "", adresse: "", actif: true });
+  const [stationSupprId, setStationSupprId] = useState<string | null>(null);
+  const [formStation, setFormStation] = useState({ nom: "", adresse: "" });
+
   const charger = useCallback(() => {
-    Promise.all([statsAdmin(), listerExpediteursAdmin(), listerUtilisateursAdmin()])
-      .then(([s, e, u]) => { setStats(s); setExpediteurs(e); setUtilisateurs(u); })
+    Promise.all([statsAdmin(), listerExpediteursAdmin(), listerUtilisateursAdmin(), listerStations()])
+      .then(([s, e, u, st]) => { setStats(s); setExpediteurs(e); setUtilisateurs(u); setStations(st); })
       .catch((err) => setErreur(messageErreur(t, err)));
   }, [t]);
 
@@ -187,6 +198,52 @@ export default function PageAdmin() {
     finally { setActionEnCours(null); }
   }
 
+  // ── Station : création ──
+  async function submitStation(e: React.FormEvent) {
+    e.preventDefault();
+    setErreur(null); setSucces(null); setEnvoiEnCours(true);
+    try {
+      await creerStation(formStation);
+      setSucces(t("admin.station_cree"));
+      setFormStation({ nom: "", adresse: "" });
+      charger();
+    } catch (err) { setErreur(messageErreur(t, err)); }
+    finally { setEnvoiEnCours(false); }
+  }
+
+  // ── Station : modification ──
+  function ouvrirEditStation(s: StationDTO) {
+    setStationEditId(s.id);
+    setStationEditForm({ nom: s.nom, adresse: s.adresse, actif: s.actif });
+    setStationSupprId(null);
+  }
+
+  async function submitEditStation(ev: React.FormEvent) {
+    ev.preventDefault();
+    if (!stationEditId) return;
+    setErreur(null); setSucces(null); setActionEnCours(stationEditId);
+    try {
+      await modifierStation(stationEditId, stationEditForm);
+      setSucces(t("admin.station_modifiee"));
+      setStationEditId(null);
+      charger();
+    } catch (err) { setErreur(messageErreur(t, err)); }
+    finally { setActionEnCours(null); }
+  }
+
+  // ── Station : suppression ──
+  async function confirmerSupprStation() {
+    if (!stationSupprId) return;
+    setErreur(null); setSucces(null); setActionEnCours(stationSupprId);
+    try {
+      await supprimerStation(stationSupprId);
+      setSucces(t("admin.station_supprimee"));
+      setStationSupprId(null);
+      charger();
+    } catch (err) { setErreur(messageErreur(t, err)); }
+    finally { setActionEnCours(null); }
+  }
+
   return (
     <RequireRole roles={["admin"]}>
     <div className="min-h-dvh">
@@ -203,11 +260,13 @@ export default function PageAdmin() {
             ["stats", "admin.tab_stats"],
             ["creer_compte", "admin.tab_compte"],
             ["creer_expediteur", "admin.tab_expediteur"],
+            ["stations", "admin.stations"],
           ] as const).map(([cle, label]) => (
             <button key={cle} role="tab" aria-selected={onglet === cle} onClick={() => setOnglet(cle)}
               className={`flex-1 rounded-full px-4 py-2 text-sm font-medium transition-all duration-200 ${
                 onglet === cle ? "bg-white text-navex-ink shadow-soft" : "text-neutral-400 hover:text-navex-ink"
               }`}>
+              {cle === "stations" && "📍 "}
               {t(label)}
             </button>
           ))}
@@ -391,6 +450,106 @@ export default function PageAdmin() {
               </Bouton>
             </form>
           </section>
+        )}
+
+        {/* ── Onglet Stations ── */}
+        {onglet === "stations" && (
+          <div className="space-y-4">
+            <section className="card-glass rounded-3xl p-6 animate-slide-up">
+              <h2 className="mb-4 text-sm font-semibold text-navex-ink">{t("admin.creer_station")}</h2>
+              <form onSubmit={submitStation} className="space-y-4 max-w-md">
+                <label className="block text-sm font-medium text-navex-ink">
+                  {t("admin.station_nom")}
+                  <input required value={formStation.nom} onChange={(e) => setFormStation((f) => ({ ...f, nom: e.target.value }))} className={CHAMP} />
+                </label>
+                <label className="block text-sm font-medium text-navex-ink">
+                  {t("admin.station_adresse")}
+                  <input required value={formStation.adresse} onChange={(e) => setFormStation((f) => ({ ...f, adresse: e.target.value }))} className={CHAMP} />
+                </label>
+                <Bouton type="submit" variante="primaire" disabled={envoiEnCours}
+                  className="!px-6 !py-2.5 shadow-glow-red">
+                  {envoiEnCours ? t("commun.chargement") : t("admin.creer_station")}
+                </Bouton>
+              </form>
+            </section>
+
+            <section className="card-glass-solid rounded-3xl">
+              <div className="border-b border-neutral-100/60 px-6 py-4">
+                <h2 className="text-sm font-semibold text-navex-ink">{t("admin.stations")}</h2>
+              </div>
+              {stations && stations.length === 0 ? (
+                <p className="px-6 py-4 text-sm text-neutral-400">{t("admin.aucune_station")}</p>
+              ) : (
+                <ul className="divide-y divide-neutral-100/60">
+                  {(stations ?? []).map((s) => (
+                    <li key={s.id} className="transition-colors hover:bg-white/40">
+                      <div className="flex flex-wrap items-center justify-between gap-3 px-6 py-4">
+                        <div className="min-w-48 space-y-0.5">
+                          <p className="font-medium text-navex-ink">{s.nom}</p>
+                          <p className="text-xs text-neutral-400">{s.adresse}</p>
+                          <div className="flex items-center gap-2">
+                            <StatusBadge statut={s.actif ? "actif_compte" : "inactif"} />
+                          </div>
+                        </div>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <Bouton variante="secondaire" onClick={() => ouvrirEditStation(s)} disabled={actionEnCours !== null}
+                            className="!px-3 !py-1.5 !text-xs !border-navex-ink/15 !text-navex-ink/70">
+                            {t("admin.modifier")}
+                          </Bouton>
+                          {stationSupprId === s.id ? (
+                            <div className="flex items-center gap-1">
+                              <Bouton variante="primaire" onClick={confirmerSupprStation} disabled={actionEnCours !== null}
+                                className="!px-3 !py-1.5 !text-xs">
+                                {t("admin.supprimer_station_confirmer")}
+                              </Bouton>
+                              <Bouton variante="secondaire" onClick={() => setStationSupprId(null)}
+                                className="!px-3 !py-1.5 !text-xs !text-neutral-500 !border-neutral-200">
+                                {t("commun.annuler")}
+                              </Bouton>
+                            </div>
+                          ) : (
+                            <Bouton variante="secondaire" onClick={() => { setStationSupprId(s.id); setStationEditId(null); }} disabled={actionEnCours !== null}
+                              className="!px-3 !py-1.5 !text-xs !border-navex-red/30 !text-navex-red hover:!bg-navex-red-soft">
+                              {t("admin.supprimer_station")}
+                            </Bouton>
+                          )}
+                        </div>
+                      </div>
+                      {/* Formulaire modification station */}
+                      {stationEditId === s.id && (
+                        <form onSubmit={submitEditStation} className="border-t border-neutral-100/60 bg-navex-stone/30 px-6 py-4 space-y-3">
+                          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                            <label className="block text-xs font-medium text-navex-ink">
+                              {t("admin.station_nom")}
+                              <input required value={stationEditForm.nom} onChange={(ev) => setStationEditForm((f) => ({ ...f, nom: ev.target.value }))} className={CHAMP} />
+                            </label>
+                            <label className="block text-xs font-medium text-navex-ink">
+                              {t("admin.station_adresse")}
+                              <input required value={stationEditForm.adresse} onChange={(ev) => setStationEditForm((f) => ({ ...f, adresse: ev.target.value }))} className={CHAMP} />
+                            </label>
+                          </div>
+                          <label className="flex items-center gap-2 text-xs font-medium text-navex-ink">
+                            {t("admin.station_actif")}
+                            <input type="checkbox" checked={stationEditForm.actif} onChange={(ev) => setStationEditForm((f) => ({ ...f, actif: ev.target.checked }))} className="h-4 w-4 rounded border-neutral-300 text-navex-red focus:ring-navex-red/20" />
+                          </label>
+                          <div className="flex gap-2">
+                            <Bouton type="submit" variante="primaire" disabled={actionEnCours !== null}
+                              className="!px-5 !py-2 !text-xs shadow-glow-red">
+                              {actionEnCours === s.id ? t("commun.chargement") : t("admin.modifier_station")}
+                            </Bouton>
+                            <Bouton type="button" variante="secondaire" onClick={() => setStationEditId(null)}
+                              className="!px-5 !py-2 !text-xs !text-neutral-500 !border-neutral-200">
+                              {t("commun.annuler")}
+                            </Bouton>
+                          </div>
+                        </form>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </section>
+          </div>
         )}
 
         {/* Comptes utilisateurs (toujours visible) */}

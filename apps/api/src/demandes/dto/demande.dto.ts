@@ -81,6 +81,10 @@ export class CreeDemandeDto {
   @IsOptional()
   @IsBoolean()
   conditions_acceptee?: boolean;
+
+  @IsOptional()
+  @IsString()
+  station_service_id?: string;
 }
 
 const DECISIONS = ["approuve", "refuse"] as const;

@@ -3,28 +3,35 @@ import type {
   AjouterCataloguePayload,
   CatalogueProduitDTO,
   CreerExpediteurPayload,
+  CreerStationPayload,
   CreerUtilisateurPayload,
   DechargeEntrepotDetailDTO,
   DechargeEntrepotListeDTO,
+  DechargeStationDetailDTO,
+  DechargeStationListeDTO,
   DemandeDetailDTO,
   DemandeListeDTO,
   DechargeResumeDTO,
   EmplacementDTO,
+  EtiquetteDTO,
   ExpediteurAdminDTO,
   HistoriqueEntreeDTO,
   LoginResponse,
   ModifierExpediteurPayload,
+  ModifierProduitStationPayload,
+  ModifierStationPayload,
   ModifierUtilisateurPayload,
   NouveauProduit,
   PlanificationPayload,
   ScanResultDTO,
+  StationDTO,
   StatutExpediteurPayload,
   UtilisateurAdminDTO,
   UtilisateurDTO,
   ValidationProduitPayload,
 } from "@navex/contracts";
 
-export type { AjouterCataloguePayload, CatalogueProduitDTO };
+export type { AjouterCataloguePayload, CatalogueProduitDTO, StationDTO };
 
 const BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001/api";
 const CLE_TOKEN = "navex_access_token";
@@ -138,10 +145,11 @@ export async function seDeconnecter() {
 export function creerDemande(
   produits: NouveauProduit[],
   conditions_acceptee = false,
+  station_service_id?: string,
 ) {
   return requete<DemandeDetailDTO>("/demandes", {
     method: "POST",
-    body: JSON.stringify({ produits, conditions_acceptee }),
+    body: JSON.stringify({ produits, conditions_acceptee, station_service_id }),
   });
 }
 
@@ -365,4 +373,63 @@ export async function uploaderPhoto(fichier: File) {
     throw new ApiError(`HTTP ${reponse.status}`, code);
   }
   return (await reponse.json()) as { url: string };
+}
+
+// ── Admin stations ──────────────────────────────────────────
+
+export function listerStations() {
+  return requete<StationDTO[]>(`/admin/stations`);
+}
+
+export function creerStation(dto: CreerStationPayload) {
+  return requete<StationDTO>(`/admin/stations`, {
+    method: "POST",
+    body: JSON.stringify(dto),
+  });
+}
+
+export function modifierStation(id: string, dto: ModifierStationPayload) {
+  return requete<StationDTO>(`/admin/stations/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(dto),
+  });
+}
+
+export function supprimerStation(id: string) {
+  return requete<{ ok: boolean }>(`/admin/stations/${id}`, { method: "DELETE" });
+}
+
+// ── Station agent ───────────────────────────────────────────
+
+export function scannerStation(qrToken: string) {
+  return requete<ScanResultDTO>(`/station/scan`, {
+    method: "POST",
+    body: JSON.stringify({ qr_token: qrToken }),
+  });
+}
+
+export function listerDechargesStation() {
+  return requete<DechargeStationListeDTO[]>(`/station/decharges`);
+}
+
+export function detailDechargeStation(id: string) {
+  return requete<DechargeStationDetailDTO>(`/station/decharges/${id}`);
+}
+
+export function modifierProduitStation(dechargeId: string, produitId: string, dto: ModifierProduitStationPayload) {
+  return requete<{ id: string; sku_code: string }>(`/station/decharges/${dechargeId}/produits/${produitId}`, {
+    method: "PATCH",
+    body: JSON.stringify(dto),
+  });
+}
+
+export function genererDechargeTransit(dechargeId: string, notes?: string) {
+  return requete<{ decharge_id: string; numero_decharge: string; qr_code: string }>(`/station/decharges/${dechargeId}/generer-transit`, {
+    method: "POST",
+    body: JSON.stringify({ notes }),
+  });
+}
+
+export function preparerEtiquettes(dechargeId: string) {
+  return requete<EtiquetteDTO[]>(`/station/decharges/${dechargeId}/etiquettes`);
 }

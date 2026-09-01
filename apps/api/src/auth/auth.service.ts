@@ -165,7 +165,7 @@ export class AuthService {
   async me(userId: string) {
     const utilisateur = await this.prisma.utilisateur.findUnique({
       where: { id: userId },
-      include: { expediteur: true },
+      include: { expediteur: true, station: true },
     });
     if (!utilisateur) throw new UnauthorizedException({ code: "erreurs.acces_refuse" });
     return this.exposerUtilisateur(utilisateur);
@@ -212,12 +212,13 @@ export class AuthService {
     return createHash("sha256").update(token).digest("hex");
   }
 
-  private exposerUtilisateur(utilisateur: Utilisateur & { expediteur?: unknown }) {
+  private exposerUtilisateur(utilisateur: Utilisateur & { expediteur?: unknown; station?: unknown }) {
     return {
       id: utilisateur.id,
       email: utilisateur.email,
       role: utilisateur.role,
       expediteur_id: utilisateur.expediteur_id,
+      station_id: utilisateur.station_id,
       prenom: utilisateur.prenom,
       nom: utilisateur.nom,
       telephone: utilisateur.telephone,

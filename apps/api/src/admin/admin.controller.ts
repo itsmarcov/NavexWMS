@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Patch, Post } from "@nestjs/commo
 import { CurrentUser } from "../auth/decorators/current-user.decorator";
 import { Roles } from "../auth/decorators/roles.decorator";
 import { AdminService } from "./admin.service";
-import { CreerExpediteurDto, CreerUtilisateurDto, ModifierExpediteurDto, ModifierUtilisateurDto, StatutExpediteurDto } from "./dto/admin.dto";
+import { CreerExpediteurDto, CreerStationDto, CreerUtilisateurDto, ModifierExpediteurDto, ModifierStationDto, ModifierUtilisateurDto, StatutExpediteurDto } from "./dto/admin.dto";
 
 @Controller("admin")
 export class AdminController {
@@ -94,5 +94,41 @@ export class AdminController {
     @CurrentUser() user: { sub: string; role: string },
   ) {
     return this.adminService.creerExpediteur(dto, user.role, user.sub);
+  }
+
+  // ── Stations ──────────────────────────────────────────────
+
+  @Roles("admin")
+  @Get("stations")
+  listerStations() {
+    return this.adminService.listerStations();
+  }
+
+  @Roles("admin")
+  @Post("stations")
+  creerStation(
+    @Body() dto: CreerStationDto,
+    @CurrentUser() user: { sub: string; role: string },
+  ) {
+    return this.adminService.creerStation(dto, user.sub);
+  }
+
+  @Roles("admin")
+  @Patch("stations/:id")
+  modifierStation(
+    @Param("id") id: string,
+    @Body() dto: ModifierStationDto,
+    @CurrentUser() user: { sub: string; role: string },
+  ) {
+    return this.adminService.modifierStation(id, dto, user.sub);
+  }
+
+  @Roles("admin")
+  @Delete("stations/:id")
+  supprimerStation(
+    @Param("id") id: string,
+    @CurrentUser() user: { sub: string; role: string },
+  ) {
+    return this.adminService.supprimerStation(id, user.sub);
   }
 }

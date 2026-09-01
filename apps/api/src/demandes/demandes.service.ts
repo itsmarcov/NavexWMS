@@ -59,6 +59,7 @@ export class DemandesService {
           expediteur_id: expediteurId,
           statut: StatutDemande.en_attente,
           conditions_acceptee: dto.conditions_acceptee ?? false,
+          station_service_id: dto.station_service_id ?? null,
           produits: {
             create: dto.produits.map((p) => ({
               sku_code: p.sku_code,
@@ -115,13 +116,13 @@ export class DemandesService {
       where.produits = { some: { statut_validation: "en_attente" } };
     }
 
-    return this.prisma.demandeStockage.findMany({
+    const demandes = await this.prisma.demandeStockage.findMany({
       where,
       orderBy: { date_creation: "desc" },
       include: {
         expediteur: { select: { id: true, nom_entreprise: true } },
         _count: { select: { produits: true } },
-        decharge: { select: { id: true, numero_decharge: true, statut: true } },
+        decharges: { select: { id: true, numero_decharge: true, statut: true }, orderBy: { date_generation: "desc" }, take: 1 },
         produits: {
           select: {
             longueur_cm: true,
@@ -135,6 +136,12 @@ export class DemandesService {
         },
       },
     });
+
+    return demandes.map((d) => ({
+      ...d,
+      decharge: d.decharges[0] ?? null,
+      decharges: undefined,
+    }));
   }
 
   /**
@@ -276,8 +283,9 @@ export class DemandesService {
       include: {
         produits: { orderBy: { id: "asc" } },
         expediteur: { select: { id: true, nom_entreprise: true, email: true, telephone: true, adresse: true } },
-        decharge: true,
+        decharges: { orderBy: { date_generation: "desc" }, take: 1 },
         agent_commercial: { select: { email: true } },
+        station_service: { select: { id: true, nom: true } },
       },
     });
 
@@ -285,7 +293,8 @@ export class DemandesService {
     if (role === "expediteur" && demande.expediteur_id !== expediteurId) {
       throw new NotFoundException({ code: "erreurs.introuvable" });
     }
-    return demande;
+    const decharge = demande.decharges[0] ?? null;
+    return { ...demande, decharge, decharges: undefined, station_service_id: demande.station_service?.id ?? null, station_service_nom: demande.station_service?.nom ?? null };
   }
 
   async historique(demandeId: string, role: RoleUtilisateur, expediteurId?: string | null) {

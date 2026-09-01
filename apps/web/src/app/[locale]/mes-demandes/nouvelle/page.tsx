@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import type { NouveauProduit, TypeEmballageDTO } from "@navex/contracts";
-import { ajouterCatalogue, creerDemande, listerCatalogue, uploaderPhoto, type CatalogueProduitDTO } from "@/lib/api-client";
+import { ajouterCatalogue, creerDemande, listerCatalogue, listerStations, uploaderPhoto, type CatalogueProduitDTO, type StationDTO } from "@/lib/api-client";
 import { messageErreur } from "@/lib/ui";
 import { AppHeader } from "@/components/app-header";
 import { RequireRole } from "@/components/require-role";
@@ -86,9 +86,12 @@ export default function PageNouvelleDemande() {
   const [conditionsAcceptee, setConditionsAcceptee] = useState(false);
   const [catalogue, setCatalogue] = useState<CatalogueProduitDTO[]>([]);
   const [catalogueSelection, setCatalogueSelection] = useState<Record<number, string>>({});
+  const [stations, setStations] = useState<StationDTO[]>([]);
+  const [stationServiceId, setStationServiceId] = useState<string>("");
 
   useEffect(() => {
     listerCatalogue().then(setCatalogue).catch(() => undefined);
+    listerStations().then(setStations).catch(() => undefined);
   }, []);
 
   const etapes = [t("wizard.etape_produits"), t("wizard.etape_recapitulatif"), t("wizard.etape_envoi")];
@@ -193,7 +196,7 @@ export default function PageNouvelleDemande() {
         volume_expedition_journalier: p.volume_expedition_journalier ? Number(p.volume_expedition_journalier) : null,
         volume_expedition_mensuel: p.volume_expedition_mensuel ? Number(p.volume_expedition_mensuel) : null,
       }));
-      const creee = await creerDemande(charge, conditionsAcceptee);
+      const creee = await creerDemande(charge, conditionsAcceptee, stationServiceId || undefined);
       const skusExistants = new Set(catalogue.map((e) => e.sku_code));
       for (const p of produits) {
         const sku = p.sku_code.trim();
@@ -426,6 +429,21 @@ export default function PageNouvelleDemande() {
               <h3 className="text-sm font-semibold text-navex-ink">{t("wizard.recap_volume_m3")}</h3>
               <p className="text-3xl font-extrabold text-navex-ink" dir="ltr">{fmtVol(totalVolumeM3)} m³</p>
             </div>
+            {stations.length > 0 && (
+              <div className="card-glass rounded-3xl p-5">
+                <label className="block text-sm font-medium text-navex-ink">{t("station.station_label")}</label>
+                <select
+                  value={stationServiceId}
+                  onChange={(e) => setStationServiceId(e.target.value)}
+                  className={champClasse}
+                >
+                  <option value="">{t("station.station_choisir")}</option>
+                  {stations.filter((s) => s.actif).map((s) => (
+                    <option key={s.id} value={s.id}>{s.nom} — {s.adresse}</option>
+                  ))}
+                </select>
+              </div>
+            )}
             <div className="flex items-center justify-between">
               <Bouton type="button" onClick={() => setEtape(0)} variante="secondaire">
                 {t("wizard.precedent")}

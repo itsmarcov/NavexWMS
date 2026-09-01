@@ -16,7 +16,8 @@
     "entrepot": "Entrepôt",
     "admin": "Administration",
     "catalogue": "Catalogue",
-    "principal": "Navigation principale"
+    "principal": "Navigation principale",
+    "station": "Station"
   },
   "admin": {
     "titre": "Administration",
@@ -56,7 +57,21 @@
     "utilisateur_supprime": "Compte utilisateur supprimé.",
     "expediteur_modifie": "Expéditeur modifié avec succès.",
     "expediteur_supprime": "Expéditeur supprimé.",
-    "suppression_impossible": "Impossible de supprimer cet élément (données liées)."
+    "suppression_impossible": "Impossible de supprimer cet élément (données liées).",
+    "stations": "Stations",
+    "creer_station": "Nouvelle station",
+    "modifier_station": "Modifier la station",
+    "supprimer_station": "Supprimer la station",
+    "supprimer_station_confirmer": "Supprimer cette station ?",
+    "station_nom": "Nom de la station",
+    "station_adresse": "Adresse",
+    "station_actif": "Active",
+    "aucune_station": "Aucune station configurée.",
+    "station_cree": "Station créée avec succès.",
+    "station_modifiee": "Station modifiée avec succès.",
+    "station_supprimee": "Station supprimée.",
+    "nb_utilisateurs_st": "{count} utilisateur(s)",
+    "nb_demandes_st": "{count} demande(s)"
   },
   "login": {
     "titre": "Connexion",
@@ -96,6 +111,43 @@
     "bouton": "Scanner",
     "arrivee_confirmee": "Arrivée confirmée — décharge scannée."
   },
+  "station": {
+    "titre": "Station de transit",
+    "scan_qr": "Scanner le code QR de la décharge",
+    "scan_label": "Code QR de la décharge",
+    "token_placeholder": "Saisir ou scanner le code QR…",
+    "scan_aide_douchette": "Approchez la douchette du code QR ou saisissez le code manuellement.",
+    "scan_placeholder": "Saisir ou scanner le code QR…",
+    "decharges_transit": "Décharges en transit",
+    "decharges_en_transit": "Décharges en transit",
+    "liste_titre": "Décharges en transit",
+    "liste_vide": "Aucune décharge en transit pour cette station.",
+    "traiter_decharge": "Traiter cette décharge →",
+    "modifier_produit": "Modifier le produit",
+    "produit_modifie": "Produit modifié avec succès",
+    "generer_transit": "Générer la décharge de transit",
+    "generer_decharge_transit": "Générer la décharge de transit",
+    "imprimer_etiquettes": "Imprimer les étiquettes",
+    "etiquettes_generees": "Étiquettes générées avec succès",
+    "etiquettes_preparees": "Étiquettes préparées avec succès",
+    "decharge_transit_generee": "Décharge de transit générée",
+    "decharge_transit_creee": "Décharge de transit créée :",
+    "decharge_parente": "Décharge originale",
+    "station": "Station",
+    "station_label": "Station de service",
+    "station_choisir": "Choisir une station…",
+    "produits_modifiables": "Produits (modifiables)",
+    "actions_transit": "Actions",
+    "notes_placeholder": "Notes optionnelles…",
+    "contenu_recu": "Contenu reçu",
+    "actions_titre": "Actions",
+    "timeline_titre": "Historique",
+    "aucun_mouvement": "Aucun mouvement enregistré.",
+    "detail_titre": "Décharge",
+    "sac": "Sac",
+    "nb_etiquettes": "{total} étiquette(s)",
+    "confirmation_transit": "Confirmer la génération de la décharge de transit ? Les produits modifiés seront figés."
+  },
   "entrepot": {
     "titre": "Espace entrepôt",
     "scan_label": "Saisir le jeton QR à scanner",
@@ -128,7 +180,11 @@
   "evenements": {
     "arrivee_scannee": "Arrivée scannée au quai",
     "reception_confirmee": "Réception confirmée",
-    "repositionnement": "Positionnement en emplacement"
+    "repositionnement": "Positionnement en emplacement",
+    "arrivee_station": "Arrivée en station",
+    "controle_station": "Contrôle en station",
+    "decharge_transit_generee": "Décharge de transit générée",
+    "etiquette_imprimee": "Étiquettes imprimées"
   },
   "validation": {
     "produits_a_traiter": "{nombre} produit(s) attendent votre décision.",
@@ -414,6 +470,20 @@
       "step3": {
         "title": "Choisir l'emplacement",
         "desc": "Sélectionnez un emplacement libre pour positionner la marchandise."
+      }
+    },
+    "agent_station": {
+      "step1": {
+        "title": "Scanner le QR code",
+        "desc": "Scannez ou saisissez le code QR de la décharge pour la recevoir en station."
+      },
+      "step2": {
+        "title": "Décharges en transit",
+        "desc": "Consultez les décharges en attente de traitement dans votre station."
+      },
+      "step3": {
+        "title": "Générer la décharge de transit",
+        "desc": "Après vérification, générez une nouvelle décharge de transit avec étiquettes."
       }
     },
     "admin": {

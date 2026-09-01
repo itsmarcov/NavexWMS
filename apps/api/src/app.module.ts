@@ -9,6 +9,7 @@ import { DechargesModule } from "./decharges/decharges.module";
 import { DemandesModule } from "./demandes/demandes.module";
 import { EntrepotModule } from "./entrepot/entrepot.module";
 import { PrismaModule } from "./prisma/prisma.module";
+import { StationModule } from "./station/station.module";
 import { UploadsModule } from "./uploads/uploads.module";
 
 @Controller()
@@ -21,7 +22,7 @@ export class AppController {
 }
 
 @Module({
-  imports: [PrismaModule, AuditModule, AuthModule, DemandesModule, UploadsModule, DechargesModule, EntrepotModule, AdminModule, CatalogueModule],
+  imports: [PrismaModule, AuditModule, AuthModule, DemandesModule, UploadsModule, DechargesModule, EntrepotModule, AdminModule, CatalogueModule, StationModule],
   controllers: [AppController],
 })
 export class AppModule {}

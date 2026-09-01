@@ -7,7 +7,7 @@ export class StatutExpediteurDto {
   statut!: (typeof STATUTS)[number];
 }
 
-const ROLES_CREABLES = ["expediteur", "agent_commercial", "agent_entrepot"] as const;
+const ROLES_CREABLES = ["expediteur", "agent_commercial", "agent_entrepot", "agent_station"] as const;
 
 export class CreerUtilisateurDto {
   @IsEmail({}, { message: "erreurs.email_invalide" })
@@ -23,6 +23,10 @@ export class CreerUtilisateurDto {
   @IsOptional()
   @IsString()
   expediteur_id?: string;
+
+  @IsOptional()
+  @IsString()
+  station_id?: string;
 
   @IsOptional()
   @IsString()
@@ -69,6 +73,10 @@ export class ModifierUtilisateurDto {
   expediteur_id?: string | null;
 
   @IsOptional()
+  @IsString()
+  station_id?: string | null;
+
+  @IsOptional()
   @IsBoolean()
   actif?: boolean;
 
@@ -110,4 +118,26 @@ export class ModifierExpediteurDto {
   @IsOptional()
   @IsString()
   langue_preferee?: string;
+}
+
+export class CreerStationDto {
+  @IsString()
+  nom!: string;
+
+  @IsString()
+  adresse!: string;
+}
+
+export class ModifierStationDto {
+  @IsOptional()
+  @IsString()
+  nom?: string;
+
+  @IsOptional()
+  @IsString()
+  adresse?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  actif?: boolean;
 }

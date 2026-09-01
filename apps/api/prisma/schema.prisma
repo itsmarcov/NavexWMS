@@ -13,6 +13,7 @@ enum RoleUtilisateur {
   expediteur
   agent_commercial
   agent_entrepot
+  agent_station
   admin
 }
 
@@ -46,6 +47,7 @@ enum StatutValidationProduit {
 enum StatutDecharge {
   emise
   scannee
+  transit
   expiree
 }
 
@@ -53,9 +55,24 @@ enum TypeEvenement {
   arrivee_scannee
   reception_confirmee
   repositionnement
+  arrivee_station
+  controle_station
+  decharge_transit_generee
+  etiquette_imprimee
 }
 
 // ── Modèles ───────────────────────────────────────────
+
+model Station {
+  id           String   @id @default(uuid())
+  nom          String   @unique
+  adresse      String
+  actif        Boolean  @default(true)
+  date_creation DateTime @default(now())
+
+  utilisateurs Utilisateur[]
+  demandes     DemandeStockage[]
+}
 
 model Expediteur {
   id              String           @id @default(uuid())
@@ -102,6 +119,8 @@ model Utilisateur {
   telephone     String?
   expediteur_id String?
   expediteur    Expediteur? @relation(fields: [expediteur_id], references: [id])
+  station_id    String?
+  station       Station?    @relation(fields: [station_id], references: [id])
   actif         Boolean  @default(true)
   tour_termine  Boolean  @default(false)
   date_creation DateTime @default(now())
@@ -137,12 +156,11 @@ model DemandeStockage {
   date_reception_prevue DateTime?
   commentaire_agent     String?
   conditions_acceptee   Boolean       @default(false)
+  station_service_id    String?
+  station_service       Station?      @relation(fields: [station_service_id], references: [id])
 
   produits Produit[]
-  decharge Decharge?
-
-  @@index([expediteur_id])
-  @@index([statut])
+  decharges Decharge[]
 }
 
 model Produit {
@@ -169,18 +187,23 @@ model Produit {
 }
 
 model Decharge {
-  id              String         @id @default(uuid())
-  demande_id      String         @unique
-  demande         DemandeStockage @relation(fields: [demande_id], references: [id])
-  numero_decharge String         @unique
-  qr_token        String         @unique
-  qr_code         String         @unique
-  nonce           String         @unique
-  date_generation DateTime       @default(now())
-  pdf_url         String?
-  statut          StatutDecharge @default(emise)
+  id                String         @id @default(uuid())
+  demande_id        String
+  demande           DemandeStockage @relation(fields: [demande_id], references: [id])
+  numero_decharge   String         @unique
+  qr_token          String         @unique
+  qr_code           String         @unique
+  nonce             String         @unique
+  date_generation   DateTime       @default(now())
+  pdf_url           String?
+  statut            StatutDecharge @default(emise)
+  parent_decharge_id String?
+  parent_decharge    Decharge?      @relation("DechargeHierarchy", fields: [parent_decharge_id], references: [id])
+  transit_decharges  Decharge[]     @relation("DechargeHierarchy")
 
   mouvements MouvementEntrepot[]
+
+  @@index([demande_id])
 }
 
 model Entrepot {

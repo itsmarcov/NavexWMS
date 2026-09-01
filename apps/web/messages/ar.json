@@ -16,7 +16,8 @@
     "entrepot": "المستودع",
     "admin": "الإدارة",
     "catalogue": "الكتالوج",
-    "principal": "التنقل الرئيسي"
+    "principal": "التنقل الرئيسي",
+    "station": "المحطة"
   },
   "admin": {
     "titre": "الإدارة",
@@ -56,7 +57,21 @@
     "utilisateur_supprime": "تم حذف حساب المستخدم.",
     "expediteur_modifie": "تم تعديل المُرسِل بنجاح.",
     "expediteur_supprime": "تم حذف المُرسِل.",
-    "suppression_impossible": "لا يمكن حذف هذا العنصر (يوجد بيانات مرتبطة)."
+    "suppression_impossible": "لا يمكن حذف هذا العنصر (يوجد بيانات مرتبطة).",
+    "stations": "المحطات",
+    "creer_station": "محطة جديدة",
+    "modifier_station": "تعديل المحطة",
+    "supprimer_station": "حذف المحطة",
+    "supprimer_station_confirmer": "حذف هذه المحطة؟",
+    "station_nom": "اسم المحطة",
+    "station_adresse": "العنوان",
+    "station_actif": "نشطة",
+    "aucune_station": "لم يتم تكوين أي محطة.",
+    "station_cree": "تم إنشاء المحطة بنجاح.",
+    "station_modifiee": "تم تعديل المحطة بنجاح.",
+    "station_supprimee": "تم حذف المحطة.",
+    "nb_utilisateurs_st": "{count} مستخدم(ين)",
+    "nb_demandes_st": "{count} طلب(ات)"
   },
   "login": {
     "titre": "تسجيل الدخول",
@@ -96,6 +111,43 @@
     "bouton": "مسح",
     "arrivee_confirmee": "تم تأكيد الوصول — تم مسح الإيصال ضوئياً."
   },
+  "station": {
+    "titre": "محطة العبور",
+    "scan_qr": "مسح رمز QR للإيصال",
+    "scan_label": "رمز QR للإيصال",
+    "token_placeholder": "أدخل أو امسح رمز QR…",
+    "scan_aide_douchette": "اقترب جهاز ال barcode من رمز QR أو أدخل الرمز يدوياً.",
+    "scan_placeholder": "أدخل أو امسح رمز QR…",
+    "decharges_transit": "إيصالات في العبور",
+    "decharges_en_transit": "إيصالات في العبور",
+    "liste_titre": "إيصالات في العبور",
+    "liste_vide": "لا توجد إيصالات في العبور لهذه المحطة.",
+    "traiter_decharge": "معالجة هذا الإيصال ←",
+    "modifier_produit": "تعديل المنتج",
+    "produit_modifie": "تم تعديل المنتج بنجاح",
+    "generer_transit": "إنشاء إيصال العبور",
+    "generer_decharge_transit": "إنشاء إيصال العبور",
+    "imprimer_etiquettes": "طباعة الملصقات",
+    "etiquettes_generees": "تم إنشاء الملصقات بنجاح",
+    "etiquettes_preparees": "تم تحضير الملصقات بنجاح",
+    "decharge_transit_generee": "تم إنشاء إيصال العبور",
+    "decharge_transit_creee": "تم إنشاء إيصال العبور :",
+    "decharge_parente": "الإيصال الأصلي",
+    "station": "المحطة",
+    "station_label": "محطة الخدمة",
+    "station_choisir": "اختر محطة…",
+    "produits_modifiables": "المنتجات (قابلة للتعديل)",
+    "actions_transit": "الإجراءات",
+    "notes_placeholder": "ملاحظات اختيارية…",
+    "contenu_recu": "المحتوى المستلم",
+    "actions_titre": "الإجراءات",
+    "timeline_titre": "السجل",
+    "aucun_mouvement": "لم يتم تسجيل أي حركة.",
+    "detail_titre": "الإيصال",
+    "sac": "كيس",
+    "nb_etiquettes": "{total} ملصق(ة)",
+    "confirmation_transit": "تأكيد إنشاء إيصال العبور؟ سيتم تثبيت المنتجات المعدلة."
+  },
   "entrepot": {
     "titre": "فضاء المستودع",
     "scan_label": "أدخل رمز QR المراد مسحه",
@@ -128,7 +180,11 @@
   "evenements": {
     "arrivee_scannee": "تم مسح الوصول في الرصيف",
     "reception_confirmee": "تم تأكيد الاستلام",
-    "repositionnement": "التموضع في الموقع"
+    "repositionnement": "التموضع في الموقع",
+    "arrivee_station": "وصول إلى المحطة",
+    "controle_station": "فحص في المحطة",
+    "decharge_transit_generee": "تم إنشاء إيصال العبور",
+    "etiquette_imprimee": "تم طباعة الملصقات"
   },
   "validation": {
     "produits_a_traiter": "{nombre} منتج (منتجات) تنتظر قرارك.",
@@ -414,6 +470,20 @@
       "step3": {
         "title": "اختيار الموقع",
         "desc": "اختر مقراً فارغاً لوضع البضائع."
+      }
+    },
+    "agent_station": {
+      "step1": {
+        "title": "مسح رمز QR",
+        "desc": "امسح أو أدخل رمز QR الخاص بالإيصال لتلقيه في المحطة."
+      },
+      "step2": {
+        "title": "إيصالات في العبور",
+        "desc": "عرض الإيصالات المنتظرة المعالجة في محطتك."
+      },
+      "step3": {
+        "title": "إنشاء إيصال العبور",
+        "desc": "بعد المراجعة، أنشئ إيصال عبور جديد مع ملصقات."
       }
     },
     "admin": {

@@ -92,6 +92,31 @@ export const TOUR_STEPS: Record<Role, TourStep[]> = {
     },
   ],
 
+  // ─── Agent station : 3 étapes ─────────────────────────
+  // 1) Champ de scan QR
+  // 2) Liste des décharges en transit
+  // 3) Bouton "Générer décharge de transit"
+  agent_station: [
+    {
+      target: '[data-tour="station-scan-input"]',
+      titleKey: "tour.agent_station.step1.title",
+      descKey: "tour.agent_station.step1.desc",
+      icon: "scan",
+    },
+    {
+      target: '[data-tour="station-decharges-list"]',
+      titleKey: "tour.agent_station.step2.title",
+      descKey: "tour.agent_station.step2.desc",
+      icon: "list",
+    },
+    {
+      target: '[data-tour="station-generer-transit"]',
+      titleKey: "tour.agent_station.step3.title",
+      descKey: "tour.agent_station.step3.desc",
+      icon: "file-text",
+    },
+  ],
+
   // ─── Admin : 3 étapes ─────────────────────────────────
   // 1) Onglet "Statistiques" dans le panneau admin
   // 2) Liste des expéditeurs (gestion des comptes)
